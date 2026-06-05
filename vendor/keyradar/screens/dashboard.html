@@ -1,0 +1,1004 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>KeyRadar — Dashboard</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../shell.css">
+<style>
+  /* ═══════════════════════════════════════════════════════
+     Summary header — registered / active / risks at a glance
+     ═══════════════════════════════════════════════════════ */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .summary .sum-cell {
+    background: var(--surface);
+    padding: 18px 22px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .summary .sum-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .summary .sum-num {
+    font-family: var(--font-mono);
+    font-size: 32px;
+    line-height: 1.1;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    font-feature-settings: "tnum";
+  }
+  .summary .sum-num .of {
+    font-size: 16px;
+    color: var(--ink-muted);
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  .summary .sum-num .of::before { content: "/ "; color: var(--ink-faint); }
+  .summary .sum-sub {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.45;
+  }
+  .summary .sum-sub strong { color: var(--ink-soft); font-weight: 500; }
+  .summary .sum-cell.estimate .sum-num {
+    color: var(--ink-soft);
+  }
+  .summary .sum-cell.estimate .sum-num::before {
+    content: "≈ ";
+    color: var(--ink-faint);
+    margin-right: 2px;
+  }
+  .summary .sum-asof {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+    margin-top: auto;
+  }
+  .summary .sum-asof.stale { color: var(--stale); }
+
+  /* Mini stacked bar for type tally */
+  .type-stack {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .type-stack .tt {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  .type-stack .tt .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .type-stack .tt .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .type-stack .dot.personal { background: var(--type-personal); }
+  .type-stack .dot.work     { background: var(--type-work); }
+  .type-stack .dot.shared   { background: var(--type-shared); }
+  .type-stack .dot.test     { background: var(--type-test); }
+  .type-stack .dot.unknown  { background: transparent; border: 1.5px dashed var(--type-unknown); }
+
+  /* Risk inline tally */
+  .risk-inline {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .risk-inline .ri {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .risk-inline .ri .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .risk-inline .ri .num { font-family: var(--font-mono); font-weight: 500; color: var(--ink); font-size: 11px; }
+  .risk-inline .ri.action  .dot { background: var(--risk-action); }
+  .risk-inline .ri.caution .dot { background: var(--risk-caution); }
+  .risk-inline .ri.info    .dot { background: var(--risk-info); }
+
+
+  /* ═══════════════════════════════════════════════════════
+     Provider rollup — primary card. Expandable rows.
+     ═══════════════════════════════════════════════════════ */
+  .rollup {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .rollup-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rollup-head h3 { font-size: 15px; margin: 0; font-weight: 600; color: var(--ink); letter-spacing: -0.005em; }
+  .rollup-head .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+  }
+  .rollup-head .meta strong { color: var(--ink-soft); font-weight: 500; }
+  .rollup-head .link {
+    font-size: 12px;
+    color: var(--brand-text);
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 16px;
+  }
+
+  /* Scrollable provider list area */
+  .rollup-scroll {
+    max-height: 340px;
+    overflow-y: auto;
+  }
+
+  /* Provider parent row */
+  .prov-row {
+    display: grid;
+    grid-template-columns: 24px 110px 1fr auto auto auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border-soft);
+    cursor: pointer;
+    transition: background var(--t-fast);
+    user-select: none;
+  }
+  .prov-row:last-child { border-bottom: 0; }
+  .prov-row:hover { background: var(--surface-2); }
+  .prov-row.has-children { cursor: pointer; }
+  .prov-row.no-children { cursor: default; }
+  .prov-row.no-children .chev { visibility: hidden; }
+
+  .prov-row .chev {
+    width: 20px; height: 20px;
+    display: inline-grid;
+    place-items: center;
+    color: var(--ink-faint);
+    transition: transform var(--t-quick);
+    font-size: 10px;
+    font-family: var(--font-mono);
+  }
+  .prov-row[aria-expanded="true"] .chev { transform: rotate(90deg); color: var(--ink-muted); }
+
+  .prov-row .keys-count {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .prov-row .keys-count strong {
+    font-family: var(--font-mono);
+    color: var(--ink);
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .prov-row .keys-count small {
+    display: block;
+    color: var(--ink-muted);
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .prov-row .verified-pill {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: var(--r-xs);
+    background: var(--vs-active-bg);
+    color: var(--vs-active);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .prov-row .verified-pill.partial {
+    background: var(--vs-not-attempted-bg);
+    color: var(--vs-not-attempted);
+  }
+  .prov-row .verified-pill.bad {
+    background: var(--vs-auth-failed-bg);
+    color: var(--vs-auth-failed);
+  }
+  .prov-row .verified-pill::before {
+    content: ""; display: inline-block;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor; margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  .prov-row .balance {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    text-align: right;
+    min-width: 80px;
+  }
+  .prov-row .balance.unavailable {
+    color: var(--ink-muted);
+    font-size: 12px;
+    font-weight: 400;
+  }
+  .prov-row .asof-cell {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    color: var(--fresh);
+    white-space: nowrap;
+    min-width: 80px;
+  }
+  .prov-row .asof-cell.stale { color: var(--stale); }
+  .prov-row .console-btn {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: var(--r-xs);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all var(--t-fast);
+    white-space: nowrap;
+  }
+  .prov-row .console-btn:hover { color: var(--ink-soft); border-color: var(--border-strong); }
+
+  /* Expanded children — individual keys */
+  .prov-children {
+    display: none;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .prov-row[aria-expanded="true"] + .prov-children {
+    display: block;
+  }
+  .child-row {
+    display: grid;
+    grid-template-columns: 24px 110px 1fr auto auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 22px 10px 56px;
+    border-top: 1px solid var(--border-soft);
+    font-size: 12.5px;
+  }
+  .child-row:first-child { border-top: 0; }
+  .child-row:hover { background: var(--surface-3); }
+  .child-row .child-marker {
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-align: center;
+  }
+  .child-row .key-id {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .child-row .key-name {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .child-row .km {
+    flex-shrink: 0;
+  }
+
+  /* Status pill — Active / Unverified / Auth failed / Quota etc. */
+  .status {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: var(--r-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  .status::before {
+    content: "";
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .status.active        { background: var(--vs-active-bg);        color: var(--vs-active); }
+  .status.unverified    { background: var(--vs-not-attempted-bg); color: var(--vs-not-attempted); }
+  .status.checking      { background: var(--vs-checking-bg);      color: var(--vs-checking); }
+  .status.unreachable   { background: var(--vs-unreachable-bg);   color: var(--vs-unreachable); }
+  .status.unrecognized  { background: var(--vs-unrecognized-bg);  color: var(--vs-unrecognized); }
+  .status.auth-failed   { background: var(--vs-auth-failed-bg);   color: var(--vs-auth-failed); }
+  .status.permission    { background: var(--vs-permission-bg);    color: var(--vs-permission); }
+  .status.quota         { background: var(--facet-quota-bg);      color: var(--facet-quota); }
+
+  .child-row .child-asof {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: right;
+  }
+
+
+  /* ═══════════════════════════════════════════════════════
+     Lower row: Worry list (left) + Activity (right)
+     ═══════════════════════════════════════════════════════ */
+  .lower {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* Worry card (left) */
+  .worry-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .worry-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .worry-head h3 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .worry-head .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+  }
+  .worry-head .meta strong { color: var(--ink-soft); font-weight: 500; }
+
+  .worry-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .worry-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border-soft);
+    color: inherit;
+    text-decoration: none;
+    transition: background var(--t-fast);
+  }
+  .worry-row:last-child { border-bottom: 0; }
+  .worry-row:hover { background: var(--surface-2); }
+
+  .worry-row .severity {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .worry-row .severity::before {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .worry-row.action  .severity { color: var(--risk-action); }
+  .worry-row.caution .severity { color: var(--risk-caution); }
+  .worry-row.info    .severity { color: var(--risk-info); }
+  .worry-row .text {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .worry-row .text small {
+    display: block;
+    color: var(--ink-muted);
+    font-size: 11.5px;
+    margin-top: 2px;
+    line-height: 1.5;
+  }
+  .worry-row .text em { color: var(--brand-text); font-style: normal; font-weight: 500; }
+  .worry-row .text code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .worry-row .worry-count {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .worry-row .chev2 {
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+
+  /* Activity (right) */
+  .activity-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .activity-head {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .activity-head h3 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .activity { display: flex; flex-direction: column; }
+  .act {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    gap: 10px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-soft);
+    align-items: start;
+  }
+  .act:last-child { border-bottom: 0; }
+  .act .marker {
+    width: 8px; height: 8px; border-radius: 50%; margin-top: 6px;
+  }
+  .act .marker.scan     { background: var(--brand); }
+  .act .marker.rotate   { background: var(--mint-500); }
+  .act .marker.add      { background: var(--brand-text); }
+  .act .marker.validate { background: var(--accent-deep); }
+  .act .marker.risk     { background: var(--risk-caution); }
+  .act .text {
+    font-size: 12.5px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .act .text small {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 1px;
+  }
+  .act .text .src-inline {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 0 4px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    color: var(--ink-soft);
+    margin: 0 1px;
+  }
+  .act .when {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+
+  /* ═══════════════════════════════════════════════════════
+     Trust strip
+     ═══════════════════════════════════════════════════════ */
+  .trust-strip {
+    margin-top: 4px;
+    padding: 14px 22px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .trust-strip .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-right: 12px;
+  }
+  .trust-strip a {
+    color: var(--brand-text);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-stage">
+<div class="app-window">
+
+  <!-- ── Titlebar ────────────────────────────── -->
+  <div class="titlebar">
+    <div class="traffic">
+      <span class="close"></span>
+      <span class="min"></span>
+      <span class="max"></span>
+    </div>
+    <div class="title">
+      <strong>KeyRadar</strong>
+      <span class="sep">·</span>
+      <span>Dashboard</span>
+    </div>
+    <div class="actions">
+      <span class="promise-pin">Local · No transmit</span>
+    </div>
+  </div>
+
+  <!-- ── Body: sidebar + main ────────────────── -->
+  <div class="app-body">
+
+    <!-- ── Sidebar ────────────────── -->
+    <nav class="sidebar" aria-label="Primary">
+      <div class="sidebar-logo">
+        <a class="lockup" href="../index.html" aria-label="KeyRadar home">
+          <svg viewBox="0 0 195 38" xmlns="http://www.w3.org/2000/svg" aria-label="HAIB · KeyRadar">
+            <path fill="currentColor" d="M55.24 0H57.59V11.52H71.04V0H73.41V25.27H71.04V13.72H57.59V25.27H55.24V0Z"/>
+            <path fill="currentColor" d="M93.86 25.27L102.58 0H105.13L113.87 25.27H111.38L103.93 3.20999H103.75L96.3 25.27H93.85H93.86ZM109.86 15.55V17.75H97.87V15.55H109.86Z"/>
+            <path fill="currentColor" d="M136.69 25.27H134.34V0H136.69V25.27Z"/>
+            <path fill="currentColor" d="M159.37 0H167.55C169.1 0 170.4 0.279991 171.47 0.849991C172.54 1.41999 173.34 2.18999 173.87 3.18999C174.4 4.17999 174.67 5.33 174.67 6.62C174.67 7.63 174.51 8.51999 174.18 9.26999C173.85 10.03 173.4 10.64 172.83 11.1C172.25 11.57 171.59 11.9 170.84 12.11V12.32C171.64 12.38 172.4 12.67 173.14 13.19C173.88 13.71 174.47 14.44 174.94 15.37C175.41 16.3 175.64 17.39 175.64 18.63C175.64 19.87 175.36 21.07 174.81 22.06C174.26 23.06 173.41 23.84 172.26 24.41C171.11 24.98 169.69 25.27 167.99 25.27H159.38V0H159.37ZM170.14 10.73C170.85 10.32 171.41 9.77 171.81 9.06C172.21 8.35 172.41 7.55 172.41 6.64C172.41 5.73 172.23 4.98 171.87 4.31C171.51 3.64 170.97 3.11999 170.24 2.75999C169.51 2.38999 168.62 2.20999 167.55 2.20999H161.73V11.34H167.7C168.62 11.34 169.43 11.14 170.15 10.73H170.14ZM170.97 22.46C171.77 22.08 172.37 21.56 172.75 20.9C173.14 20.24 173.33 19.48 173.33 18.62C173.33 17.67 173.11 16.8 172.68 16.02C172.25 15.24 171.63 14.63 170.82 14.19C170.01 13.75 169.1 13.53 168.07 13.53H161.72V23.04H167.96C169.16 23.04 170.17 22.85 170.97 22.46Z"/>
+            <path d="M24.82 0.01H12.49C5.59 0.01 0 5.60 0 12.5V24.83C0 31.73 5.59 37.32 12.49 37.32H24.82C31.72 37.32 37.31 31.73 37.31 24.83V12.5C37.31 5.60 31.72 0.01 24.82 0.01Z" fill="#A4AB64"/>
+            <path d="M25.55 8.16V19.66H24.26L19.54 4.56H17.8L13.07 19.66H11.75V8.16H10.09V32.76H11.75V29.02L14.09 21.45H23.23L25.55 28.97V32.76H27.23V8.16H25.55ZM18.59 6.84H18.71L22.67 19.66H14.64L18.59 6.84ZM11.75 21.24H12.57L11.75 23.86V21.24ZM24.75 21.24H25.55V23.8L24.75 21.24Z" fill="#fff"/>
+            <path opacity="0.35" d="M193.67 0V37.32" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span class="name">KeyRadar</span>
+        </a>
+      </div>
+
+      <ul class="nav">
+        <li class="nav-section">Overview</li>
+        <li><a href="dashboard.html" aria-current="page">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><circle cx="9" cy="9" r="3"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2"/></svg></span>
+          Dashboard
+        </a></li>
+
+        <li class="nav-section">Manage</li>
+        <li><a href="keys.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="9" r="3"/><path d="M9 9h6M14 9v3M12 9v2"/></svg></span>
+          Keys
+          <span class="badge count">7</span>
+        </a></li>
+        <li><a href="scan.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6V4a1 1 0 011-1h2M15 6V4a1 1 0 00-1-1h-2M3 12v2a1 1 0 001 1h2M15 12v2a1 1 0 01-1 1h-2"/><circle cx="9" cy="9" r="2.5"/></svg></span>
+          Scan
+          <span class="badge caution">1</span>
+        </a></li>
+
+        <li class="nav-section">Observe</li>
+        <li><a href="usage.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 14h14M4 14V8M8 14V5M12 14v-4"/></svg></span>
+          Usage &amp; Credit
+        </a></li>
+        <li><a href="risk.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L2 14h14L9 2z"/><path d="M9 7v3M9 12v.5"/></svg></span>
+          Risk
+          <span class="badge action">3</span>
+        </a></li>
+
+        <li class="nav-section">System</li>
+        <li><a href="settings.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="2"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2M3.5 3.5l1.4 1.4M13.1 13.1l1.4 1.4M3.5 14.5l1.4-1.4M13.1 4.9l1.4-1.4"/></svg></span>
+          Settings
+        </a></li>
+      </ul>
+
+      <div class="sidebar-foot">
+        <div class="row"><span class="dot"></span><span><strong>macOS Keychain</strong> · 7 keys</span></div>
+        <div class="row" style="margin-top: 4px;">v0.1 · local-first</div>
+      </div>
+    </nav>
+
+    <!-- ── Main ─────────────────────────────────── -->
+    <div class="main">
+
+      <header class="topbar">
+        <div class="crumbs">
+          <h1 class="page-title">Dashboard</h1>
+          <span class="page-sub">What needs your attention today</span>
+        </div>
+        <div class="topbar-meta">
+          <span class="pip"><span class="dot"></span>Last scan <strong>12m ago</strong></span>
+          <span class="pip stale"><span class="dot"></span>Cost <strong>3h ago</strong></span>
+          <button class="btn sm">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 6a4 4 0 1 1-1-2.7M10 1.5V4H7.5"/></svg>
+            Refresh all
+          </button>
+        </div>
+      </header>
+
+      <div class="main-scroll">
+
+        <!-- ── Summary header strip (4 cells) ──────────── -->
+        <div class="summary">
+
+          <div class="sum-cell">
+            <span class="sum-label">Registered</span>
+            <span class="sum-num">7</span>
+            <span class="sum-sub">across <strong>6 providers</strong> · macOS Keychain</span>
+          </div>
+
+          <div class="sum-cell">
+            <span class="sum-label">Verified active</span>
+            <span class="sum-num">5<span class="of">7</span></span>
+            <span class="sum-sub">1 unverified · 1 auth failed</span>
+          </div>
+
+          <div class="sum-cell">
+            <span class="sum-label">By type</span>
+            <div class="type-stack" style="margin-top: 2px;">
+              <span class="tt"><span class="dot personal"></span><span class="num">2</span>Personal</span>
+              <span class="tt"><span class="dot work"></span><span class="num">2</span>Work</span>
+              <span class="tt"><span class="dot shared"></span><span class="num">1</span>Shared</span>
+              <span class="tt"><span class="dot test"></span><span class="num">1</span>Test</span>
+              <span class="tt"><span class="dot unknown"></span><span class="num">1</span>Unknown</span>
+            </div>
+            <span class="sum-sub">1 Unknown → Risk에서 잡힘</span>
+          </div>
+
+          <div class="sum-cell estimate">
+            <span class="sum-label">This month · projected</span>
+            <span class="sum-num">$74<span style="font-size: 18px; color: var(--ink-muted); font-weight: 500;">.20</span></span>
+            <span class="sum-sub">
+              <span class="estimate-mark">ESTIMATE</span>
+              <span style="margin-left: 6px;">5 consoles · v1.1에서 정밀화</span>
+            </span>
+            <span class="sum-asof stale">cost refreshed 3h ago</span>
+          </div>
+
+        </div>
+
+
+        <!-- ── PROVIDER ROLLUP (primary — moved up) ──────── -->
+        <section class="rollup" aria-label="Providers">
+          <div class="rollup-head">
+            <h3>Providers <span class="meta" style="margin-left: 10px;"><strong>6</strong> providers · <strong>7</strong> keys</span></h3>
+            <a class="link" href="usage.html">Usage &amp; Credit →</a>
+          </div>
+
+          <div class="rollup-scroll">
+
+            <!-- Anthropic — 2 keys (expandable) -->
+            <div class="prov-row has-children" aria-expanded="true" data-toggle>
+              <span class="chev">▸</span>
+              <span class="src anthropic">CLAUDE</span>
+              <span class="keys-count">
+                <strong>2</strong> keys
+                <small>prod-api · side-project</small>
+              </span>
+              <span class="verified-pill">2/2 active</span>
+              <span class="balance">$42.18</span>
+              <span class="asof-cell">8m ago</span>
+              <a class="console-btn" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">Console ↗</a>
+            </div>
+            <div class="prov-children">
+              <div class="child-row">
+                <span class="child-marker">└</span>
+                <span class="type-badge work">Work</span>
+                <span class="key-id">
+                  <span class="key-name">prod-api</span>
+                  <span class="km"><span class="dots">·····</span><span class="tail">4f2a</span></span>
+                </span>
+                <span class="status active">Active</span>
+                <span class="balance" style="font-size: 13px;">$31.40</span>
+                <span class="child-asof">verified 8m ago</span>
+              </div>
+              <div class="child-row">
+                <span class="child-marker">└</span>
+                <span class="type-badge personal">Personal</span>
+                <span class="key-id">
+                  <span class="key-name">side-project</span>
+                  <span class="km"><span class="dots">·····</span><span class="tail">9a1c</span></span>
+                </span>
+                <span class="status active">Active</span>
+                <span class="balance" style="font-size: 13px;">$10.78</span>
+                <span class="child-asof">verified 2m ago</span>
+              </div>
+            </div>
+
+            <!-- OpenAI — 2 keys (expandable, partial verified) -->
+            <div class="prov-row has-children" aria-expanded="false" data-toggle>
+              <span class="chev">▸</span>
+              <span class="src openai">OPENAI</span>
+              <span class="keys-count">
+                <strong>2</strong> keys
+                <small>prod · eval-runs</small>
+              </span>
+              <span class="verified-pill bad">1/2 active · 1 failed</span>
+              <span class="balance">$24.40</span>
+              <span class="asof-cell stale">3h ago</span>
+              <a class="console-btn" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">Console ↗</a>
+            </div>
+            <div class="prov-children">
+              <div class="child-row">
+                <span class="child-marker">└</span>
+                <span class="type-badge work">Work</span>
+                <span class="key-id">
+                  <span class="key-name">prod</span>
+                  <span class="km"><span class="dots">·····</span><span class="tail">7e9b</span></span>
+                </span>
+                <span class="status active">Active</span>
+                <span class="balance" style="font-size: 13px;">$24.40</span>
+                <span class="child-asof">verified 1h ago</span>
+              </div>
+              <div class="child-row">
+                <span class="child-marker">└</span>
+                <span class="type-badge test">Test</span>
+                <span class="key-id">
+                  <span class="key-name">eval-runs</span>
+                  <span class="km"><span class="dots">·····</span><span class="tail">3b21</span></span>
+                </span>
+                <span class="status auth-failed">Auth failed</span>
+                <span class="balance" style="font-size: 13px; color: var(--ink-muted);">—</span>
+                <span class="child-asof" style="color: var(--vs-auth-failed);">2d ago · 401</span>
+              </div>
+            </div>
+
+            <!-- Google — 1 key (no children, balance unavailable) -->
+            <div class="prov-row no-children" aria-expanded="false">
+              <span class="chev">▸</span>
+              <span class="src google">GOOGLE</span>
+              <span class="keys-count">
+                <strong>1</strong> key
+                <small>team-gemini</small>
+              </span>
+              <span class="verified-pill partial">Unverified</span>
+              <span class="balance unavailable">Not supported by API</span>
+              <span class="asof-cell" style="visibility: hidden;">—</span>
+              <a class="console-btn" href="#" target="_blank" rel="noopener">Console ↗</a>
+            </div>
+
+            <!-- ElevenLabs — 1 key -->
+            <div class="prov-row no-children" aria-expanded="false">
+              <span class="chev">▸</span>
+              <span class="src eleven">ELEVEN</span>
+              <span class="keys-count">
+                <strong>1</strong> key
+                <small>narration</small>
+              </span>
+              <span class="verified-pill">Active</span>
+              <span class="balance">$7.62</span>
+              <span class="asof-cell">22m ago</span>
+              <a class="console-btn" href="#" target="_blank" rel="noopener">Console ↗</a>
+            </div>
+
+            <!-- Mistral — 1 key -->
+            <div class="prov-row no-children" aria-expanded="false">
+              <span class="chev">▸</span>
+              <span class="src mistral">MISTRAL</span>
+              <span class="keys-count">
+                <strong>1</strong> key
+                <small>experiments</small>
+              </span>
+              <span class="verified-pill">Active</span>
+              <span class="balance" style="color: var(--ink-soft);">€0.00</span>
+              <span class="asof-cell">14m ago</span>
+              <a class="console-btn" href="#" target="_blank" rel="noopener">Console ↗</a>
+            </div>
+
+            <!-- Cohere — 1 key, unrecognized format -->
+            <div class="prov-row no-children" aria-expanded="false">
+              <span class="chev">▸</span>
+              <span class="src cohere">COHERE</span>
+              <span class="keys-count">
+                <strong>1</strong> key
+                <small>(provider unset)</small>
+              </span>
+              <span class="verified-pill partial">Unverified</span>
+              <span class="balance unavailable">—</span>
+              <span class="asof-cell" style="visibility: hidden;">—</span>
+              <a class="console-btn" href="#" target="_blank" rel="noopener">Console ↗</a>
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- ── LOWER: Worry (left) + Activity (right) ──────── -->
+        <div class="lower">
+
+          <!-- Worry / Needs attention -->
+          <div class="worry-card">
+            <div class="worry-head">
+              <h3>Needs attention</h3>
+              <span class="meta"><strong>3 items</strong> · hygiene check</span>
+            </div>
+            <div class="worry-list">
+
+              <a class="worry-row action" href="risk.html#boundary">
+                <span class="severity">Boundary</span>
+                <span class="text">
+                  <em>OpenAI · Work</em> 키가 <code>~/personal/side-project/.env</code>에서 발견됨
+                  <small>같은 폴더에 Personal 키가 따로 있음. 잘못된 키를 쓰고 있을 가능성.</small>
+                </span>
+                <span class="worry-count">1 key</span>
+                <span class="chev2">→</span>
+              </a>
+
+              <a class="worry-row caution" href="risk.html#rotation">
+                <span class="severity">Rotation</span>
+                <span class="text">
+                  <em>3 keys</em>가 90일 이상 회전되지 않음
+                  <small>Claude · Work (118d) / OpenAI · Personal (94d) / Gemini · Shared (102d)</small>
+                </span>
+                <span class="worry-count">3 keys</span>
+                <span class="chev2">→</span>
+              </a>
+
+              <a class="worry-row info" href="risk.html#purpose">
+                <span class="severity">Purpose</span>
+                <span class="text">
+                  <em>2 keys</em>가 Type 미지정 (purpose unknown)
+                  <small>다른 키와 구분이 안 되어 boundary 룰이 적용되지 않음.</small>
+                </span>
+                <span class="worry-count">2 keys</span>
+                <span class="chev2">→</span>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Recent activity -->
+          <div class="activity-card">
+            <div class="activity-head">
+              <h3>Recent activity</h3>
+            </div>
+            <div class="activity">
+
+              <div class="act">
+                <span class="marker scan"></span>
+                <span class="text">
+                  Scan completed
+                  <small><code style="font-family: var(--font-mono); font-size: 10px;">~/code/keyradar</code>에서 후보 1개 발견</small>
+                </span>
+                <span class="when">12m</span>
+              </div>
+
+              <div class="act">
+                <span class="marker validate"></span>
+                <span class="text">
+                  Validity check
+                  <small><span class="src-inline">CLAUDE · prod-api</span> · active</small>
+                </span>
+                <span class="when">38m</span>
+              </div>
+
+              <div class="act">
+                <span class="marker risk"></span>
+                <span class="text">
+                  Boundary 위반 감지
+                  <small>OpenAI · Work 키가 personal 폴더에서</small>
+                </span>
+                <span class="when">2h</span>
+              </div>
+
+              <div class="act">
+                <span class="marker rotate"></span>
+                <span class="text">
+                  Rotated
+                  <small><span class="src-inline">ELEVEN · narration</span></small>
+                </span>
+                <span class="when">어제</span>
+              </div>
+
+              <div class="act">
+                <span class="marker add"></span>
+                <span class="text">
+                  Key 추가
+                  <small><span class="src-inline">MISTRAL · experiments</span> · Type=Test</small>
+                </span>
+                <span class="when">3d</span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── Trust strip ── -->
+        <div class="trust-strip">
+          <div>
+            <span class="label">Trust promise</span>
+            <span>키값과 메타데이터는 이 기기에 머무름. 잔액 조회/검증 시에만 해당 provider 공식 API로 직접 전송.</span>
+          </div>
+          <a href="settings.html">Settings에서 확인 →</a>
+        </div>
+
+      </div>
+
+      <!-- ── Statusbar ────────── -->
+      <div class="statusbar">
+        <div class="left">
+          <span class="item ok">macOS Keychain · ready</span>
+          <span class="item">7 keys</span>
+          <span class="item">5 scopes</span>
+        </div>
+        <div class="right">
+          <span class="item">last scan 12m</span>
+          <span class="item">last cost refresh 3h</span>
+          <span class="item">no transmit</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  // Expand/collapse provider rows that have children
+  document.querySelectorAll('.prov-row[data-toggle]').forEach(row => {
+    row.addEventListener('click', () => {
+      const expanded = row.getAttribute('aria-expanded') === 'true';
+      row.setAttribute('aria-expanded', String(!expanded));
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1121 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>KeyRadar — Keys</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../shell.css">
+<style>
+  /* ═══════════════════════════════════════════════════
+     Filter bar
+     ═══════════════════════════════════════════════════ */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    margin-bottom: 14px;
+  }
+  .filter-bar .ftitle {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    margin-right: 4px;
+  }
+  .fsel {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px 6px 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--t-fast);
+    white-space: nowrap;
+  }
+  .fsel:hover { background: var(--surface-3); }
+  .fsel.active { background: var(--brand-bg); color: var(--brand-text); border-color: var(--brand-bg-strong); }
+  .fsel .dim { color: var(--ink-muted); font-weight: 400; }
+  .fsel .ch { font-size: 9px; color: var(--ink-faint); margin-left: 2px; }
+  .filter-bar .vline {
+    width: 1px;
+    height: 18px;
+    background: var(--border);
+    margin: 0 6px;
+  }
+  .filter-bar .search {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    width: 220px;
+    color: var(--ink-muted);
+    font-size: 12px;
+  }
+  .filter-bar .search svg { color: var(--ink-faint); }
+
+  /* ═══════════════════════════════════════════════════
+     Key list
+     ═══════════════════════════════════════════════════ */
+  .key-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    overflow: hidden;
+  }
+  .krow {
+    display: grid;
+    grid-template-columns: 22px 28px 88px 90px minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border-soft);
+    cursor: pointer;
+    transition: background var(--t-fast);
+    position: relative;
+    background: var(--surface);
+  }
+  .krow:last-of-type { border-bottom: 0; }
+  .krow:hover { background: var(--surface-2); }
+
+  /* Expanded row + its detail form ONE bounded unit.
+     The row stays on white; the detail block sits below in olive-50
+     with an outer container ring so the pair reads as "opened together". */
+  .krow[aria-expanded="true"] {
+    background: var(--surface);
+    border-bottom: 1px solid var(--olive-300);
+    box-shadow:
+      -3px 0 0 var(--brand) inset,
+      0 1px 0 var(--olive-200);
+    position: relative;
+    z-index: 1;
+  }
+  .krow[aria-expanded="true"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    left: 0;
+    width: 3px;
+    background: var(--brand);
+  }
+  /* Connector — visual rule that joins expanded row to its detail */
+  .krow[aria-expanded="true"] + .kdetail::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    background: var(--brand);
+  }
+
+  .kl-header {
+    display: grid;
+    grid-template-columns: 22px 28px 88px 90px minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 22px;
+    background: var(--olive-100);
+    border-bottom: 1px solid var(--olive-200);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--olive-700);
+    text-transform: uppercase;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .kl-header .col-status { min-width: 110px; }
+  .kl-header .col-verified { min-width: 130px; }
+  .kl-header .col-actions { min-width: 70px; }
+
+  /* Disclosure chevron */
+  .krow .disc {
+    width: 18px;
+    height: 18px;
+    display: inline-grid;
+    place-items: center;
+    color: var(--ink-faint);
+    transition: transform var(--t-quick), color var(--t-quick);
+  }
+  .krow:hover .disc { color: var(--ink-muted); }
+  .krow[aria-expanded="true"] .disc {
+    transform: rotate(90deg);
+    color: var(--brand);
+  }
+  .krow .disc svg { width: 12px; height: 12px; }
+
+  .krow .chk {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--r-xs);
+    border: 1.5px solid var(--border-strong);
+    display: inline-block;
+    cursor: pointer;
+    background: transparent;
+    transition: all var(--t-fast);
+  }
+  .krow .chk:hover { border-color: var(--brand); }
+
+  .krow .key-id-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .krow .key-name {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+    max-width: 180px;
+  }
+  .krow .km {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .krow .stat-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    min-width: 110px;
+  }
+
+  .krow .asof-cell {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 130px;
+  }
+  .krow .asof-cell.stale { color: var(--stale); }
+
+  .krow .actions-cell {
+    text-align: right;
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    min-width: 70px;
+  }
+  .krow .icon-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: var(--r-sm);
+    background: transparent;
+    border: 0;
+    color: var(--ink-muted);
+    cursor: pointer;
+    display: inline-grid;
+    place-items: center;
+    transition: all var(--t-fast);
+  }
+  .krow .icon-btn:hover { background: var(--surface-3); color: var(--ink); }
+  .krow .icon-btn svg { width: 14px; height: 14px; }
+
+  /* Facet glyphs */
+  .facet-glyph {
+    width: 22px;
+    height: 18px;
+    border-radius: var(--r-xs);
+    display: inline-grid;
+    place-items: center;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .facet-glyph.quota   { color: var(--facet-quota);   background: var(--facet-quota-bg); }
+  .facet-glyph.billing { color: var(--facet-billing); background: var(--facet-billing-bg); }
+  .facet-glyph.credit  { color: var(--facet-credit);  background: var(--facet-credit-bg); }
+  .facet-glyph.budget  { color: var(--facet-budget);  background: var(--facet-budget-bg); }
+
+  /* Layer C insight chip (inline, low-contrast) */
+  .insight-chip {
+    font-size: 11px;
+    color: var(--insight-text);
+    background: var(--insight-bg);
+    border-radius: var(--r-xs);
+    padding: 2px 6px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+  .insight-chip.warn {
+    color: var(--insight-warn);
+    background: var(--insight-warn-bg);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     EXPANDED ROW — Timeline lines (collapsed from 3-col grid)
+     검증 · 잔액 · 회전 — 한 줄씩
+     ═══════════════════════════════════════════════════ */
+  .kdetail {
+    display: none;
+    background: var(--olive-50);
+    border-bottom: 2px solid var(--olive-300);
+    padding: 0;
+    position: relative;
+    box-shadow: inset 0 6px 12px -8px rgba(35, 44, 18, 0.18);
+  }
+  .krow[aria-expanded="true"] + .kdetail {
+    display: block;
+  }
+
+  .kdetail-lines {
+    padding: 14px 24px 4px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .kline {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 14px;
+    align-items: baseline;
+    padding: 7px 0;
+    font-size: 13px;
+    line-height: 1.55;
+    border-bottom: 1px dashed var(--olive-200);
+  }
+  .kline:last-of-type { border-bottom: 0; }
+  .kline .axis {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--olive-700);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .kline .info {
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .kline .info strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .kline .info .num {
+    font-family: var(--font-mono);
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .kline .info .est {
+    font-family: var(--font-mono);
+    color: var(--ink-faint);
+    margin-right: 1px;
+  }
+  .kline .info .sep {
+    color: var(--ink-faint);
+  }
+  .kline .info .asof {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.03em;
+  }
+  .kline .info .asof.stale { color: var(--stale); }
+  .kline .info .src-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 1px 6px;
+    background: var(--surface-2);
+    color: var(--ink-muted);
+    border-radius: var(--r-xs);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .kline .info .warn-note {
+    color: var(--vs-permission);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .kline .info .skip-note {
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+  .kline.depleted .info { color: var(--ink-muted); font-style: italic; }
+  .kline .right {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .kline .right .toggle-detail {
+    color: var(--brand-text);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .kline .right .toggle-detail:hover { color: var(--brand-hover); text-decoration: underline; }
+
+  /* 2nd-level: validation debug detail (format · method · duration · history) */
+  .kdetail-debug {
+    display: none;
+    margin: 0 24px 14px 28px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--olive-200);
+    border-radius: var(--r-sm);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    line-height: 1.7;
+  }
+  .kdetail[data-debug="open"] .kdetail-debug { display: block; }
+  .kdetail-debug .dbg-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 12px;
+    padding: 2px 0;
+  }
+  .kdetail-debug .dbg-row .k {
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+  .kdetail-debug .dbg-row .v {
+    color: var(--ink-soft);
+  }
+  .kdetail-debug .hist {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--olive-200);
+  }
+  .kdetail-debug .hist .h-row {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 12px;
+    padding: 2px 0;
+  }
+  .kdetail-debug .hist .h-row .when { color: var(--ink-faint); }
+  .kdetail-debug .hist .h-row .what { color: var(--ink-soft); }
+  .kdetail-debug .hist .h-row .what.fail { color: var(--vs-auth-failed); }
+  .kdetail-debug .hist .h-row .code { color: var(--vs-active); }
+  .kdetail-debug .hist .h-row .code.fail { color: var(--vs-auth-failed); }
+
+  /* Action bar inside detail */
+  .kdetail-actions {
+    background: var(--surface);
+    padding: 12px 24px;
+    border-top: 1px solid var(--olive-200);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .kdetail-actions .helper {
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-left: auto;
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
+  }
+  .btn-primary {
+    background: var(--brand);
+    color: var(--brand-on);
+    border: 1px solid var(--brand);
+    padding: 6px 14px;
+    border-radius: var(--r-md);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary:hover { background: var(--brand-hover); border-color: var(--brand-hover); }
+  .btn-2 {
+    background: var(--surface);
+    color: var(--ink-soft);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: var(--r-md);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-2:hover { background: var(--surface-2); border-color: var(--border-strong); color: var(--ink); }
+  .btn-danger {
+    background: transparent;
+    color: var(--vs-auth-failed);
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    border-radius: var(--r-md);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .btn-danger:hover { background: var(--vs-auth-failed-bg); }
+
+  /* Selected count bar (appears when checked) — visual demo only */
+  .bulk-bar {
+    background: var(--brand);
+    color: var(--brand-on);
+    padding: 10px 22px;
+    border-radius: var(--r-md);
+    margin-bottom: 14px;
+    display: none;
+    align-items: center;
+    gap: 14px;
+    font-size: 13px;
+  }
+  .bulk-bar.show { display: flex; }
+  .bulk-bar .ct {
+    font-family: var(--font-mono);
+    background: rgba(255,255,255,0.18);
+    padding: 2px 8px;
+    border-radius: var(--r-xs);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .bulk-bar .b-btn {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 0;
+    padding: 5px 12px;
+    border-radius: var(--r-sm);
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .bulk-bar .b-btn:hover { background: rgba(255,255,255,0.25); }
+  .bulk-bar .b-btn.danger { background: rgba(255,255,255,0.12); }
+
+  /* Stats strip above filter (compact) */
+  .kp-stats {
+    display: flex;
+    gap: 28px;
+    align-items: baseline;
+    margin-bottom: 16px;
+    padding: 0 4px;
+  }
+  .kp-stats .stat-item {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .kp-stats .stat-item .n {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .kp-stats .stat-item .l {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .kp-stats .stat-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--border);
+  }
+  .kp-stats .stat-item .n.warn { color: var(--vs-auth-failed); }
+  .kp-stats .stat-item .n.idle { color: var(--vs-not-attempted); }
+</style>
+</head>
+<body>
+
+<div class="app-stage">
+<div class="app-window">
+
+  <!-- Titlebar -->
+  <div class="titlebar">
+    <div class="traffic">
+      <span class="close"></span><span class="min"></span><span class="max"></span>
+    </div>
+    <div class="title">
+      <strong>KeyRadar</strong> <span class="sep">·</span> <span>Keys</span>
+    </div>
+    <div class="actions">
+      <span class="promise-pin">Local · No transmit</span>
+    </div>
+  </div>
+
+  <div class="app-body">
+
+    <!-- Sidebar -->
+    <nav class="sidebar" aria-label="Primary">
+      <div class="sidebar-logo">
+        <a class="lockup" href="../index.html">
+          <svg viewBox="0 0 195 38" xmlns="http://www.w3.org/2000/svg" aria-label="HAIB · KeyRadar">
+            <path fill="currentColor" d="M55.24 0H57.59V11.52H71.04V0H73.41V25.27H71.04V13.72H57.59V25.27H55.24V0Z"/>
+            <path fill="currentColor" d="M93.86 25.27L102.58 0H105.13L113.87 25.27H111.38L103.93 3.20999H103.75L96.3 25.27H93.85H93.86ZM109.86 15.55V17.75H97.87V15.55H109.86Z"/>
+            <path fill="currentColor" d="M136.69 25.27H134.34V0H136.69V25.27Z"/>
+            <path fill="currentColor" d="M159.37 0H167.55C169.1 0 170.4 0.279991 171.47 0.849991C172.54 1.41999 173.34 2.18999 173.87 3.18999C174.4 4.17999 174.67 5.33 174.67 6.62C174.67 7.63 174.51 8.51999 174.18 9.26999C173.85 10.03 173.4 10.64 172.83 11.1C172.25 11.57 171.59 11.9 170.84 12.11V12.32C171.64 12.38 172.4 12.67 173.14 13.19C173.88 13.71 174.47 14.44 174.94 15.37C175.41 16.3 175.64 17.39 175.64 18.63C175.64 19.87 175.36 21.07 174.81 22.06C174.26 23.06 173.41 23.84 172.26 24.41C171.11 24.98 169.69 25.27 167.99 25.27H159.38V0H159.37ZM170.14 10.73C170.85 10.32 171.41 9.77 171.81 9.06C172.21 8.35 172.41 7.55 172.41 6.64C172.41 5.73 172.23 4.98 171.87 4.31C171.51 3.64 170.97 3.11999 170.24 2.75999C169.51 2.38999 168.62 2.20999 167.55 2.20999H161.73V11.34H167.7C168.62 11.34 169.43 11.14 170.15 10.73H170.14ZM170.97 22.46C171.77 22.08 172.37 21.56 172.75 20.9C173.14 20.24 173.33 19.48 173.33 18.62C173.33 17.67 173.11 16.8 172.68 16.02C172.25 15.24 171.63 14.63 170.82 14.19C170.01 13.75 169.1 13.53 168.07 13.53H161.72V23.04H167.96C169.16 23.04 170.17 22.85 170.97 22.46Z"/>
+            <path d="M24.82 0.01H12.49C5.59 0.01 0 5.60 0 12.5V24.83C0 31.73 5.59 37.32 12.49 37.32H24.82C31.72 37.32 37.31 31.73 37.31 24.83V12.5C37.31 5.60 31.72 0.01 24.82 0.01Z" fill="#A4AB64"/>
+            <path d="M25.55 8.16V19.66H24.26L19.54 4.56H17.8L13.07 19.66H11.75V8.16H10.09V32.76H11.75V29.02L14.09 21.45H23.23L25.55 28.97V32.76H27.23V8.16H25.55ZM18.59 6.84H18.71L22.67 19.66H14.64L18.59 6.84ZM11.75 21.24H12.57L11.75 23.86V21.24ZM24.75 21.24H25.55V23.8L24.75 21.24Z" fill="#fff"/>
+            <path opacity="0.35" d="M193.67 0V37.32" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span class="name">KeyRadar</span>
+        </a>
+      </div>
+
+      <ul class="nav">
+        <li class="nav-section">Overview</li>
+        <li><a href="dashboard.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><circle cx="9" cy="9" r="3"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2"/></svg></span>
+          Dashboard
+        </a></li>
+
+        <li class="nav-section">Manage</li>
+        <li><a href="keys.html" aria-current="page">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="9" r="3"/><path d="M9 9h6M14 9v3M12 9v2"/></svg></span>
+          Keys
+          <span class="badge count">7</span>
+        </a></li>
+        <li><a href="scan.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6V4a1 1 0 011-1h2M15 6V4a1 1 0 00-1-1h-2M3 12v2a1 1 0 001 1h2M15 12v2a1 1 0 01-1 1h-2"/><circle cx="9" cy="9" r="2.5"/></svg></span>
+          Scan
+          <span class="badge caution">1</span>
+        </a></li>
+
+        <li class="nav-section">Observe</li>
+        <li><a href="usage.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 14h14M4 14V8M8 14V5M12 14v-4"/></svg></span>
+          Usage &amp; Credit
+        </a></li>
+        <li><a href="risk.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L2 14h14L9 2z"/><path d="M9 7v3M9 12v.5"/></svg></span>
+          Risk
+          <span class="badge action">3</span>
+        </a></li>
+
+        <li class="nav-section">System</li>
+        <li><a href="settings.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="2"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2M3.5 3.5l1.4 1.4M13.1 13.1l1.4 1.4M3.5 14.5l1.4-1.4M13.1 4.9l1.4-1.4"/></svg></span>
+          Settings
+        </a></li>
+      </ul>
+
+      <div class="sidebar-foot">
+        <div class="row"><span class="dot"></span><span><strong>macOS Keychain</strong> · 7 keys</span></div>
+        <div class="row" style="margin-top: 4px;">v0.1 · local-first</div>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <div class="main">
+
+      <header class="topbar">
+        <div class="crumbs">
+          <h1 class="page-title">Keys</h1>
+          <span class="page-sub">All registered keys · verify, copy, rotate</span>
+        </div>
+        <div class="topbar-meta">
+          <button class="btn sm">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 6a4 4 0 1 1-1-2.7M10 1.5V4H7.5"/></svg>
+            Verify all
+          </button>
+          <button class="btn sm primary">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 1.5v9M1.5 6h9"/></svg>
+            Add key
+          </button>
+        </div>
+      </header>
+
+      <div class="main-scroll">
+
+        <!-- compact stats strip -->
+        <div class="kp-stats">
+          <div class="stat-item"><span class="n">7</span><span class="l">total</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat-item"><span class="n">5</span><span class="l">active</span></div>
+          <div class="stat-item"><span class="n warn">1</span><span class="l">auth failed</span></div>
+          <div class="stat-item"><span class="n idle">1</span><span class="l">not attempted</span></div>
+          <div class="stat-item"><span class="n idle">1</span><span class="l">can't validate</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat-item"><span class="n">3</span><span class="l">rotation overdue</span></div>
+        </div>
+
+        <!-- bulk action bar (hidden by default) -->
+        <div class="bulk-bar" id="bulkBar">
+          <span class="ct">2 selected</span>
+          <button class="b-btn">Verify selected</button>
+          <button class="b-btn">Set type</button>
+          <button class="b-btn">Export</button>
+          <button class="b-btn danger" style="margin-left: auto;">Delete</button>
+        </div>
+
+        <!-- filter bar -->
+        <div class="filter-bar">
+          <span class="ftitle">Filter</span>
+          <button class="fsel active">All providers <span class="ch">▾</span></button>
+          <button class="fsel">All types <span class="ch">▾</span></button>
+          <button class="fsel">Any status <span class="ch">▾</span></button>
+          <div class="vline"></div>
+          <span class="ftitle">Sort</span>
+          <button class="fsel">Last verified <span class="ch">▾</span></button>
+          <div class="search">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="5.5" cy="5.5" r="3.5"/><path d="M11.5 11.5L8 8"/></svg>
+            <span>Search keys, names…</span>
+          </div>
+        </div>
+
+        <!-- key list -->
+        <section class="key-list" aria-label="Keys">
+          <div class="kl-header">
+            <span></span>
+            <span></span>
+            <span>Provider</span>
+            <span>Type</span>
+            <span>Key</span>
+            <span class="col-status">Status</span>
+            <span class="col-verified">Verified</span>
+            <span class="col-actions"></span>
+          </div>
+
+          <!-- ── 01 · Claude prod-api · Active + Layer C insight ──────── -->
+          <div class="krow" aria-expanded="true" data-toggle>
+            <span class="disc"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg></span>
+            <span class="chk"></span>
+            <span class="src anthropic">CLAUDE</span>
+            <span class="type-badge work">Work</span>
+            <span class="key-id-cell">
+              <span class="key-name">prod-api</span>
+              <span class="km"><span class="dots">·····</span><span class="tail">4f2a</span></span>
+              <span class="insight-chip warn" title="Layer C insight">expires in 14d</span>
+            </span>
+            <span class="stat-cell">
+              <span class="validity active">Active</span>
+            </span>
+            <span class="asof-cell">8m ago · 200</span>
+            <span class="actions-cell">
+              <button class="icon-btn" title="Copy as">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M10 4V2.5A1.5 1.5 0 0 0 8.5 1H3.5A1.5 1.5 0 0 0 2 2.5v6A1.5 1.5 0 0 0 3.5 10H4"/></svg>
+              </button>
+              <button class="icon-btn" title="More">
+                <svg viewBox="0 0 14 14" fill="currentColor"><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="11" cy="7" r="1.2"/></svg>
+              </button>
+            </span>
+          </div>
+          <div class="kdetail">
+            <div class="kdetail-lines">
+
+              <!-- 검증 — 실시간 (200 response) -->
+              <div class="kline">
+                <span class="axis">Verify</span>
+                <span class="info">
+                  <span class="validity active" style="height: 14px;">Active</span>
+                  <span class="sep">·</span>
+                  <span>8m 전 통과</span>
+                  <span class="sep">·</span>
+                  <span>scopes <span class="src-tag" style="background: var(--olive-100); color: var(--olive-700);">messages:write</span> <span class="src-tag" style="background: var(--olive-100); color: var(--olive-700);">models:read</span></span>
+                  <span class="sep">·</span>
+                  <span>created <span class="num">75d</span> ago</span>
+                  <span class="sep">·</span>
+                  <span class="asof">최근 3회 정상</span>
+                </span>
+                <span class="right"><a class="toggle-detail" data-debug-toggle>검증 상세 ▾</a></span>
+              </div>
+
+              <!-- 잔액 — 지연 데이터 (별도 usage API) -->
+              <div class="kline">
+                <span class="axis">Balance</span>
+                <span class="info">
+                  <span class="est">≈</span>
+                  <span class="num">1.8M tokens</span>
+                  <span>left</span>
+                  <span class="src-tag">Usage API</span>
+                  <span class="sep">·</span>
+                  <span class="asof stale">Anthropic 기준 2h 전</span>
+                  <span class="estimate-mark">ESTIMATE</span>
+                </span>
+                <span class="right">refreshed 2h ago</span>
+              </div>
+
+              <!-- 회전 — KeyRadar 위생 규칙 (provider 만료 아님) -->
+              <div class="kline">
+                <span class="axis">Rotate by</span>
+                <span class="info">
+                  <span class="num">75d</span>
+                  <span>old</span>
+                  <span class="sep">·</span>
+                  <span>90d 권장 — <strong>14d 후 교체 권장</strong></span>
+                  <span class="src-tag">KeyRadar 위생 규칙</span>
+                </span>
+                <span class="right" style="color: var(--vs-permission);">⚠ rotate soon</span>
+              </div>
+
+            </div>
+
+            <!-- 2차 토글: 검증 디버그 -->
+            <div class="kdetail-debug">
+              <div class="dbg-row"><span class="k">Format</span><span class="v">sk-ant-xxx · matches Anthropic</span></div>
+              <div class="dbg-row"><span class="k">Method</span><span class="v">GET /v1/models · 143 ms</span></div>
+              <div class="hist">
+                <div class="dbg-row"><span class="k">Recent</span><span class="v"></span></div>
+                <div class="h-row"><span class="when">8m ago</span><span class="what">Active</span><span class="code">→ 200</span></div>
+                <div class="h-row"><span class="when">3h ago</span><span class="what">Active</span><span class="code">→ 200</span></div>
+                <div class="h-row"><span class="when">어제</span><span class="what">Active</span><span class="code">→ 200</span></div>
+              </div>
+            </div>
+
+            <div class="kdetail-actions">
+              <button class="btn-primary">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 6a4 4 0 1 1-1-2.7M10 1.5V4H7.5"/></svg>
+                Verify now
+              </button>
+              <button class="btn-2">Copy as Work</button>
+              <button class="btn-2">Show full value</button>
+              <button class="btn-2">Rotate guide ↗</button>
+              <button class="btn-2">Edit type</button>
+              <button class="btn-danger">Delete</button>
+              <span class="helper">잔액·회전 권장은 추정 · provider 콘솔에서 정확값 확인</span>
+            </div>
+
+          </div>
+
+
+          <!-- ── 02 · Claude side-project · Active, no expiry ──────────── -->
+          <div class="krow" aria-expanded="false" data-toggle>
+            <span class="disc"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg></span>
+            <span class="chk"></span>
+            <span class="src anthropic">CLAUDE</span>
+            <span class="type-badge personal">Personal</span>
+            <span class="key-id-cell">
+              <span class="key-name">side-project</span>
+              <span class="km"><span class="dots">·····</span><span class="tail">9a1c</span></span>
+              <span class="insight-chip">messages:write only</span>
+            </span>
+            <span class="stat-cell">
+              <span class="validity active">Active</span>
+            </span>
+            <span class="asof-cell">2m ago · 200</span>
+            <span class="actions-cell">
+              <button class="icon-btn" title="Copy"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M10 4V2.5A1.5 1.5 0 0 0 8.5 1H3.5A1.5 1.5 0 0 0 2 2.5v6A1.5 1.5 0 0 0 3.5 10H4"/></svg></button>
+              <button class="icon-btn" title="More"><svg viewBox="0 0 14 14" fill="currentColor"><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="11" cy="7" r="1.2"/></svg></button>
+            </span>
+          </div>
+          <div class="kdetail"></div>
+
+          <!-- ── 03 · OpenAI prod · Active, scope warning ────────────── -->
+          <div class="krow" aria-expanded="false" data-toggle>
+            <span class="disc"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg></span>
+            <span class="chk"></span>
+            <span class="src openai">OPENAI</span>
+            <span class="type-badge work">Work</span>
+            <span class="key-id-cell">
+              <span class="key-name">prod</span>
+              <span class="km"><span class="dots">·····</span><span class="tail">7e9b</span></span>
+              <span class="insight-chip warn">read-only scope</span>
+            </span>
+            <span class="stat-cell">
+              <span class="validity active">Active</span>
+              <span class="facet-glyph quota" title="quota exceeded">Q</span>
+            </span>
+            <span class="asof-cell">1h ago · 200</span>
+            <span class="actions-cell">
+              <button class="icon-btn" title="Copy"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M10 4V2.5A1.5 1.5 0 0 0 8.5 1H3.5A1.5 1.5 0 0 0 2 2.5v6A1.5 1.5 0 0 0 3.5 10H4"/></svg></button>
+              <button class="icon-btn" title="More"><svg viewBox="0 0 14 14" fill="currentColor"><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="11" cy="7" r="1.2"/></svg></button>
+            </span>
+          </div>
+          <div class="kdetail"></div>
+
+          <!-- ── 04 · OpenAI eval-runs · Auth failed (with previous state delta) ── -->
+          <div class="krow" aria-expanded="true" data-toggle>
+            <span class="disc"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg></span>
+            <span class="chk"></span>
+            <span class="src openai">OPENAI</span>
+            <span class="type-badge test">Test</span>
+            <span class="key-id-cell">
+              <span class="key-name">eval-runs</span>
+              <span class="km"><span class="dots">·····</span><span class="tail">3b21</span></span>
+            </span>
+            <span class="stat-cell">
+              <span class="validity auth-failed">Auth failed</span>
+            </span>
+            <span class="asof-cell" style="color: var(--vs-auth-failed);">2d ago · 401</span>
+            <span class="actions-cell">
+              <button class="icon-btn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M10 4V2.5A1.5 1.5 0 0 0 8.5 1H3.5A1.5 1.5 0 0 0 2 2.5v6A1.5 1.5 0 0 0 3.5 10H4"/></svg></button>
+              <button class="icon-btn"><svg viewBox="0 0 14 14" fill="currentColor"><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="11" cy="7" r="1.2"/></svg></button>
+            </span>
+          </div>
+          <div class="kdetail">
+            <div class="kdetail-lines">
+
+              <div class="kline">
+                <span class="axis">Verify</span>
+                <span class="info">
+                  <span class="validity auth-failed" style="height: 14px;">Auth failed</span>
+                  <span class="sep">·</span>
+                  <span>2d 전 · <strong style="color: var(--vs-auth-failed);">401</strong></span>
+                  <span class="sep">·</span>
+                  <span>5d 전엔 Active였음 — <strong>provider가 회수한 것으로 보임</strong></span>
+                </span>
+                <span class="right"><a class="toggle-detail" data-debug-toggle>검증 상세 ▾</a></span>
+              </div>
+
+              <div class="kline depleted">
+                <span class="axis">Balance</span>
+                <span class="info">
+                  <span class="skip-note">검증을 통과해야 잔액 추정 가능 — 키가 401로 거부됨</span>
+                </span>
+                <span class="right">—</span>
+              </div>
+
+              <div class="kline depleted">
+                <span class="axis">Rotate by</span>
+                <span class="info">
+                  <span class="skip-note">검증 실패 상태에선 회전이 아니라 *교체* 필요</span>
+                </span>
+                <span class="right" style="color: var(--vs-auth-failed);">replace key</span>
+              </div>
+
+            </div>
+
+            <div class="kdetail-debug">
+              <div class="dbg-row"><span class="k">Format</span><span class="v">sk-xxx · matches OpenAI</span></div>
+              <div class="dbg-row"><span class="k">Method</span><span class="v">GET /v1/models · 89 ms</span></div>
+              <div class="hist">
+                <div class="dbg-row"><span class="k">Recent</span><span class="v"></span></div>
+                <div class="h-row"><span class="when">2d ago</span><span class="what fail">Auth failed</span><span class="code fail">→ 401</span></div>
+                <div class="h-row"><span class="when">4d ago</span><span class="what fail">Auth failed</span><span class="code fail">→ 401</span></div>
+                <div class="h-row"><span class="when">5d ago</span><span class="what">Active</span><span class="code">→ 200</span></div>
+              </div>
+            </div>
+
+            <div class="kdetail-actions">
+              <button class="btn-primary">Verify now</button>
+              <button class="btn-2">Open OpenAI console ↗</button>
+              <button class="btn-2">Replace key</button>
+              <button class="btn-2">Edit type</button>
+              <button class="btn-danger">Delete</button>
+              <span class="helper">last working 5 days ago</span>
+            </div>
+          </div>
+
+
+          <!-- ── 05 · Google team-gemini · Not attempted ─────────────── -->
+          <div class="krow" aria-expanded="false" data-toggle>
+            <span class="disc"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg></span>
+            <span class="chk"></span>
+            <span class="src google">GOOGLE</span>
+            <span class="type-badge shared">Shared</span>
+            <span class="key-id-cell">
+              <span class="key-name">team-gemini</span>
+              <span class="km"><span class="dots">·····</span><span class="tail">P8tQ</span></span>
+            </span>
+            <span class="stat-cell">
+              <span class="validity not-attempted">Not attempted</span>
+            </span>
+            <span class="asof-cell">added today</span>
+            <span class="actions-cell">
+              <button class="icon-btn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M10 4V2.5A1.5 1.5 0 0 0 8.5 1H3.5A1.5 1.5 0 0 0 2 2.5v6A1.5 1.5 0 0 0 3.5 10H4"/></svg></button>
+              <button class="icon-btn"><svg viewBox="0 0 14 14" fill="currentColor"><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="11" cy="7" r="1.2"/></svg></button>
+            </span>
+          </div>
+          <div class="kdetail"></div>
+
+          <!-- ── 06 · Eleven narration · Permission limited (403) ────── -->
+          <div class="krow" aria-expanded="false" data-toggle>
+            <span class="disc"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg></span>
+            <span class="chk"></span>
+            <span class="src eleven">ELEVEN</span>
+            <span class="type-badge test">Test</span>
+            <span class="key-id-cell">
+              <span class="key-name">narration</span>
+              <span class="km"><span class="dots">·····</span><span class="tail">8d5e</span></span>
+              <span class="insight-chip">read-models forbidden</span>
+            </span>
+            <span class="stat-cell">
+              <span class="validity permission">Permission</span>
+            </span>
+            <span class="asof-cell">22m ago · 403</span>
+            <span class="actions-cell">
+              <button class="icon-btn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M10 4V2.5A1.5 1.5 0 0 0 8.5 1H3.5A1.5 1.5 0 0 0 2 2.5v6A1.5 1.5 0 0 0 3.5 10H4"/></svg></button>
+              <button class="icon-btn"><svg viewBox="0 0 14 14" fill="currentColor"><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="11" cy="7" r="1.2"/></svg></button>
+            </span>
+          </div>
+          <div class="kdetail"></div>
+
+          <!-- ── 07 · Mistral experiments · Can't validate ───────────── -->
+          <div class="krow" aria-expanded="true" data-toggle>
+            <span class="disc"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg></span>
+            <span class="chk"></span>
+            <span class="src cohere">COHERE</span>
+            <span class="type-badge test">Test</span>
+            <span class="key-id-cell">
+              <span class="key-name">experiments</span>
+              <span class="km"><span class="dots">·····</span><span class="tail">u72p</span></span>
+            </span>
+            <span class="stat-cell">
+              <span class="validity not-validatable">Can't validate</span>
+            </span>
+            <span class="asof-cell">—</span>
+            <span class="actions-cell">
+              <button class="icon-btn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M10 4V2.5A1.5 1.5 0 0 0 8.5 1H3.5A1.5 1.5 0 0 0 2 2.5v6A1.5 1.5 0 0 0 3.5 10H4"/></svg></button>
+              <button class="icon-btn"><svg viewBox="0 0 14 14" fill="currentColor"><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="11" cy="7" r="1.2"/></svg></button>
+            </span>
+          </div>
+          <div class="kdetail">
+            <div class="kdetail-lines">
+
+              <div class="kline">
+                <span class="axis">Verify</span>
+                <span class="info">
+                  <span class="validity not-validatable" style="height: 14px;">Can't validate</span>
+                  <span class="sep">·</span>
+                  <span>tagged as <strong>Cohere</strong>지만 형식이 매칭 안 됨 — <strong>provider 태그 재확인 권장</strong></span>
+                </span>
+                <span class="right"><a class="toggle-detail" data-debug-toggle>형식 상세 ▾</a></span>
+              </div>
+
+              <div class="kline depleted">
+                <span class="axis">Balance</span>
+                <span class="info">
+                  <span class="skip-note">검증을 어디로 보낼지 모르는 상태 — 어떤 추정도 불가</span>
+                </span>
+                <span class="right">—</span>
+              </div>
+
+              <div class="kline depleted">
+                <span class="axis">Rotate by</span>
+                <span class="info">
+                  <span class="skip-note">provider 확정 후 측정 시작</span>
+                </span>
+                <span class="right">—</span>
+              </div>
+
+            </div>
+
+            <div class="kdetail-debug">
+              <div class="dbg-row"><span class="k">Format</span><span class="v">doesn't match Cohere shape</span></div>
+              <div class="dbg-row"><span class="k">Reason</span><span class="v">잘못 태그됐거나 KeyRadar가 모르는 신규 provider일 수 있음. 실패가 아니라 어디로 호출할지 모른다는 뜻.</span></div>
+            </div>
+
+            <div class="kdetail-actions">
+              <button class="btn-primary">Pick provider…</button>
+              <button class="btn-2">Edit name &amp; tags</button>
+              <button class="btn-2">Show full value</button>
+              <button class="btn-danger">Delete</button>
+              <span class="helper">no validation attempted yet</span>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ── Validation layer legend ── -->
+        <div class="trust-strip" style="margin-top: 24px;">
+          <div>
+            <span class="label">Honesty</span>
+            <span>검증(/v1/models · 실시간)과 잔액(usage API · 지연)은 출처가 다른 정보. 회전 권장은 KeyRadar 위생 규칙이지 provider 만료가 아님.</span>
+          </div>
+          <a href="../DESIGN_NOTES.md">DESIGN_NOTES §4.2 →</a>
+        </div>
+
+      </div>
+
+      <!-- Statusbar -->
+      <div class="statusbar">
+        <div class="left">
+          <span class="item ok">macOS Keychain · ready</span>
+          <span class="item">7 keys</span>
+          <span class="item">3 expanded</span>
+        </div>
+        <div class="right">
+          <span class="item">5 active · 1 failed · 1 idle · 1 unknown</span>
+          <span class="item">no transmit</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  document.querySelectorAll('.krow[data-toggle]').forEach(row => {
+    row.addEventListener('click', (e) => {
+      if (e.target.closest('button') || e.target.closest('.chk') || e.target.closest('a')) return;
+      const expanded = row.getAttribute('aria-expanded') === 'true';
+      row.setAttribute('aria-expanded', String(!expanded));
+    });
+  });
+
+  // 2nd-level: validation debug detail toggle
+  document.querySelectorAll('[data-debug-toggle]').forEach(toggle => {
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      const detail = toggle.closest('.kdetail');
+      if (!detail) return;
+      const open = detail.getAttribute('data-debug') === 'open';
+      detail.setAttribute('data-debug', open ? 'closed' : 'open');
+      toggle.textContent = open ? '검증 상세 ▾' : '검증 상세 ▴';
+    });
+  });
+
+  document.querySelectorAll('.chk').forEach(chk => {
+    chk.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const active = chk.style.background === 'rgb(89, 113, 34)';
+      if (active) {
+        chk.style.background = 'transparent';
+        chk.style.borderColor = '';
+      } else {
+        chk.style.background = '#597122';
+        chk.style.borderColor = '#597122';
+      }
+      const count = [...document.querySelectorAll('.chk')].filter(c => c.style.background === 'rgb(89, 113, 34)').length;
+      const bar = document.getElementById('bulkBar');
+      if (count > 0) {
+        bar.classList.add('show');
+        bar.querySelector('.ct').textContent = count + ' selected';
+      } else {
+        bar.classList.remove('show');
+      }
+    });
+  });
+</script>
+</body>
+</html>

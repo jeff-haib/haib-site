@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>KeyRadar — Risk</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../shell.css">
+<style>
+  /* ═══════════════════════════════════════════════════
+     Risk = hygiene · NOT alarm
+     Severity ceiling: terracotta. No red.
+     ═══════════════════════════════════════════════════ */
+
+  .risk-summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    padding: 20px 24px 22px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .risk-summary .lede {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    margin: 0 0 6px;
+  }
+  .risk-summary .sub {
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.55;
+    max-width: 56ch;
+  }
+  .risk-tallies {
+    display: flex;
+    gap: 1px;
+    background: var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .risk-tallies .tile {
+    background: var(--surface);
+    padding: 12px 18px;
+    text-align: center;
+    min-width: 80px;
+  }
+  .risk-tallies .tile .n {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .risk-tallies .tile .lbl {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  .risk-tallies .tile.action  .n { color: var(--risk-action); }
+  .risk-tallies .tile.caution .n { color: var(--risk-caution); }
+  .risk-tallies .tile.info    .n { color: var(--risk-info); }
+  .risk-tallies .tile.clear   .n { color: var(--risk-clear); }
+
+  /* Section group */
+  .risk-section {
+    margin-bottom: 24px;
+  }
+  .risk-section h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    margin: 0 0 12px 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .risk-section h2 .count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    padding: 2px 8px;
+    background: var(--surface-2);
+    border-radius: var(--r-xs);
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    text-transform: none;
+  }
+
+  /* Risk card */
+  .rcard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: background var(--t-fast);
+  }
+  .rcard:hover { background: var(--surface); border-color: var(--border-strong); }
+  .rcard.action  { border-left: 4px solid var(--risk-action); }
+  .rcard.caution { border-left: 4px solid var(--risk-caution); }
+  .rcard.info    { border-left: 4px solid var(--risk-info); }
+  .rcard.clear   { border-left: 4px solid var(--risk-clear); }
+
+  .rcard-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 16px 22px 14px;
+  }
+  .rcard-sev {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .rcard-sev::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .rcard.action  .rcard-sev { color: var(--risk-action); }
+  .rcard.caution .rcard-sev { color: var(--risk-caution); }
+  .rcard.info    .rcard-sev { color: var(--risk-info); }
+  .rcard.clear   .rcard-sev { color: var(--risk-clear); }
+
+  .rcard-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.005em;
+    line-height: 1.4;
+  }
+  .rcard-title em {
+    color: var(--brand-text);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .rcard-key-count {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    letter-spacing: 0.03em;
+    padding: 3px 10px;
+    background: var(--surface-2);
+    border-radius: var(--r-pill);
+    font-weight: 500;
+  }
+
+  .rcard-body {
+    padding: 0 22px 14px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    max-width: 76ch;
+  }
+  .rcard-body code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--surface-2);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--brand-text);
+  }
+
+  /* Affected keys list inside card */
+  .rcard-affected {
+    margin: 0 22px 14px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+  }
+  .rcard-affected .aff-row {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 12.5px;
+  }
+  .rcard-affected .aff-row .nm {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .rcard-affected .aff-row .src {
+    height: 14px;
+    font-size: 9px;
+    padding: 1px 6px;
+  }
+  .rcard-affected .aff-row .type-badge {
+    height: 16px;
+    font-size: 10px;
+    padding: 1px 7px 1px 5px;
+  }
+  .rcard-affected .aff-row .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.03em;
+    text-align: right;
+  }
+  .rcard-affected .aff-row .meta.warn { color: var(--risk-caution); }
+  .rcard-affected .aff-row .meta.action { color: var(--risk-action); }
+
+  /* Card footer with actions */
+  .rcard-foot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px 16px;
+    border-top: 1px solid var(--border-soft);
+    background: var(--surface-2);
+  }
+  .rcard-foot .why {
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-left: auto;
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
+  }
+  .rfix {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    font-weight: 500;
+    border: 1px solid transparent;
+    background: var(--surface);
+    color: var(--ink-soft);
+    border-color: var(--border);
+  }
+  .rfix:hover { background: var(--surface-3); color: var(--ink); }
+  .rfix.primary {
+    background: var(--brand);
+    color: var(--brand-on);
+    border-color: var(--brand);
+  }
+  .rfix.primary:hover { background: var(--brand-hover); border-color: var(--brand-hover); }
+  .rfix.dismiss {
+    color: var(--ink-muted);
+    background: transparent;
+    border-color: transparent;
+  }
+  .rfix.dismiss:hover { background: var(--surface-3); color: var(--ink-soft); }
+
+  /* All-clear card */
+  .clear-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--risk-clear);
+    border-radius: var(--r-panel);
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .clear-block .ico {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--vs-active-bg);
+    color: var(--vs-active);
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .clear-block .text {
+    flex: 1;
+  }
+  .clear-block .text strong {
+    display: block;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .clear-block .text small {
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="app-stage">
+<div class="app-window">
+
+  <div class="titlebar">
+    <div class="traffic"><span class="close"></span><span class="min"></span><span class="max"></span></div>
+    <div class="title"><strong>KeyRadar</strong> <span class="sep">·</span> <span>Risk</span></div>
+    <div class="actions"><span class="promise-pin">Local · No transmit</span></div>
+  </div>
+
+  <div class="app-body">
+
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <a class="lockup" href="../index.html">
+          <svg viewBox="0 0 195 38" xmlns="http://www.w3.org/2000/svg" aria-label="HAIB · KeyRadar">
+            <path fill="currentColor" d="M55.24 0H57.59V11.52H71.04V0H73.41V25.27H71.04V13.72H57.59V25.27H55.24V0Z"/>
+            <path fill="currentColor" d="M93.86 25.27L102.58 0H105.13L113.87 25.27H111.38L103.93 3.20999H103.75L96.3 25.27H93.85H93.86ZM109.86 15.55V17.75H97.87V15.55H109.86Z"/>
+            <path fill="currentColor" d="M136.69 25.27H134.34V0H136.69V25.27Z"/>
+            <path fill="currentColor" d="M159.37 0H167.55C169.1 0 170.4 0.279991 171.47 0.849991C172.54 1.41999 173.34 2.18999 173.87 3.18999C174.4 4.17999 174.67 5.33 174.67 6.62C174.67 7.63 174.51 8.51999 174.18 9.26999C173.85 10.03 173.4 10.64 172.83 11.1C172.25 11.57 171.59 11.9 170.84 12.11V12.32C171.64 12.38 172.4 12.67 173.14 13.19C173.88 13.71 174.47 14.44 174.94 15.37C175.41 16.3 175.64 17.39 175.64 18.63C175.64 19.87 175.36 21.07 174.81 22.06C174.26 23.06 173.41 23.84 172.26 24.41C171.11 24.98 169.69 25.27 167.99 25.27H159.38V0H159.37ZM170.14 10.73C170.85 10.32 171.41 9.77 171.81 9.06C172.21 8.35 172.41 7.55 172.41 6.64C172.41 5.73 172.23 4.98 171.87 4.31C171.51 3.64 170.97 3.11999 170.24 2.75999C169.51 2.38999 168.62 2.20999 167.55 2.20999H161.73V11.34H167.7C168.62 11.34 169.43 11.14 170.15 10.73H170.14ZM170.97 22.46C171.77 22.08 172.37 21.56 172.75 20.9C173.14 20.24 173.33 19.48 173.33 18.62C173.33 17.67 173.11 16.8 172.68 16.02C172.25 15.24 171.63 14.63 170.82 14.19C170.01 13.75 169.1 13.53 168.07 13.53H161.72V23.04H167.96C169.16 23.04 170.17 22.85 170.97 22.46Z"/>
+            <path d="M24.82 0.01H12.49C5.59 0.01 0 5.60 0 12.5V24.83C0 31.73 5.59 37.32 12.49 37.32H24.82C31.72 37.32 37.31 31.73 37.31 24.83V12.5C37.31 5.60 31.72 0.01 24.82 0.01Z" fill="#A4AB64"/>
+            <path d="M25.55 8.16V19.66H24.26L19.54 4.56H17.8L13.07 19.66H11.75V8.16H10.09V32.76H11.75V29.02L14.09 21.45H23.23L25.55 28.97V32.76H27.23V8.16H25.55ZM18.59 6.84H18.71L22.67 19.66H14.64L18.59 6.84ZM11.75 21.24H12.57L11.75 23.86V21.24ZM24.75 21.24H25.55V23.8L24.75 21.24Z" fill="#fff"/>
+            <path opacity="0.35" d="M193.67 0V37.32" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span class="name">KeyRadar</span>
+        </a>
+      </div>
+
+      <ul class="nav">
+        <li class="nav-section">Overview</li>
+        <li><a href="dashboard.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="7"/><circle cx="9" cy="9" r="3"/></svg></span>
+          Dashboard
+        </a></li>
+        <li class="nav-section">Manage</li>
+        <li><a href="keys.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="9" r="3"/><path d="M9 9h6M14 9v3M12 9v2"/></svg></span>
+          Keys <span class="badge count">7</span>
+        </a></li>
+        <li><a href="scan.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6V4a1 1 0 011-1h2M15 6V4a1 1 0 00-1-1h-2M3 12v2a1 1 0 001 1h2M15 12v2a1 1 0 01-1 1h-2"/><circle cx="9" cy="9" r="2.5"/></svg></span>
+          Scan <span class="badge caution">1</span>
+        </a></li>
+        <li class="nav-section">Observe</li>
+        <li><a href="usage.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 14h14M4 14V8M8 14V5M12 14v-4"/></svg></span>
+          Usage &amp; Credit
+        </a></li>
+        <li><a href="risk.html" aria-current="page">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2L2 14h14L9 2z"/><path d="M9 7v3M9 12v.5"/></svg></span>
+          Risk <span class="badge action">3</span>
+        </a></li>
+        <li class="nav-section">System</li>
+        <li><a href="settings.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="2"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2"/></svg></span>
+          Settings
+        </a></li>
+      </ul>
+
+      <div class="sidebar-foot">
+        <div class="row"><span class="dot"></span><span><strong>macOS Keychain</strong> · 7 keys</span></div>
+        <div class="row" style="margin-top: 4px;">v0.1 · local-first</div>
+      </div>
+    </nav>
+
+    <div class="main">
+
+      <header class="topbar">
+        <div class="crumbs">
+          <h1 class="page-title">Risk</h1>
+          <span class="page-sub">Hygiene checks · not a security alarm</span>
+        </div>
+        <div class="topbar-meta">
+          <span class="pip"><span class="dot"></span>Last check <strong>12m ago</strong></span>
+          <button class="btn sm">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 6a4 4 0 1 1-1-2.7M10 1.5V4H7.5"/></svg>
+            Re-check
+          </button>
+        </div>
+      </header>
+
+      <div class="main-scroll">
+
+        <!-- ── Summary ── -->
+        <div class="risk-summary">
+          <div>
+            <h2 class="lede">3 things worth a look.</h2>
+            <p class="sub">위험 알람이 아닙니다. AI 키를 자주 쓰는 사람을 위한 위생 체크 — 잘못된 폴더에 들어간 키, 회전이 오래된 키, 정체 미상 키 등. 한 번에 다 안 해도 됩니다.</p>
+          </div>
+
+          <div class="risk-tallies">
+            <div class="tile action"><div class="n">1</div><div class="lbl">Action</div></div>
+            <div class="tile caution"><div class="n">1</div><div class="lbl">Caution</div></div>
+            <div class="tile info"><div class="n">1</div><div class="lbl">Info</div></div>
+            <div class="tile clear"><div class="n">3</div><div class="lbl">Cleared</div></div>
+          </div>
+        </div>
+
+
+        <!-- ── ACTION level ── -->
+        <section class="risk-section">
+          <h2>Action <span class="count">1 item</span></h2>
+
+          <div class="rcard action" id="boundary">
+            <div class="rcard-head">
+              <span class="rcard-sev">Boundary</span>
+              <h3 class="rcard-title"><em>OpenAI · Work</em> 키가 Personal 폴더에서 사용되고 있습니다</h3>
+              <span class="rcard-key-count">1 key affected</span>
+            </div>
+            <div class="rcard-body">
+              <code>prod</code> 키 (Type: Work)가 <code>~/personal/side-project/.env</code>에서 발견됨. 같은 폴더에 Personal 키가 따로 등록되어 있습니다. <strong style="color: var(--ink);">잘못된 키를 사용하고 있을 가능성</strong> — Work 사용량이 Personal 프로젝트에 잡히고 있을 수 있습니다.
+            </div>
+            <div class="rcard-affected">
+              <div class="aff-row">
+                <span class="src openai">OPENAI</span>
+                <span class="type-badge work">Work</span>
+                <span class="nm">prod · <span class="km" style="font-size: 11px;"><span class="dots">·····</span><span class="tail">7e9b</span></span></span>
+                <span class="meta">used in</span>
+                <span class="meta action">~/personal/side-project/.env</span>
+              </div>
+            </div>
+            <div class="rcard-foot">
+              <button class="rfix primary">Replace with Personal key</button>
+              <button class="rfix">View in file</button>
+              <button class="rfix">Mark intentional</button>
+              <button class="rfix dismiss">Dismiss</button>
+              <span class="why">Why this matters · R5-4 boundary</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── CAUTION level ── -->
+        <section class="risk-section">
+          <h2>Caution <span class="count">1 item</span></h2>
+
+          <div class="rcard caution" id="rotation">
+            <div class="rcard-head">
+              <span class="rcard-sev">Rotation</span>
+              <h3 class="rcard-title">3 keys haven't rotated in 90+ days</h3>
+              <span class="rcard-key-count">3 keys affected</span>
+            </div>
+            <div class="rcard-body">
+              회전이 오래된 키는 <em>위험</em>이 아니라 <em>관성</em>입니다. provider 따라 OAuth 토큰처럼 자동 만료되는 경우도 있고, API 키는 사용자가 직접 회전해야 합니다. 한 분기에 한 번 정도 권장.
+            </div>
+            <div class="rcard-affected">
+              <div class="aff-row">
+                <span class="src anthropic">CLAUDE</span>
+                <span class="type-badge work">Work</span>
+                <span class="nm">prod-api · <span class="km" style="font-size: 11px;"><span class="dots">·····</span><span class="tail">4f2a</span></span></span>
+                <span class="meta">last rotated</span>
+                <span class="meta warn">118 days ago</span>
+              </div>
+              <div class="aff-row">
+                <span class="src openai">OPENAI</span>
+                <span class="type-badge personal">Personal</span>
+                <span class="nm">side-project · <span class="km" style="font-size: 11px;"><span class="dots">·····</span><span class="tail">9a1c</span></span></span>
+                <span class="meta">last rotated</span>
+                <span class="meta warn">94 days ago</span>
+              </div>
+              <div class="aff-row">
+                <span class="src google">GOOGLE</span>
+                <span class="type-badge shared">Shared</span>
+                <span class="nm">team-gemini · <span class="km" style="font-size: 11px;"><span class="dots">·····</span><span class="tail">P8tQ</span></span></span>
+                <span class="meta">last rotated</span>
+                <span class="meta warn">102 days ago</span>
+              </div>
+            </div>
+            <div class="rcard-foot">
+              <button class="rfix primary">Rotation guide ↗</button>
+              <button class="rfix">Snooze 30d</button>
+              <button class="rfix dismiss">Dismiss all</button>
+              <span class="why">Why this matters · R5-5 rotation</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── INFO level ── -->
+        <section class="risk-section">
+          <h2>Info <span class="count">1 item</span></h2>
+
+          <div class="rcard info" id="purpose">
+            <div class="rcard-head">
+              <span class="rcard-sev">Purpose</span>
+              <h3 class="rcard-title">2 keys are missing Type tags</h3>
+              <span class="rcard-key-count">2 keys affected</span>
+            </div>
+            <div class="rcard-body">
+              Type 라벨 없이는 boundary 룰 (Work 키가 Personal 폴더에서 발견됨 등)이 작동하지 않습니다. <em>Personal · Work · Shared · Test</em> 중 하나를 지정해주세요.
+            </div>
+            <div class="rcard-affected">
+              <div class="aff-row">
+                <span class="src cohere">COHERE</span>
+                <span class="type-badge unknown">Unknown</span>
+                <span class="nm">experiments · <span class="km" style="font-size: 11px;"><span class="dots">·····</span><span class="tail">u72p</span></span></span>
+                <span class="meta">tagged</span>
+                <span class="meta">never</span>
+              </div>
+              <div class="aff-row">
+                <span class="src mistral">MISTRAL</span>
+                <span class="type-badge unknown">Unknown</span>
+                <span class="nm">experiments · <span class="km" style="font-size: 11px;"><span class="dots">·····</span><span class="tail">k5xN</span></span></span>
+                <span class="meta">tagged</span>
+                <span class="meta">never</span>
+              </div>
+            </div>
+            <div class="rcard-foot">
+              <button class="rfix primary">Tag these keys</button>
+              <button class="rfix dismiss">Dismiss</button>
+              <span class="why">Why this matters · R5-3 purpose</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── CLEARED level ── -->
+        <section class="risk-section">
+          <h2>Recently cleared <span class="count">3 items</span></h2>
+
+          <div class="clear-block">
+            <span class="ico">✓</span>
+            <div class="text">
+              <strong>Plaintext file removed</strong>
+              <small><code style="font-family: var(--font-mono); font-size: 11px;">~/Documents/keys.txt</code>에 있던 키 1개가 KeyRadar로 옮겨졌고, 원본 파일에서 마스킹 처리됨 · 어제</small>
+            </div>
+            <button class="rfix">View</button>
+          </div>
+          <div class="clear-block" style="margin-top: 8px;">
+            <span class="ico">✓</span>
+            <div class="text">
+              <strong>Old key revoked</strong>
+              <small>ElevenLabs · narration <span class="km" style="font-size: 11px;"><span class="dots">·····</span><span class="tail">3a92</span></span>가 회전됨 · 3일 전</small>
+            </div>
+            <button class="rfix">View</button>
+          </div>
+          <div class="clear-block" style="margin-top: 8px;">
+            <span class="ico">✓</span>
+            <div class="text">
+              <strong>Type tag added</strong>
+              <small>Mistral experiments <span class="km" style="font-size: 11px;"><span class="dots">·····</span><span class="tail">k5xN</span></span>에 Test 태그 부여됨 · 5일 전</small>
+            </div>
+            <button class="rfix">View</button>
+          </div>
+        </section>
+
+        <!-- Trust strip -->
+        <div class="trust-strip">
+          <div>
+            <span class="label">Hygiene tone</span>
+            <span>Risk는 <strong style="color: var(--ink-soft);">치과 위생사</strong>처럼 일합니다. 알람이 아닌 정기 체크. 빨강 없음, 최강 톤은 terracotta (action).</span>
+          </div>
+          <a href="../DESIGN_NOTES.md#3-비협상-약속-r0">R5 details →</a>
+        </div>
+
+      </div>
+
+      <div class="statusbar">
+        <div class="left">
+          <span class="item ok">Risk engine · 18 rules</span>
+          <span class="item">3 active · 3 cleared</span>
+        </div>
+        <div class="right">
+          <span class="item">last check 12m</span>
+          <span class="item">no alarms — hygiene only</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HAIB — Human AI Interaction Bridge</title>
+<meta name="description" content="HAIB는 AI 키 관리, 리서치 캡처, 언어 학습, 자동화된 콘텐츠 워크플로를 위한 실용적인 AI 도구를 만듭니다." />
+<link rel="icon" type="image/svg+xml" href="assets/brand/symbol.svg" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+
+<!-- ───────────────────────── NAV ───────────────────────── -->
+<header class="nav on-dark" id="nav">
+  <div class="wrap">
+    <a class="brand-lock" href="#top" aria-label="HAIB home">
+      <img class="symbol" src="assets/brand/symbol.svg" alt="" />
+      <span>
+        <span class="brand-text">HAIB</span>
+        <span class="brand-sub">Human AI Interaction Bridge</span>
+      </span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a class="nav-link" href="#products" data-i18n="nav.products">제품</a>
+      <a class="nav-link" href="downloads.html" data-i18n="nav.downloads">다운로드</a>
+      <a class="nav-link" href="pricing.html" data-i18n="nav.pricing">가격</a>
+      <a class="nav-link" href="/blog/" data-i18n="nav.blog">Blog</a>
+      <a class="nav-link" href="support.html" data-i18n="nav.support">지원</a>
+      <a class="nav-link" href="/about/" data-i18n="nav.about">About</a>
+    </nav>
+
+    <div class="nav-right">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-lang="ko" aria-pressed="true">KO</button>
+        <button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="btn btn-primary btn-sm nav-cta" href="downloads.html" data-i18n="nav.cta">앱 다운로드</a>
+      <button class="icon-btn menu-btn" id="menu-btn" aria-label="Menu" data-icon="menu"></button>
+    </div>
+  </div>
+</header>
+
+<div class="m-menu" id="m-menu">
+  <a href="#products" data-i18n="nav.products">제품</a>
+  <a href="downloads.html" data-i18n="nav.downloads">다운로드</a>
+  <a href="pricing.html" data-i18n="nav.pricing">가격</a>
+  <a href="/blog/" data-i18n="nav.blog">Blog</a>
+  <a href="support.html" data-i18n="nav.support">지원</a>
+  <a href="/about/" data-i18n="nav.about">About</a>
+  <a class="btn btn-primary" href="downloads.html" data-i18n="nav.cta">앱 다운로드</a>
+</div>
+
+<!-- ───────────────────────── HERO ───────────────────────── -->
+<section class="hero on-dark" id="top" data-screen-label="Hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-grid" id="hero-grid"></div>
+    <div class="radar" id="hero-radar">
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+      <div class="ring r3"></div>
+      <div class="ring r4"></div>
+      <div class="sweep"></div>
+      <div class="pulse"></div>
+      <div class="blip b1"></div>
+      <div class="blip b2"></div>
+      <div class="blip b3"></div>
+    </div>
+  </div>
+
+  <div class="wrap hero-inner">
+    <div class="hero-content" id="hero-content">
+      <p class="eyebrow" data-i18n="hero.eyebrow">HUMAN · AI · INTERACTION · BRIDGE</p>
+      <h1>
+        <span data-i18n="hero.title.a">AI로 만들고 배우고 일하는 사람을 위한</span>
+        <span class="accent" data-i18n="hero.title.b">실용적인 AI 도구.</span>
+      </h1>
+      <p class="hero-sub" data-i18n="hero.sub">HAIB는 AI 키 관리, 리서치 캡처, 언어 학습, 자동화된 콘텐츠 워크플로를 위한 집중형 도구를 만듭니다.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#products"><span data-i18n="hero.cta1">제품 보기</span></a>
+        <a class="btn btn-ghost" href="#downloads"><span data-icon="download" style="width:16px;height:16px;display:inline-flex"></span><span data-i18n="hero.cta2">앱 다운로드</span></a>
+      </div>
+
+      <div class="hero-tags" aria-hidden="false">
+        <span class="hero-tag" data-i18n="hero.tag1">AI 키 관리</span>
+        <span class="hero-tag" data-i18n="hero.tag2">리서치 캡처</span>
+        <span class="hero-tag" data-i18n="hero.tag3">언어 학습</span>
+        <span class="hero-tag" data-i18n="hero.tag4">콘텐츠 워크플로</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <div class="mouse"></div>
+    <span data-i18n="hero.scroll">스크롤</span>
+  </div>
+</section>
+
+<!-- ───────────────────────── PRODUCTS ───────────────────────── -->
+<section class="products section-pad" id="products" data-screen-label="Products">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="products.eyebrow">제품</p>
+      <h2 data-i18n="products.title">하나의 기준, 다섯 개의 도구</h2>
+      <p data-i18n="products.sub">모든 제품은 상태를 숨기지 않습니다. 사용 가능 · 심사 중 · 준비 중을 있는 그대로 표시합니다.</p>
+    </div>
+    <div class="cat-toolbar reveal">
+      <div class="cat-filters" id="cat-filters"></div>
+      <div class="cat-count" id="cat-count"></div>
+    </div>
+    <div class="cat-grid" id="cat-grid"></div>
+  </div>
+</section>
+
+<!-- ───────────────────────── WHY HAIB ───────────────────────── -->
+<section class="why section-pad" id="why" data-screen-label="Why HAIB">
+  <div class="wrap">
+    <p class="eyebrow reveal" data-i18n="why.eyebrow">WHY HAIB</p>
+    <p class="why-lead reveal">
+      <span data-i18n="why.lead.a">HAIB는 </span><span data-i18n="why.lead.hl">사람과 AI, 시스템과 의미 사이의 간극</span><span data-i18n="why.lead.b">을 메우는 도구를 만듭니다. 우리는 실용적인 워크플로, 로컬 우선 제어, 명확한 제품 효용에 집중합니다.</span>
+    </p>
+    <div class="pillars">
+      <div class="pillar reveal">
+        <div class="pi" data-icon="flow"></div>
+        <h4 data-i18n="why.p1.h">실용적인 워크플로</h4>
+        <p data-i18n="why.p1.b">데모가 아니라 매일의 작업을 위한 도구. 12분의 빈 시간에도 끝낼 수 있는 흐름을 설계합니다.</p>
+      </div>
+      <div class="pillar reveal">
+        <div class="pi" data-icon="shield"></div>
+        <h4 data-i18n="why.p2.h">로컬 우선 제어</h4>
+        <p data-i18n="why.p2.b">키와 데이터는 기기에 머뭅니다. 외부로 보내지 않고, 사용자가 통제권을 가집니다.</p>
+      </div>
+      <div class="pillar reveal">
+        <div class="pi" data-icon="check"></div>
+        <h4 data-i18n="why.p3.h">명확한 제품 효용</h4>
+        <p data-i18n="why.p3.b">마케팅 과장 없이, 각 도구가 무엇을 하는지 정확히 보여줍니다. 정직한 상태 표시가 기본입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── DOWNLOADS ───────────────────────── -->
+<section class="downloads section-pad" id="downloads" data-screen-label="Downloads">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="dl.eyebrow">다운로드</p>
+      <h2 data-i18n="dl.title">플랫폼별로 정리된 다운로드</h2>
+      <p data-i18n="dl.sub">설치 파일은 apps.hai-b.ai, 언어팩은 audio.hai-b.ai/audio, 구매와 라이선스는 Polar로 분리합니다.</p>
+    </div>
+    <div class="dl-grid" id="dl-grid"></div>
+  </div>
+</section>
+
+<!-- ───────────────────────── PRICING ───────────────────────── -->
+<section class="pricing section-pad" id="pricing" data-screen-label="Pricing">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="pricing.eyebrow">가격</p>
+      <h2 data-i18n="pricing.title">단순한 가격, 직접 결제</h2>
+      <p data-i18n="pricing.sub">구매와 라이선스는 Polar로 연결합니다. 설치 파일은 apps.hai-b.ai에서 제공합니다.</p>
+    </div>
+    <div class="price-grid" id="price-grid"></div>
+  </div>
+</section>
+
+<!-- ───────────────────────── CHANGELOG ───────────────────────── -->
+<section class="changelog section-pad" id="changelog" data-screen-label="Changelog">
+  <div class="wrap">
+    <div class="section-head reveal" style="display:flex;justify-content:space-between;align-items:flex-end;max-width:none;gap:24px;flex-wrap:wrap">
+      <div style="max-width:620px">
+        <p class="eyebrow" data-i18n="cl.eyebrow">체인지로그</p>
+        <h2 data-i18n="cl.title">공개 릴리스 기록</h2>
+        <p data-i18n="cl.sub">버전, 날짜, 상태, 변경 사항 — 그리고 다가오는 빌드까지 투명하게.</p>
+      </div>
+      <a class="btn btn-ghost btn-sm" href="changelog.html"><span data-i18n="cl.viewall">전체 체인지로그</span></a>
+    </div>
+    <div class="cl-list" id="cl-list"></div>
+  </div>
+</section>
+
+<!-- ───────────────────────── BOARD ───────────────────────── -->
+<section class="board section-pad" id="board" data-screen-label="Board">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="board.eyebrow">공지 보드</p>
+      <h2 data-i18n="board.title">릴리스 상태 · 알려진 이슈 · 지원 공지</h2>
+      <p data-i18n="board.sub">릴리스 상태, 심사 진행, 다운로드 가능 여부, 제품 공지를 한 곳에서.</p>
+    </div>
+    <div class="board-cats reveal" id="board-cats"></div>
+    <div class="notice-list reveal" id="notice-list"></div>
+    <a class="text-link" style="margin-top:24px" href="board.html"><span data-i18n="board.viewall">보드 전체 보기</span> <span data-icon="arrow" style="width:14px;height:14px;display:inline-flex"></span></a>
+  </div>
+</section>
+
+<!-- ───────────────────────── SUPPORT ───────────────────────── -->
+<section class="support section-pad" id="support" data-screen-label="Support">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="support.eyebrow">지원 센터</p>
+      <h2 data-i18n="support.title">설치부터 환불까지</h2>
+    </div>
+    <div class="support-grid">
+      <a class="support-link reveal" href="#support"><span data-icon="book"></span><span data-i18n="support.s1">시작하기</span></a>
+      <a class="support-link reveal" href="#support"><span data-icon="download"></span><span data-i18n="support.s2">설치 가이드</span></a>
+      <a class="support-link reveal" href="#support"><span data-icon="key"></span><span data-i18n="support.s3">라이선스 활성화</span></a>
+      <a class="support-link reveal" href="#support"><span data-icon="refresh"></span><span data-i18n="support.s4">구매 복원</span></a>
+      <a class="support-link reveal" href="#support"><span data-icon="file"></span><span data-i18n="support.s5">환불 정책</span></a>
+      <a class="support-link reveal" href="#support"><span data-icon="shield"></span><span data-i18n="support.s6">개인정보 처리방침</span></a>
+      <a class="support-link reveal" href="#support"><span data-icon="file"></span><span data-i18n="support.s7">이용약관</span></a>
+      <a class="support-link reveal" href="#contact"><span data-icon="mail"></span><span data-i18n="support.s8">지원 문의</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── FOOTER ───────────────────────── -->
+<footer class="footer" id="contact" data-screen-label="Footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="f-brand">
+        <a class="brand-lock" href="#top">
+          <img class="symbol" src="assets/brand/symbol.svg" alt="" />
+          <span class="brand-text">HAIB</span>
+        </a>
+        <p class="f-tag" data-i18n="foot.tag">Human AI Interaction Bridge. 사람과 AI 사이의 간극을 메우는 실용적인 도구를 만듭니다.</p>
+        <div class="f-contact">
+          <a href="mailto:support@hai-b.ai"><span data-icon="mail"></span><span class="mono">support@hai-b.ai</span></a>
+          <a href="tel:01086767681"><span data-icon="phone"></span><span class="mono">010-8676-7681</span></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5 data-i18n="foot.products">제품</h5>
+        <a href="product.html?p=keyradar">KeyRadar</a>
+        <a href="product.html?p=scrap-relay">Scrap Relay</a>
+        <a href="product.html?p=voca-flow">VOCA FLOW</a>
+        <a href="product.html?p=movie-maker-pro">Movie Maker Pro</a>
+        <a href="product.html?p=baton">BATON</a>
+      </div>
+
+      <div class="footer-col">
+        <h5 data-i18n="foot.resources">리소스</h5>
+        <a href="downloads.html" data-i18n="nav.downloads">다운로드</a>
+        <a href="pricing.html" data-i18n="nav.pricing">가격</a>
+        <a href="/blog/" data-i18n="nav.blog">Blog</a>
+        <a href="support.html" data-i18n="nav.support">지원</a>
+  <a href="/about/" data-i18n="nav.about">About</a>
+      </div>
+
+      <div class="footer-col">
+        <h5 data-i18n="foot.contact">문의</h5>
+        <a href="mailto:support@hai-b.ai">support@hai-b.ai</a>
+        <a href="tel:01086767681">010-8676-7681</a>
+        <a href="https://hai-b.ai">hai-b.ai</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="copy" data-i18n="foot.copy">© 2026 HAIB · Human AI Interaction Bridge</span>
+      <div class="legal">
+        <a href="/privacy/" data-i18n="foot.legal.privacy">개인정보 처리방침</a>
+        <a href="/terms/" data-i18n="foot.legal.terms">이용약관</a>
+        <a href="/refund/" data-i18n="foot.legal.refund">환불 정책</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="data/products.js"></script>
+<script src="assets/i18n.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/action-guard.js"></script>
+
+</body>
+</html>

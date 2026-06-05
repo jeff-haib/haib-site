@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HAIB — Product</title>
+<link rel="icon" type="image/svg+xml" href="assets/brand/symbol.svg" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/product.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap">
+    <a class="brand-lock" href="index.html" aria-label="HAIB home">
+      <img class="symbol" src="assets/brand/symbol.svg" alt="" />
+      <span>
+        <span class="brand-text">HAIB</span>
+        <span class="brand-sub">Human AI Interaction Bridge</span>
+      </span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="nav-link" href="index.html#products" data-i18n="nav.products">제품</a>
+      <a class="nav-link" href="index.html#downloads" data-i18n="nav.downloads">다운로드</a>
+      <a class="nav-link" href="index.html#pricing" data-i18n="nav.pricing">가격</a>
+      <a class="nav-link" href="/blog/" data-i18n="nav.blog">Blog</a>
+      <a class="nav-link" href="support.html" data-i18n="nav.support">지원</a>
+      <a class="nav-link" href="/about/" data-i18n="nav.about">About</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-lang="ko" aria-pressed="true">KO</button>
+        <button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="icon-btn menu-btn" id="menu-btn" aria-label="Menu" data-icon="menu"></button>
+    </div>
+  </div>
+</header>
+
+<div class="m-menu" id="m-menu">
+  <a href="index.html#products" data-i18n="nav.products">제품</a>
+  <a href="index.html#downloads" data-i18n="nav.downloads">다운로드</a>
+  <a href="index.html#pricing" data-i18n="nav.pricing">가격</a>
+  <a href="/blog/" data-i18n="nav.blog">Blog</a>
+  <a href="support.html" data-i18n="nav.support">지원</a>
+  <a href="/about/" data-i18n="nav.about">About</a>
+</div>
+
+<!-- HERO -->
+<section class="pd-hero" data-screen-label="Product Hero">
+  <div class="glow"></div>
+  <div class="grid-bg"></div>
+  <div class="wrap">
+    <div>
+      <a class="crumb" href="index.html#products"><span data-icon="back" style="width:15px;height:15px;display:inline-flex"></span><span data-i18n="pd.back">제품</span></a>
+      <div class="pd-head">
+        <div class="app-icon" id="pd-app-icon"></div>
+        <div>
+          <p class="pd-cat" id="pd-cat"></p>
+          <h1 id="pd-name"></h1>
+        </div>
+      </div>
+      <p class="pd-tagline" id="pd-tagline"></p>
+      <div class="pd-meta" id="pd-meta"></div>
+      <div class="pd-cta" id="pd-cta"></div>
+    </div>
+    <div class="pd-shot-frame reveal">
+      <div class="bar"><i></i><i></i><i></i></div>
+      <image-slot id="pd-hero-shot" placeholder="제품 스크린샷"></image-slot>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT -->
+<section class="pd-what section-pad" data-screen-label="What it does">
+  <div class="wrap">
+    <p class="eyebrow reveal" data-i18n="pd.what">무엇을 하나요</p>
+    <div class="grid">
+      <p class="lead reveal" id="pd-what-lead"></p>
+      <div class="pd-aside reveal" id="pd-aside"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="pd-features section-pad" data-screen-label="Features">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="pd.features">핵심 기능</p>
+    </div>
+    <div class="feat-grid" id="feat-grid"></div>
+  </div>
+</section>
+
+<!-- PREVIEW -->
+<section class="pd-preview section-pad" data-screen-label="Preview">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="pd.preview">미리보기</p>
+    </div>
+    <div class="shots-grid" id="shots-grid"></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pd-pricing section-pad" id="pricing" data-screen-label="Pricing" data-pd-pricing>
+  <div class="wrap" id="pd-pricing-sec">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="pd.pricing">가격</p>
+    </div>
+    <div class="price-card reveal" id="pd-price-card"></div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section class="pd-download section-pad" id="download" data-screen-label="Download">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="pd.download">다운로드 · 설치</p>
+      <p data-i18n="dl.sub">설치 파일은 apps.hai-b.ai, 언어팩은 audio.hai-b.ai/audio, 구매와 라이선스는 Polar로 분리합니다.</p>
+    </div>
+    <div class="dl-card reveal" id="pd-dl-card"></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="pd-faq section-pad" data-screen-label="FAQ">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="pd.faq">자주 묻는 질문</p>
+    </div>
+    <div class="faq-list" id="faq-list"></div>
+  </div>
+</section>
+
+<!-- SUPPORT + CHANGELOG -->
+<section class="pd-foot-links section-pad" data-screen-label="Support & Changelog">
+  <div class="wrap">
+    <div class="fl-grid">
+      <div class="fl-card reveal">
+        <h3 data-i18n="pd.changelog">이 제품의 변경 기록</h3>
+        <div class="cl-mini" id="pd-cl-mini"></div>
+        <div class="links"><a class="text-link" href="index.html#changelog"><span data-i18n="pd.viewChangelog">전체 체인지로그</span> <span data-icon="arrow" style="width:15px;height:15px;display:inline-flex"></span></a></div>
+      </div>
+      <div class="fl-card reveal">
+        <h3 data-i18n="pd.support.title">도움이 필요하세요?</h3>
+        <p data-i18n="pd.support.sub">설치·라이선스·환불 관련 문의는 지원 센터를 확인하거나 이메일로 문의하세요.</p>
+        <div class="fl-contact">
+          <a href="mailto:support@hai-b.ai"><span data-icon="mail"></span>support@hai-b.ai</a>
+          <a href="tel:01086767681"><span data-icon="phone"></span>010-8676-7681</a>
+        </div>
+        <div class="links">
+          <a class="btn btn-primary btn-sm" href="mailto:support@hai-b.ai" data-i18n="pd.support.cta">지원 문의</a>
+          <a class="btn btn-ghost btn-sm" href="index.html#support" data-i18n="pd.support.docs">지원 문서</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" data-screen-label="Footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="f-brand">
+        <a class="brand-lock" href="index.html">
+          <img class="symbol" src="assets/brand/symbol.svg" alt="" />
+          <span class="brand-text">HAIB</span>
+        </a>
+        <p class="f-tag" data-i18n="foot.tag">Human AI Interaction Bridge.</p>
+        <div class="f-contact">
+          <a href="mailto:support@hai-b.ai"><span data-icon="mail"></span>support@hai-b.ai</a>
+          <a href="tel:01086767681"><span data-icon="phone"></span>010-8676-7681</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5 data-i18n="foot.products">제품</h5>
+        <a href="product.html?p=keyradar">KeyRadar</a>
+        <a href="product.html?p=scrap-relay">Scrap Relay</a>
+        <a href="product.html?p=voca-flow">VOCA FLOW</a>
+        <a href="product.html?p=movie-maker-pro">Movie Maker Pro</a>
+        <a href="product.html?p=baton">BATON</a>
+      </div>
+      <div class="footer-col">
+        <h5 data-i18n="foot.resources">리소스</h5>
+        <a href="index.html#downloads" data-i18n="nav.downloads">다운로드</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">가격</a>
+  <a href="/blog/" data-i18n="nav.blog">Blog</a>
+  <a href="support.html" data-i18n="nav.support">지원</a>
+  <a href="/about/" data-i18n="nav.about">About</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copy" data-i18n="foot.copy">© 2026 HAIB · Human AI Interaction Bridge</span>
+      <div class="legal">
+        <a href="/privacy/" data-i18n="foot.legal.privacy">개인정보 처리방침</a>
+        <a href="/terms/" data-i18n="foot.legal.terms">이용약관</a>
+        <a href="/refund/" data-i18n="foot.legal.refund">환불 정책</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="data/products.js"></script>
+<script src="data/product-detail.js"></script>
+<script src="assets/i18n.js"></script>
+<script src="assets/image-slot.js"></script>
+<script src="assets/product.js"></script>
+<script src="assets/action-guard.js"></script>
+</body>
+</html>

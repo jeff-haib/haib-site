@@ -1,0 +1,601 @@
+/* ─────────────────────────────────────────────────────────────
+   HAIB Design System — Tokens
+   v0.4.0 · 2026-05-23
+   Shared by: VOCA FLOW · Scrap Relay · KeyRadar
+   ─────────────────────────────────────────────────────────────
+   Three-layer composition:
+     ① Primitive scales  → olive · mint · warm · signal · dusty-earth
+     ② Semantic alias    → bg · ink · brand · accent (light + DARK)
+     ③ Product layer     → per-product semantic tokens (kept in this file
+                           for now; can split out per product later)
+
+   DARK MODE NOTE (v0.4):
+   Canvas/surfaces are pulled toward hue 115 (olive) — NOT cool grey.
+   Brand lifts from olive-600 to olive-300 (linden) in dark, so it stays
+   alive on the dark-olive base. This makes "the dark version feel like
+   the same product as the light version, not a different one."
+   ───────────────────────────────────────────────────────────── */
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+:root {
+
+  /* ═══════════════════════════════════════════════════════════
+     ① PRIMITIVE SCALES (oklch chroma-matched, VOCA FLOW canonical)
+     ═══════════════════════════════════════════════════════════ */
+
+  /* Olive — hue 115 · brand */
+  --olive-50:  #f6f5ee;
+  --olive-100: #ecebd9;
+  --olive-200: #d8d8b8;
+  --olive-300: #bfc28e;   /* ← linden (used as brand in dark) */
+  --olive-400: #a4ab64;
+  --olive-500: #859043;
+  --olive-600: #597122;   /* ← CI / logo */
+  --olive-700: #495d1c;
+  --olive-800: #364419;
+  --olive-900: #232c12;
+
+  /* Mint — hue 165 · "alive / fresh / correct" */
+  --mint-50:   #eef7f1;
+  --mint-100:  #d8ecdf;
+  --mint-200:  #b6dcc4;
+  --mint-300:  #9fd0bc;
+  --mint-400:  #7abc9f;
+  --mint-500:  #4f9c7e;
+  --mint-600:  #3b7a62;
+  --mint-700:  #2c5a48;
+  /* Warm neutral — hue 95 · ink & surfaces (light mode only) */
+  --warm-50:   #faf9f3;
+  --warm-100:  #f3f1e8;
+  --warm-200:  #e6e3d3;
+  --warm-300:  #d3cfba;
+  --warm-400:  #a7a290;
+  --warm-500:  #807c6c;
+  --warm-600:  #5b584c;
+  --warm-700:  #3d3b32;
+  --warm-800:  #26251f;
+  --warm-900:  #14130f;
+
+  /* Olive-tinted dark neutrals (NEW v0.4 · for dark mode)
+     Hue 115, very low chroma. Reads as "dark olive" not "warm grey".  */
+  --dark-50:   #EFEFDC;   /* lightest — used as ink in dark */
+  --dark-100:  #DBDCC0;
+  --dark-200:  #C8C9AC;   /* ink-soft */
+  --dark-300:  #9C9E82;
+  --dark-400:  #8C8E72;   /* ink-muted */
+  --dark-500:  #6E7058;
+  --dark-600:  #4C4F3D;
+  --dark-700:  #363D2A;   /* surface-4 */
+  --dark-800:  #2A3020;   /* surface-3 */
+  --dark-850:  #1F2416;   /* surface-2 */
+  --dark-900:  #171B0F;   /* surface */
+  --dark-950:  #10130A;   /* canvas — darkest */
+
+  /* Signal — 3 states + neutral (VOCA FLOW) */
+  --signal-correct: #3f80b5;   /* v0.4.2: mid-saturation blue, matches fuzzy/wrong chroma */
+  --signal-fuzzy:   #c7964d;   /* amber · hue 75 */
+  --signal-wrong:   #bd6253;   /* terracotta · hue 35 */
+  --signal-neutral: #c5c0a8;
+
+  /* Dusty-earth categorical family · shared by all 3 products */
+  --dust-violet:     #847a8c;
+  --dust-slate:      #5b7a99;
+  --dust-ochre:      #9f8757;
+  --dust-gray:       #807c6c;
+  --dust-mauve:      #997085;
+  --dust-brick:      #a06850;
+  --dust-sage:       #7a8862;
+  --dust-mintgray:   #6b9082;
+  --dust-violetgray: #76739a;
+  --dust-leaf:       #6f8a6f;
+
+  /* Provider / source badge colors (light values; dark mode lifts L+15%) */
+  --src-anthropic-text: #b5552a;   --src-anthropic-bg: #f5e8dd;
+  --src-openai-text:    #3b7a62;   --src-openai-bg:    #ddede5;
+  --src-google-text:    #466ca0;   --src-google-bg:    #dee4ed;
+  --src-eleven-text:    #997085;   --src-eleven-bg:    #f0e8ed;
+  --src-cohere-text:    #a06850;   --src-cohere-bg:    #f2e8e2;
+  --src-mistral-text:   #c7964d;   --src-mistral-bg:   #f2ebdc;
+  --src-other-text:     var(--warm-500);
+  --src-other-bg:       var(--warm-100);
+
+
+  /* ═══════════════════════════════════════════════════════════
+     TYPE · SPACING · RADIUS · MOTION (system-wide)
+     ═══════════════════════════════════════════════════════════ */
+
+  --font-sans:    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+                  "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--font-sans);    /* Outfit reserved for EN marketing only */
+
+  /* Type scale — 11 steps · 10→44px */
+  --fs-10: 10px; --lh-10: 14px;
+  --fs-11: 11px; --lh-11: 16px;
+  --fs-12: 12px; --lh-12: 18px;
+  --fs-13: 13px; --lh-13: 20px;
+  --fs-14: 14px; --lh-14: 22px;
+  --fs-15: 15px; --lh-15: 24px;
+  --fs-17: 17px; --lh-17: 26px;
+  --fs-20: 20px; --lh-20: 28px;
+  --fs-24: 24px; --lh-24: 32px;
+  --fs-32: 32px; --lh-32: 40px;
+  --fs-44: 44px; --lh-44: 52px;
+
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;   /* banned in UI; display/marketing only */
+
+  /* Spacing — 4px base */
+  --sp-1: 2px;   --sp-2: 4px;   --sp-3: 8px;   --sp-4: 12px;
+  --sp-5: 16px;  --sp-6: 20px;  --sp-7: 24px;  --sp-8: 32px;
+  --sp-9: 40px;  --sp-10: 48px; --sp-11: 64px; --sp-12: 96px;
+
+  --stack-tight:   4px;
+  --stack-base:    8px;
+  --stack-loose:   12px;
+  --stack-section: 24px;
+
+  /* Radius */
+  --r-xs:    4px;
+  --r-sm:    6px;
+  --r-md:    8px;
+  --r-lg:   10px;
+  --r-xl:   12px;
+  --r-2xl:  14px;
+  --r-card: 12px;
+  --r-panel:14px;
+  --r-pill: 9999px;
+
+  /* Motion */
+  --t-fast:   100ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-quick:  200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-medium: 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-slow:   800ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   ② SEMANTIC ALIAS · LIGHT (default — HAIB is light-first)
+   ═══════════════════════════════════════════════════════════ */
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --canvas:      var(--warm-50);
+  --surface:     #ffffff;
+  --surface-2:   var(--warm-100);
+  --surface-3:   var(--warm-200);
+  --surface-4:   var(--warm-300);
+
+  --ink:         var(--warm-900);
+  --ink-soft:    var(--warm-700);
+  --ink-muted:   var(--warm-500);
+  --ink-faint:   var(--warm-400);
+  --ink-disabled:#c9c5b4;
+
+  --border:        #e3e0d1;
+  --border-soft:   #ecead9;
+  --border-strong: var(--warm-300);
+  --border-loud:   var(--warm-500);
+
+  --brand:         var(--olive-600);
+  --brand-hover:   var(--olive-700);
+  --brand-press:   var(--olive-800);
+  --brand-soft:    var(--olive-100);
+  --brand-bg:      rgba(89, 113, 34, 0.10);
+  --brand-bg-strong: rgba(89, 113, 34, 0.18);
+  --brand-on:      #ffffff;
+  --brand-text:    var(--olive-700);
+
+  --accent:        var(--mint-300);
+  --accent-deep:   var(--mint-500);
+  --accent-bg:     rgba(159, 208, 188, 0.22);
+
+  --focus-ring:    0 0 0 2px var(--brand);
+
+  --shadow-card:     0 1px 3px rgba(20, 19, 15, 0.06);
+  --shadow-elevated: 0 8px 24px rgba(20, 19, 15, 0.08);
+  --shadow-modal:    0 20px 60px rgba(20, 19, 15, 0.18);
+  --shadow-fab:      0 4px 16px rgba(89, 113, 34, 0.30);
+
+  --overlay:       rgba(20, 19, 15, 0.45);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   ② SEMANTIC ALIAS · DARK (v0.4 polished — olive + linden)
+     Canvas/surfaces lean hue 115 (olive). Brand lifts to linden.
+   ═══════════════════════════════════════════════════════════ */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas:      var(--dark-950);   /* #10130A — dark olive base */
+  --surface:     var(--dark-900);   /* #171B0F */
+  --surface-2:   var(--dark-850);   /* #1F2416 */
+  --surface-3:   var(--dark-800);   /* #2A3020 */
+  --surface-4:   var(--dark-700);   /* #363D2A */
+
+  --ink:         var(--dark-50);    /* #EFEFDC */
+  --ink-soft:    var(--dark-200);   /* #C8C9AC */
+  --ink-muted:   var(--dark-400);   /* #8C8E72 */
+  --ink-faint:   var(--dark-500);   /* #6E7058 */
+  --ink-disabled:var(--dark-700);
+
+  --border:        var(--dark-800);
+  --border-soft:   var(--dark-850);
+  --border-strong: var(--dark-700);
+  --border-loud:   var(--dark-500);
+
+  /* Brand = linden (olive-300) in dark — lifts off the olive base */
+  --brand:         var(--olive-300);   /* #BFC28E */
+  --brand-hover:   #D3D6A4;             /* brighter linden */
+  --brand-press:   var(--olive-400);   /* #A4AB64 */
+  --brand-soft:    rgba(191, 194, 142, 0.16);
+  --brand-bg:      rgba(191, 194, 142, 0.14);
+  --brand-bg-strong: rgba(191, 194, 142, 0.24);
+  --brand-on:      var(--dark-950);    /* dark ink on linden buttons */
+  --brand-text:    var(--olive-300);
+
+  --accent:        var(--mint-300);
+  --accent-deep:   var(--mint-400);
+  --accent-bg:     rgba(159, 208, 188, 0.16);
+
+  --focus-ring:    0 0 0 2px var(--brand);
+
+  --shadow-card:     0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.55);
+  --shadow-modal:    0 20px 60px rgba(0, 0, 0, 0.70);
+  --shadow-fab:      0 4px 16px rgba(191, 194, 142, 0.30);   /* linden glow */
+
+  --overlay:       rgba(0, 0, 0, 0.66);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   ③ PRODUCT LAYER · LIGHT
+     KeyRadar tokens (validation / facet / type / rotation / freshness)
+     Scrap Relay tokens (media type)
+   ═══════════════════════════════════════════════════════════ */
+
+:root,
+:root[data-theme="light"] {
+
+  /* ── KeyRadar · Validation 3-Layer ── */
+  --vs-not-attempted:      var(--warm-400);
+  --vs-not-attempted-bg:   rgba(167, 162, 144, 0.14);
+  --vs-not-validatable:    var(--dust-violetgray);
+  --vs-not-validatable-bg: rgba(118, 115, 154, 0.12);
+  --vs-attempting:         var(--mint-500);
+  --vs-attempting-bg:      rgba(79, 156, 126, 0.10);
+
+  --vs-active:          var(--signal-correct);
+  --vs-active-bg:       rgba(63, 128, 181, 0.12);
+  --vs-unreachable:     var(--dust-slate);
+  --vs-unreachable-bg:  rgba(91, 122, 153, 0.12);
+  --vs-auth-failed:     var(--signal-wrong);
+  --vs-auth-failed-bg:  rgba(189, 98, 83, 0.10);
+  --vs-permission:      var(--signal-fuzzy);
+  --vs-permission-bg:   rgba(199, 150, 77, 0.14);
+
+  --insight-text:       var(--ink-soft);
+  --insight-bg:         var(--surface-2);
+  --insight-warn:       var(--signal-fuzzy);
+  --insight-warn-bg:    rgba(199, 150, 77, 0.10);
+
+  /* Legacy aliases */
+  --vs-checking:        var(--vs-attempting);
+  --vs-checking-bg:     var(--vs-attempting-bg);
+  --vs-unrecognized:    var(--vs-not-validatable);
+  --vs-unrecognized-bg: var(--vs-not-validatable-bg);
+
+  /* KeyRadar · Facet flags */
+  --facet-quota:        var(--dust-mauve);
+  --facet-quota-bg:     rgba(153, 112, 133, 0.12);
+  --facet-billing:      var(--dust-brick);
+  --facet-billing-bg:   rgba(160, 104, 80, 0.12);
+  --facet-credit:       var(--signal-fuzzy);
+  --facet-credit-bg:    rgba(199, 150, 77, 0.14);
+  --facet-budget:       var(--brand);
+  --facet-budget-bg:    var(--brand-bg);
+
+  /* KeyRadar · Rotation freshness */
+  --rot-fresh:   var(--signal-correct);
+  --rot-due:     var(--signal-fuzzy);
+  --rot-overdue: var(--dust-brick);
+
+  /* Legacy KeyRadar aliases */
+  --valid:         var(--vs-active);
+  --valid-bg:      var(--vs-active-bg);
+  --invalid:       var(--vs-auth-failed);
+  --invalid-bg:    var(--vs-auth-failed-bg);
+  --untested:      var(--vs-not-attempted);
+  --untested-bg:   var(--vs-not-attempted-bg);
+  --issue-perm:    var(--vs-permission);
+  --issue-perm-bg: var(--vs-permission-bg);
+  --issue-bill:    var(--facet-billing);
+  --issue-bill-bg: var(--facet-billing-bg);
+  --issue-quota:   var(--facet-quota);
+  --issue-quota-bg:var(--facet-quota-bg);
+
+  /* KeyRadar · Risk severity (R0-4 · hygiene tone) */
+  --risk-clear:     var(--signal-correct);
+  --risk-clear-bg:  rgba(63, 128, 181, 0.10);
+  --risk-info:      var(--dust-mintgray);
+  --risk-info-bg:   rgba(107, 144, 130, 0.12);
+  --risk-caution:   var(--signal-fuzzy);
+  --risk-caution-bg:rgba(199, 150, 77, 0.14);
+  --risk-action:    var(--dust-brick);
+  --risk-action-bg: rgba(160, 104, 80, 0.14);
+
+  /* KeyRadar · Freshness (R0-1 · as-of N ago) */
+  --fresh:         var(--ink-muted);
+  --aging:         var(--ink-soft);
+  --stale:         var(--signal-fuzzy);
+  --very-stale:    var(--dust-brick);
+
+  /* KeyRadar · Type (R2-2 · Personal/Work/Shared/Test) */
+  --type-personal:    var(--dust-violet);
+  --type-personal-bg: #f0ecf2;
+  --type-work:        var(--dust-slate);
+  --type-work-bg:     #e7ecf2;
+  --type-shared:      var(--dust-ochre);
+  --type-shared-bg:   #f2ecdc;
+  --type-test:        var(--dust-gray);
+  --type-test-bg:     #ecead9;
+  --type-unknown:     var(--ink-faint);
+  --type-unknown-bg:  var(--warm-100);
+
+  /* Provider source */
+  --src-anthropic:   var(--src-anthropic-text);
+  --src-openai:      var(--src-openai-text);
+  --src-google:      var(--src-google-text);
+  --src-eleven:      var(--src-eleven-text);
+  --src-cohere:      var(--src-cohere-text);
+  --src-mistral:     var(--src-mistral-text);
+  --src-other:       var(--src-other-text);
+
+  /* ── Scrap Relay · Media types (10) ── */
+  --media-text:     var(--dust-sage);       --media-text-bg:     #EFF0E5;
+  --media-document: var(--dust-mintgray);   --media-document-bg: #E8EFEC;
+  --media-image:    var(--dust-violet);     --media-image-bg:    #EFECF0;
+  --media-video:    var(--dust-brick);      --media-video-bg:    #F2E8E2;
+  --media-audio:    var(--dust-mauve);      --media-audio-bg:    #F0E8ED;
+  --media-link:     var(--dust-ochre);      --media-link-bg:     #F2EBDC;
+  --media-code:     var(--dust-violetgray); --media-code-bg:     #ECEBF2;
+  --media-table:    var(--dust-leaf);       --media-table-bg:    #EAEFEA;
+  --media-file:     var(--warm-400);        --media-file-bg:     var(--warm-100);
+  --media-mixed:    var(--warm-500);        --media-mixed-bg:    var(--warm-100);
+
+  /* Brand-relay legacy aliases */
+  --accent-on:        var(--brand-on);
+  --accent-text:      var(--brand-text);
+  --brand-relay:      var(--brand);
+  --brand-relay-bg:   var(--brand-bg);
+  --brand-relay-bg-strong: var(--brand-bg-strong);
+  --accent-bg-strong: var(--brand-bg-strong);
+
+  /* Scrap Relay · Pin / Scrap aliases */
+  --brand-scrap:    var(--mint-500);
+  --brand-scrap-bg: rgba(79, 156, 126, 0.16);
+  --brand-pin:      var(--signal-fuzzy);
+  --brand-pin-bg:   rgba(199, 150, 77, 0.14);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   ③ PRODUCT LAYER · DARK (mirror — L+15% on chromatic; α adjusted)
+   ═══════════════════════════════════════════════════════════ */
+
+:root[data-theme="dark"] {
+
+  --vs-not-attempted:      var(--dark-400);
+  --vs-not-attempted-bg:   rgba(140, 142, 114, 0.14);
+  --vs-not-validatable:    #9a97b8;
+  --vs-not-validatable-bg: rgba(154, 151, 184, 0.14);
+  --vs-attempting:         var(--mint-300);
+  --vs-attempting-bg:      rgba(159, 208, 188, 0.14);
+
+  --vs-active:          #87afd2;
+  --vs-active-bg:       rgba(124, 189, 178, 0.18);
+  --vs-unreachable:     #8a9fb8;
+  --vs-unreachable-bg:  rgba(138, 159, 184, 0.14);
+  --vs-auth-failed:     #d6927e;
+  --vs-auth-failed-bg:  rgba(214, 146, 126, 0.16);
+  --vs-permission:      #e3b070;
+  --vs-permission-bg:   rgba(227, 176, 112, 0.16);
+
+  --insight-text:       var(--ink-soft);
+  --insight-bg:         var(--surface-3);
+  --insight-warn:       #e3b070;
+  --insight-warn-bg:    rgba(227, 176, 112, 0.14);
+
+  --vs-checking:        var(--vs-attempting);
+  --vs-checking-bg:     var(--vs-attempting-bg);
+  --vs-unrecognized:    var(--vs-not-validatable);
+  --vs-unrecognized-bg: var(--vs-not-validatable-bg);
+
+  --facet-quota:        #bb94a6;
+  --facet-quota-bg:     rgba(187, 148, 166, 0.14);
+  --facet-billing:      #c28872;
+  --facet-billing-bg:   rgba(194, 136, 114, 0.14);
+  --facet-credit:       #e3b070;
+  --facet-credit-bg:    rgba(227, 176, 112, 0.16);
+  --facet-budget:       var(--brand);
+  --facet-budget-bg:    var(--brand-bg);
+
+  --rot-fresh:   #87afd2;
+  --rot-due:     #e3b070;
+  --rot-overdue: #c28872;
+
+  --valid:         var(--vs-active);
+  --valid-bg:      var(--vs-active-bg);
+  --invalid:       var(--vs-auth-failed);
+  --invalid-bg:    var(--vs-auth-failed-bg);
+  --untested:      var(--vs-not-attempted);
+  --untested-bg:   var(--vs-not-attempted-bg);
+  --issue-perm:    var(--vs-permission);
+  --issue-perm-bg: var(--vs-permission-bg);
+  --issue-bill:    var(--facet-billing);
+  --issue-bill-bg: var(--facet-billing-bg);
+  --issue-quota:   var(--facet-quota);
+  --issue-quota-bg:var(--facet-quota-bg);
+
+  --risk-clear:     #87afd2;
+  --risk-clear-bg:  rgba(124, 189, 178, 0.16);
+  --risk-info:      #8aafa1;
+  --risk-info-bg:   rgba(138, 175, 161, 0.14);
+  --risk-caution:   #e3b070;
+  --risk-caution-bg:rgba(227, 176, 112, 0.16);
+  --risk-action:    #c28872;
+  --risk-action-bg: rgba(194, 136, 114, 0.16);
+
+  --fresh:         var(--ink-muted);
+  --aging:         var(--ink-soft);
+  --stale:         #e3b070;
+  --very-stale:    #c28872;
+
+  --type-personal:    #a89ab0;
+  --type-personal-bg: rgba(168, 154, 176, 0.16);
+  --type-work:        #7e9ab8;
+  --type-work-bg:     rgba(126, 154, 184, 0.16);
+  --type-shared:      #c0a878;
+  --type-shared-bg:   rgba(192, 168, 120, 0.18);
+  --type-test:        var(--dark-300);
+  --type-test-bg:     rgba(156, 158, 130, 0.16);
+  --type-unknown:     var(--ink-faint);
+  --type-unknown-bg:  rgba(110, 112, 88, 0.16);
+
+  --src-anthropic:   #d6927e;
+  --src-openai:      var(--mint-300);
+  --src-google:      #7e9ab8;
+  --src-eleven:      #bb94a6;
+  --src-cohere:      #c28872;
+  --src-mistral:     #e3b070;
+  --src-other:       var(--ink-muted);
+
+  /* Media types — dark mirror (L+15%) */
+  --media-text:     #9DA77F;   --media-text-bg:     rgba(157, 167, 127, 0.16);
+  --media-document: #8AAFA1;   --media-document-bg: rgba(138, 175, 161, 0.16);
+  --media-image:    #A89AB0;   --media-image-bg:    rgba(168, 154, 176, 0.16);
+  --media-video:    #C28872;   --media-video-bg:    rgba(194, 136, 114, 0.16);
+  --media-audio:    #BB94A6;   --media-audio-bg:    rgba(187, 148, 166, 0.16);
+  --media-link:     #C0A878;   --media-link-bg:     rgba(192, 168, 120, 0.16);
+  --media-code:     #9C9AC0;   --media-code-bg:     rgba(156, 154, 192, 0.16);
+  --media-table:    #94B094;   --media-table-bg:    rgba(148, 176, 148, 0.16);
+  --media-file:     var(--dark-300); --media-file-bg: rgba(156, 158, 130, 0.14);
+  --media-mixed:    var(--dark-400); --media-mixed-bg:rgba(140, 142, 114, 0.14);
+
+  --accent-on:        var(--brand-on);
+  --accent-text:      var(--brand-text);
+  --brand-relay:      var(--brand);
+  --brand-relay-bg:   var(--brand-bg);
+  --brand-relay-bg-strong: var(--brand-bg-strong);
+  --accent-bg-strong: var(--brand-bg-strong);
+
+  --brand-scrap:    var(--mint-300);
+  --brand-scrap-bg: rgba(159, 208, 188, 0.14);
+  --brand-pin:      #e3b070;
+  --brand-pin-bg:   rgba(227, 176, 112, 0.14);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   TYPE RECIPES
+   ═══════════════════════════════════════════════════════════ */
+.t-display   { font-family: var(--font-sans); font-size: var(--fs-44); line-height: var(--lh-44); font-weight: var(--fw-semibold); letter-spacing: -0.025em; color: var(--ink); }
+.t-page      { font-family: var(--font-sans); font-size: var(--fs-24); line-height: var(--lh-24); font-weight: var(--fw-semibold); letter-spacing: -0.015em; color: var(--ink); }
+.t-panel     { font-family: var(--font-sans); font-size: var(--fs-20); line-height: var(--lh-20); font-weight: var(--fw-semibold); letter-spacing: -0.01em; color: var(--ink); }
+.t-section   { font-family: var(--font-sans); font-size: var(--fs-17); line-height: var(--lh-17); font-weight: var(--fw-semibold); letter-spacing: -0.005em; color: var(--ink); }
+.t-body      { font-family: var(--font-sans); font-size: var(--fs-15); line-height: var(--lh-15); font-weight: var(--fw-regular); color: var(--ink); }
+.t-ui        { font-family: var(--font-sans); font-size: var(--fs-14); line-height: var(--lh-14); font-weight: var(--fw-regular); color: var(--ink); }
+.t-label     { font-family: var(--font-sans); font-size: var(--fs-13); line-height: var(--lh-13); font-weight: var(--fw-medium); color: var(--ink-soft); }
+.t-meta      { font-family: var(--font-sans); font-size: var(--fs-12); line-height: var(--lh-12); font-weight: var(--fw-regular); color: var(--ink-muted); }
+.t-caption   { font-family: var(--font-sans); font-size: var(--fs-11); line-height: var(--lh-11); font-weight: var(--fw-regular); color: var(--ink-muted); letter-spacing: 0.01em; }
+
+.t-eyebrow   { font-family: var(--font-mono); font-size: var(--fs-10); line-height: var(--lh-10); font-weight: var(--fw-medium); text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-muted); }
+.t-mono      { font-family: var(--font-mono); font-feature-settings: "tnum"; }
+.t-mono-meta { font-family: var(--font-mono); font-size: var(--fs-10); line-height: var(--lh-10); font-weight: var(--fw-medium); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
+
+.num-big     { font-family: var(--font-mono); font-feature-settings: "tnum"; font-size: var(--fs-32); line-height: var(--lh-32); font-weight: var(--fw-semibold); color: var(--ink); }
+.num-hero    { font-family: var(--font-mono); font-feature-settings: "tnum"; font-size: var(--fs-44); line-height: var(--lh-44); font-weight: var(--fw-semibold); color: var(--ink); letter-spacing: -0.02em; }
+
+/* Key value (masked) */
+.key-masked  { font-family: var(--font-mono); font-feature-settings: "tnum"; font-size: var(--fs-13); letter-spacing: 0.02em; color: var(--ink-soft); }
+.key-masked .dots { color: var(--ink-faint); letter-spacing: 0.08em; }
+
+/* Estimate marker (R0-5) */
+.is-estimate::before { content: "≈ "; color: var(--ink-faint); font-family: var(--font-mono); }
+.estimate-mark {
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  padding: 1px 5px;
+  border-radius: var(--r-xs);
+  background: var(--risk-caution-bg);
+  color: var(--risk-caution);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   GLOBAL BASE
+   ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-14);
+  line-height: var(--lh-14);
+  color: var(--ink);
+  background: var(--canvas);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all;
+  font-feature-settings: "ss01", "tnum";
+}
+:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
+::selection { background: var(--brand-bg-strong); color: var(--ink); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-loud);
+  background-clip: content-box;
+  border: 2px solid transparent;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITY HELPERS
+   ═══════════════════════════════════════════════════════════ */
+.row { display: flex; align-items: center; }
+.col { display: flex; flex-direction: column; }
+.gap-1 { gap: 4px; }  .gap-2 { gap: 8px; }   .gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; } .gap-5 { gap: 24px; }  .gap-6 { gap: 32px; }
+.grow { flex: 1; }
+.divider  { height: 1px; background: var(--border); }
+.vdivider { width: 1px; background: var(--border); align-self: stretch; }

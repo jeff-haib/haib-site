@@ -1,0 +1,571 @@
+/* ─────────────────────────────────────────────────────────────
+   KeyRadar — Design Tokens
+   ─────────────────────────────────────────────────────────────
+   Foundation: VOCA FLOW v0.3 (anchored to olive #597122)
+                + HAIB DS dusty-earth categorical family (Scrap Relay)
+   Type: Pretendard unified (KO/EN), JetBrains Mono for keys/numbers
+   Mode: light-first, dark mirror
+
+   Three-layer composition:
+     ① Primitive scales  → olive · mint · warm · dusty-earth
+     ② Semantic tokens   → bg · ink · brand · accent (alias layer)
+     ③ KeyRadar layer    → validity · risk · freshness · type · source
+   ───────────────────────────────────────────────────────────── */
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+:root {
+
+  /* ═══════════════════════════════════════════════════════════
+     ① PRIMITIVE SCALES (from VOCA FLOW · oklch chroma matched)
+     ═══════════════════════════════════════════════════════════ */
+
+  /* Olive — hue 115 · brand */
+  --olive-50:  #f6f5ee;
+  --olive-100: #ecebd9;
+  --olive-200: #d8d8b8;
+  --olive-300: #bfc28e;
+  --olive-400: #a4ab64;
+  --olive-500: #859043;
+  --olive-600: #597122;   /* CI / logo */
+  --olive-700: #495d1c;
+  --olive-800: #364419;
+  --olive-900: #232c12;
+
+  /* Mint — hue 165 · quiet companion · means "alive / fresh / correct" */
+  --mint-50:   #eef7f1;
+  --mint-100:  #d8ecdf;
+  --mint-200:  #b6dcc4;
+  --mint-300:  #9fd0bc;
+  --mint-400:  #7abc9f;
+  --mint-500:  #4f9c7e;
+  --mint-600:  #3b7a62;
+  --mint-700:  #2c5a48;
+  /* Warm neutral — hue 95 · ink & surfaces */
+  --warm-50:   #faf9f3;
+  --warm-100:  #f3f1e8;
+  --warm-200:  #e6e3d3;
+  --warm-300:  #d3cfba;
+  --warm-400:  #a7a290;
+  --warm-500:  #807c6c;
+  --warm-600:  #5b584c;
+  --warm-700:  #3d3b32;
+  --warm-800:  #26251f;
+  --warm-900:  #14130f;
+
+  /* Signal — three states + neutral · VOCA FLOW */
+  --signal-correct: #3f80b5;   /* v0.4.2: mid-saturation blue, matches fuzzy/wrong chroma */
+  --signal-fuzzy:   #c7964d;   /* amber · hue 75 */
+  --signal-wrong:   #bd6253;   /* terracotta · hue 35 */
+  --signal-neutral: #c5c0a8;
+
+  /* Dusty-earth categorical family — HAIB DS · mid-saturation companions */
+  --dust-violet:    #847a8c;   /* warm violet */
+  --dust-slate:     #5b7a99;   /* dusty slate-blue */
+  --dust-ochre:     #9f8757;   /* dusty ochre */
+  --dust-gray:      #807c6c;   /* = warm-500 · grounding */
+  --dust-mauve:     #997085;   /* dusty mauve */
+  --dust-brick:     #a06850;   /* earthy brick */
+  --dust-sage:      #7a8862;   /* sage olive */
+  --dust-mintgray:  #6b9082;   /* dim mint-gray */
+  --dust-violetgray:#76739a;   /* violet-gray */
+  --dust-leaf:      #6f8a6f;   /* leaf sage */
+
+  /* Provider source colors (curated subset of dusty-earth + HAIB AI palette) */
+  --src-anthropic-text: #b5552a;   --src-anthropic-bg: #f5e8dd;
+  --src-openai-text:    #3b7a62;   --src-openai-bg:    #ddede5;
+  --src-google-text:    #466ca0;   --src-google-bg:    #dee4ed;
+  --src-eleven-text:    #997085;   --src-eleven-bg:    #f0e8ed;
+  --src-cohere-text:    #a06850;   --src-cohere-bg:    #f2e8e2;
+  --src-mistral-text:   #c7964d;   --src-mistral-bg:   #f2ebdc;
+  --src-other-text:     var(--warm-500);
+  --src-other-bg:       var(--warm-100);
+
+  /* ═══════════════════════════════════════════════════════════
+     TYPE · SPACING · RADIUS · MOTION (system-wide)
+     ═══════════════════════════════════════════════════════════ */
+
+  --font-sans:    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+                  "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--font-sans);    /* Outfit reserved for marketing only */
+
+  /* Type scale — Pretendard unified */
+  --fs-10: 10px; --lh-10: 14px;
+  --fs-11: 11px; --lh-11: 16px;
+  --fs-12: 12px; --lh-12: 18px;
+  --fs-13: 13px; --lh-13: 20px;
+  --fs-14: 14px; --lh-14: 22px;
+  --fs-15: 15px; --lh-15: 24px;
+  --fs-17: 17px; --lh-17: 26px;
+  --fs-20: 20px; --lh-20: 28px;
+  --fs-24: 24px; --lh-24: 32px;
+  --fs-32: 32px; --lh-32: 40px;
+  --fs-44: 44px; --lh-44: 52px;
+
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;   /* allowed only on display / marketing — banned in UI */
+
+  /* Spacing (4px base, generous range) */
+  --sp-1: 2px;   --sp-2: 4px;   --sp-3: 8px;   --sp-4: 12px;
+  --sp-5: 16px;  --sp-6: 20px;  --sp-7: 24px;  --sp-8: 32px;
+  --sp-9: 40px;  --sp-10: 48px; --sp-11: 64px; --sp-12: 96px;
+
+  --stack-tight:   4px;
+  --stack-base:    8px;
+  --stack-loose:   12px;
+  --stack-section: 24px;
+
+  /* Radius — VOCA FLOW generous + KeyRadar density compromise */
+  --r-xs:   4px;
+  --r-sm:   6px;
+  --r-md:   8px;
+  --r-lg:   10px;
+  --r-xl:   12px;
+  --r-2xl:  14px;
+  --r-card: 12px;
+  --r-panel:14px;
+  --r-pill: 9999px;
+
+  /* Motion */
+  --t-fast:   100ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-quick:  200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-medium: 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-slow:   800ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Layout (PC app — KeyRadar is a side-tool, not a workspace)
+     - Min 1440 (Linear / Figma / Notion default).
+     - Stretches to 1840 then caps; beyond that, side padding grows.
+     - "Compact mode" is a separate shell at ~520w for desk-corner use (v1.1).
+  */
+  --layout-min:    1440px;
+  --layout-base:   1440px;
+  --layout-max:    1840px;
+  --sidebar-w:     232px;
+  --titlebar-h:    40px;
+
+  /* Compact mode (future — corner-of-desktop dock) */
+  --compact-w:     520px;
+  --compact-h-min: 360px;
+
+  /* ── Sidebar (dark olive anchor — system-wide)
+     This column stays dark across light AND dark themes.
+     Slightly lifted vs. pure olive-900 so it doesn't feel like a hole. */
+  --sidebar-bg:        #2A3520;
+  --sidebar-bg-deeper: #232C19;
+  --sidebar-ink:       #F3F1E8;
+  --sidebar-ink-muted: rgba(243,241,232,0.68);
+  --sidebar-ink-faint: rgba(243,241,232,0.40);
+  --sidebar-border:    rgba(243,241,232,0.10);
+  --sidebar-hover:     rgba(243,241,232,0.07);
+  --sidebar-active-bg: rgba(243,241,232,0.14);
+  --sidebar-active-ink:#FFFFFF;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   ② SEMANTIC ALIAS · LIGHT (default — KeyRadar is light-first)
+   ═══════════════════════════════════════════════════════════ */
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* Surface — ink-on-paper */
+  --canvas:      var(--warm-50);
+  --surface:     #ffffff;
+  --surface-2:   var(--warm-100);
+  --surface-3:   var(--warm-200);
+  --surface-4:   #e6e3d3;       /* pressed / drag-over */
+
+  /* Ink */
+  --ink:         var(--warm-900);
+  --ink-soft:    var(--warm-700);
+  --ink-muted:   var(--warm-500);
+  --ink-faint:   var(--warm-400);
+  --ink-disabled:#c9c5b4;
+
+  /* Borders */
+  --border:        #e3e0d1;
+  --border-soft:   #ecead9;
+  --border-strong: var(--warm-300);
+  --border-loud:   var(--warm-500);
+
+  /* Brand (Olive) */
+  --brand:         var(--olive-600);
+  --brand-hover:   var(--olive-700);
+  --brand-press:   var(--olive-800);
+  --brand-soft:    var(--olive-100);
+  --brand-bg:      rgba(89, 113, 34, 0.10);
+  --brand-bg-strong: rgba(89, 113, 34, 0.18);
+  --brand-on:      #ffffff;
+  --brand-text:    var(--olive-700);
+
+  /* Accent (Mint) */
+  --accent:        var(--mint-300);
+  --accent-deep:   var(--mint-500);
+  --accent-bg:     rgba(159, 208, 188, 0.20);
+
+  /* Focus ring */
+  --focus-ring:    0 0 0 2px var(--brand);
+
+  /* Shadow */
+  --shadow-card:     0 1px 3px rgba(20, 19, 15, 0.06);
+  --shadow-elevated: 0 8px 24px rgba(20, 19, 15, 0.08);
+  --shadow-modal:    0 20px 60px rgba(20, 19, 15, 0.18);
+  --shadow-fab:      0 4px 16px rgba(89, 113, 34, 0.30);
+
+  --overlay:       rgba(20, 19, 15, 0.45);
+
+
+  /* ═══════════════════════════════════════════════════════
+     ③ KEYRADAR SEMANTIC LAYER
+     ═══════════════════════════════════════════════════════ */
+
+  /* ── Validation — 3-Layer model (DESIGN_NOTES §4)
+     Layer A (attempt-state · NEUTRAL grays)         */
+  --vs-not-attempted:   var(--warm-400);
+  --vs-not-attempted-bg:rgba(167, 162, 144, 0.14);
+  --vs-not-validatable:    var(--dust-violetgray);
+  --vs-not-validatable-bg: rgba(118, 115, 154, 0.12);
+  --vs-attempting:      var(--mint-500);
+  --vs-attempting-bg:   rgba(79, 156, 126, 0.10);
+
+  /* Layer B (attempt-result · SEMANTIC colors, only 4)         */
+  --vs-active:          var(--signal-correct);
+  --vs-active-bg:       rgba(63, 128, 181, 0.14);
+  --vs-unreachable:     var(--dust-slate);
+  --vs-unreachable-bg:  rgba(91, 122, 153, 0.12);
+  --vs-auth-failed:     var(--signal-wrong);
+  --vs-auth-failed-bg:  rgba(189, 98, 83, 0.10);
+  --vs-permission:      var(--signal-fuzzy);
+  --vs-permission-bg:   rgba(199, 150, 77, 0.14);
+
+  /* Layer C (insights · CALM, ink-soft) — used as text color tokens */
+  --insight-text:       var(--ink-soft);
+  --insight-bg:         var(--surface-2);
+  --insight-warn:       var(--signal-fuzzy);   /* expires soon */
+  --insight-warn-bg:    rgba(199, 150, 77, 0.10);
+
+  /* Legacy aliases — kept so older "checking" / "unrecognized" markup still renders */
+  --vs-checking:        var(--vs-attempting);
+  --vs-checking-bg:     var(--vs-attempting-bg);
+  --vs-unrecognized:    var(--vs-not-validatable);
+  --vs-unrecognized-bg: var(--vs-not-validatable-bg);
+
+  /* Facet flags — coexist with validation state */
+  --facet-quota:        var(--dust-mauve);
+  --facet-quota-bg:     rgba(153, 112, 133, 0.12);
+  --facet-billing:      var(--dust-brick);
+  --facet-billing-bg:   rgba(160, 104, 80, 0.12);
+  --facet-credit:       var(--signal-fuzzy);
+  --facet-credit-bg:    rgba(199, 150, 77, 0.14);
+  --facet-budget:       var(--brand);
+  --facet-budget-bg:    var(--brand-bg);
+
+  /* Rotation freshness */
+  --rot-fresh:   var(--signal-correct);     /* ≤30d */
+  --rot-due:     var(--signal-fuzzy);       /* 30~90d */
+  --rot-overdue: var(--dust-brick);         /* >90d */
+
+  /* Legacy aliases — earlier markup uses these */
+  --valid:         var(--vs-active);
+  --valid-bg:      var(--vs-active-bg);
+  --invalid:       var(--vs-auth-failed);
+  --invalid-bg:    var(--vs-auth-failed-bg);
+  --untested:      var(--vs-not-attempted);
+  --untested-bg:   var(--vs-not-attempted-bg);
+  --issue-perm:    var(--vs-permission);
+  --issue-perm-bg: var(--vs-permission-bg);
+  --issue-bill:    var(--facet-billing);
+  --issue-bill-bg: var(--facet-billing-bg);
+  --issue-quota:   var(--facet-quota);
+  --issue-quota-bg:var(--facet-quota-bg);
+
+  /* ── Risk severity (R0-4 · hygiene tone, NOT fear) ──
+     There is NO red-alarm level. Action = terracotta is the max. */
+  --risk-clear:    var(--signal-correct);
+  --risk-clear-bg: rgba(63, 128, 181, 0.12);
+  --risk-info:     var(--dust-mintgray);
+  --risk-info-bg:  rgba(107, 144, 130, 0.12);
+  --risk-caution:  var(--signal-fuzzy);
+  --risk-caution-bg: rgba(199, 150, 77, 0.14);
+  --risk-action:   var(--dust-brick);
+  --risk-action-bg:rgba(160, 104, 80, 0.14);
+
+  /* ── Freshness (R0-1 · "as-of N ago" text color) ── */
+  --fresh:         var(--ink-muted);
+  --aging:         var(--ink-soft);
+  --stale:         var(--signal-fuzzy);
+  --very-stale:    var(--dust-brick);
+
+  /* ── Type (R2-2 · Personal/Work/Shared/Test identity) ──
+     Anchored to dusty-earth so they don't collide with brand/signal. */
+  --type-personal:    var(--dust-violet);
+  --type-personal-bg: #f0ecf2;
+  --type-work:        var(--dust-slate);
+  --type-work-bg:     #e7ecf2;
+  --type-shared:      var(--dust-ochre);
+  --type-shared-bg:   #f2ecdc;
+  --type-test:        var(--dust-gray);
+  --type-test-bg:     #ecead9;
+  --type-unknown:     var(--ink-faint);
+  --type-unknown-bg:  var(--warm-100);
+
+  /* ── Provider source (badge) ───────────────────── */
+  --src-anthropic:   var(--src-anthropic-text);
+  --src-openai:      var(--src-openai-text);
+  --src-google:      var(--src-google-text);
+  --src-eleven:      var(--src-eleven-text);
+  --src-cohere:      var(--src-cohere-text);
+  --src-mistral:     var(--src-mistral-text);
+  --src-other:       var(--src-other-text);
+
+  /* Legacy aliases (so earlier markup keeps working) */
+  --accent-on:       var(--brand-on);
+  --accent-text:     var(--brand-text);
+  --brand-relay:     var(--brand);
+  --brand-relay-bg:  var(--brand-bg);
+  --brand-relay-bg-strong: var(--brand-bg-strong);
+  --accent-bg-strong:var(--brand-bg-strong);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   DARK MIRROR
+   ═══════════════════════════════════════════════════════════ */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas:      var(--warm-900);
+  --surface:     #1d1c17;
+  --surface-2:   #232117;
+  --surface-3:   #2d2b23;
+  --surface-4:   #393629;
+
+  --ink:         var(--warm-100);
+  --ink-soft:    #c8c4b2;
+  --ink-muted:   #8a8676;
+  --ink-faint:   var(--warm-600);
+  --ink-disabled:#3d3b32;
+
+  --border:        #2e2c22;
+  --border-soft:   #25241b;
+  --border-strong: #393629;
+  --border-loud:   var(--warm-500);
+
+  --brand:         var(--olive-400);
+  --brand-hover:   var(--olive-300);
+  --brand-press:   var(--olive-500);
+  --brand-soft:    rgba(89, 113, 34, 0.18);
+  --brand-bg:      rgba(164, 171, 100, 0.16);
+  --brand-bg-strong: rgba(164, 171, 100, 0.26);
+  --brand-on:      var(--warm-900);
+  --brand-text:    var(--olive-300);
+
+  --accent:        var(--mint-400);
+  --accent-deep:   var(--mint-300);
+  --accent-bg:     rgba(122, 188, 159, 0.16);
+
+  --focus-ring:    0 0 0 2px var(--brand);
+
+  --shadow-card:     0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.55);
+  --shadow-modal:    0 20px 60px rgba(0, 0, 0, 0.70);
+  --shadow-fab:      0 4px 16px rgba(89, 113, 34, 0.45);
+
+  --overlay:       rgba(0, 0, 0, 0.66);
+
+  /* Validation 3-Layer — dark mirror */
+  --vs-not-attempted:   #a5a18f;
+  --vs-not-attempted-bg:rgba(165, 161, 143, 0.14);
+  --vs-not-validatable:    #9a97b8;
+  --vs-not-validatable-bg: rgba(154, 151, 184, 0.14);
+  --vs-attempting:      var(--mint-300);
+  --vs-attempting-bg:   rgba(159, 208, 188, 0.14);
+
+  --vs-active:          #87afd2;
+  --vs-active-bg:       rgba(135, 175, 210, 0.18);
+  --vs-unreachable:     #8a9fb8;
+  --vs-unreachable-bg:  rgba(138, 159, 184, 0.14);
+  --vs-auth-failed:     #d6927e;
+  --vs-auth-failed-bg:  rgba(214, 146, 126, 0.14);
+  --vs-permission:      #e3b070;
+  --vs-permission-bg:   rgba(227, 176, 112, 0.16);
+
+  --insight-text:       var(--ink-soft);
+  --insight-bg:         var(--surface-3);
+  --insight-warn:       #e3b070;
+  --insight-warn-bg:    rgba(227, 176, 112, 0.12);
+
+  --vs-checking:        var(--vs-attempting);
+  --vs-checking-bg:     var(--vs-attempting-bg);
+  --vs-unrecognized:    var(--vs-not-validatable);
+  --vs-unrecognized-bg: var(--vs-not-validatable-bg);
+
+  --facet-quota:        #bb94a6;
+  --facet-quota-bg:     rgba(187, 148, 166, 0.14);
+  --facet-billing:      #c28872;
+  --facet-billing-bg:   rgba(194, 136, 114, 0.14);
+  --facet-credit:       #e3b070;
+  --facet-credit-bg:    rgba(227, 176, 112, 0.16);
+  --facet-budget:       var(--brand);
+  --facet-budget-bg:    var(--brand-bg);
+
+  --rot-fresh:   #87afd2;
+  --rot-due:     #e3b070;
+  --rot-overdue: #c28872;
+
+  --valid:         var(--vs-active);
+  --valid-bg:      var(--vs-active-bg);
+  --invalid:       var(--vs-auth-failed);
+  --invalid-bg:    var(--vs-auth-failed-bg);
+  --untested:      var(--vs-not-attempted);
+  --untested-bg:   var(--vs-not-attempted-bg);
+  --issue-perm:    var(--vs-permission);
+  --issue-perm-bg: var(--vs-permission-bg);
+  --issue-bill:    var(--facet-billing);
+  --issue-bill-bg: var(--facet-billing-bg);
+  --issue-quota:   var(--facet-quota);
+  --issue-quota-bg:var(--facet-quota-bg);
+
+  --risk-clear:    #87afd2;
+  --risk-clear-bg: rgba(135, 175, 210, 0.16);
+  --risk-info:     #8aafa1;
+  --risk-info-bg:  rgba(138, 175, 161, 0.14);
+  --risk-caution:  #e3b070;
+  --risk-caution-bg: rgba(227, 176, 112, 0.16);
+  --risk-action:   #c28872;
+  --risk-action-bg:rgba(194, 136, 114, 0.16);
+
+  --fresh:         var(--ink-muted);
+  --aging:         var(--ink-soft);
+  --stale:         #e3b070;
+  --very-stale:    #c28872;
+
+  --type-personal:    #a89ab0;
+  --type-personal-bg: rgba(168, 154, 176, 0.16);
+  --type-work:        #7e9ab8;
+  --type-work-bg:     rgba(126, 154, 184, 0.16);
+  --type-shared:      #c0a878;
+  --type-shared-bg:   rgba(192, 168, 120, 0.18);
+  --type-test:        #a5a18f;
+  --type-test-bg:     rgba(165, 161, 143, 0.16);
+  --type-unknown:     var(--warm-600);
+  --type-unknown-bg:  rgba(92, 90, 79, 0.20);
+
+  --src-anthropic:   #d6927e;
+  --src-openai:      var(--mint-400);
+  --src-google:      #7e9ab8;
+  --src-eleven:      #bb94a6;
+  --src-cohere:      #c28872;
+  --src-mistral:     #e3b070;
+  --src-other:       var(--ink-muted);
+
+  --accent-on:       var(--brand-on);
+  --accent-text:     var(--brand-text);
+  --brand-relay:     var(--brand);
+  --brand-relay-bg:  var(--brand-bg);
+  --brand-relay-bg-strong: var(--brand-bg-strong);
+  --accent-bg-strong:var(--brand-bg-strong);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   TYPE RECIPES
+   ═══════════════════════════════════════════════════════════ */
+.t-display   { font-family: var(--font-sans); font-size: var(--fs-44); line-height: var(--lh-44); font-weight: var(--fw-semibold); letter-spacing: -0.025em; color: var(--ink); }
+.t-page      { font-family: var(--font-sans); font-size: var(--fs-24); line-height: var(--lh-24); font-weight: var(--fw-semibold); letter-spacing: -0.015em; color: var(--ink); }
+.t-panel     { font-family: var(--font-sans); font-size: var(--fs-20); line-height: var(--lh-20); font-weight: var(--fw-semibold); letter-spacing: -0.01em; color: var(--ink); }
+.t-section   { font-family: var(--font-sans); font-size: var(--fs-17); line-height: var(--lh-17); font-weight: var(--fw-semibold); letter-spacing: -0.005em; color: var(--ink); }
+.t-body      { font-family: var(--font-sans); font-size: var(--fs-15); line-height: var(--lh-15); font-weight: var(--fw-regular); color: var(--ink); }
+.t-ui        { font-family: var(--font-sans); font-size: var(--fs-14); line-height: var(--lh-14); font-weight: var(--fw-regular); color: var(--ink); }
+.t-label     { font-family: var(--font-sans); font-size: var(--fs-13); line-height: var(--lh-13); font-weight: var(--fw-medium); color: var(--ink-soft); }
+.t-meta      { font-family: var(--font-sans); font-size: var(--fs-12); line-height: var(--lh-12); font-weight: var(--fw-regular); color: var(--ink-muted); }
+.t-caption   { font-family: var(--font-sans); font-size: var(--fs-11); line-height: var(--lh-11); font-weight: var(--fw-regular); color: var(--ink-muted); letter-spacing: 0.01em; }
+
+.t-eyebrow   { font-family: var(--font-mono); font-size: var(--fs-10); line-height: var(--lh-10); font-weight: var(--fw-medium); text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-muted); }
+.t-mono      { font-family: var(--font-mono); font-feature-settings: "tnum"; }
+.t-mono-meta { font-family: var(--font-mono); font-size: var(--fs-10); line-height: var(--lh-10); font-weight: var(--fw-medium); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
+
+.num-big     { font-family: var(--font-mono); font-feature-settings: "tnum"; font-size: var(--fs-32); line-height: var(--lh-32); font-weight: var(--fw-semibold); color: var(--ink); }
+.num-hero    { font-family: var(--font-mono); font-feature-settings: "tnum"; font-size: var(--fs-44); line-height: var(--lh-44); font-weight: var(--fw-semibold); color: var(--ink); letter-spacing: -0.02em; }
+
+/* Key value (masked) */
+.key-masked  { font-family: var(--font-mono); font-feature-settings: "tnum"; font-size: var(--fs-13); letter-spacing: 0.02em; color: var(--ink-soft); }
+.key-masked .dots { color: var(--ink-faint); letter-spacing: 0.08em; }
+
+/* Estimate marker (R0-5) */
+.is-estimate::before { content: "≈ "; color: var(--ink-faint); font-family: var(--font-mono); }
+.estimate-mark {
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  padding: 1px 5px;
+  border-radius: var(--r-xs);
+  background: var(--risk-caution-bg);
+  color: var(--risk-caution);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   GLOBAL BASE
+   ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-14);
+  line-height: var(--lh-14);
+  color: var(--ink);
+  background: var(--canvas);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all;
+  font-feature-settings: "ss01", "tnum";
+}
+:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
+::selection { background: var(--brand-bg-strong); color: var(--ink); }
+
+/* Scrollbar — warm, restrained */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-loud);
+  background-clip: content-box;
+  border: 2px solid transparent;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITY HELPERS (used across screens)
+   ═══════════════════════════════════════════════════════════ */
+.row { display: flex; align-items: center; }
+.col { display: flex; flex-direction: column; }
+.gap-1 { gap: 4px; }  .gap-2 { gap: 8px; }   .gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; } .gap-5 { gap: 24px; }  .gap-6 { gap: 32px; }
+.grow { flex: 1; }
+.divider  { height: 1px; background: var(--border); }
+.vdivider { width: 1px; background: var(--border); align-self: stretch; }

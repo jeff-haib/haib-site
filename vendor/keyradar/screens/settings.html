@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>KeyRadar — Settings</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../shell.css">
+<style>
+  /* ═══════════════════════════════════════════════════
+     Settings = trust verification
+     "no transmit" must be VERIFIABLE, not just stated
+     ═══════════════════════════════════════════════════ */
+
+  .set-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  /* Inner sidebar (sub-nav) */
+  .set-subnav {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    padding: 12px 8px;
+    height: fit-content;
+    position: sticky;
+    top: 0;
+  }
+  .set-subnav .grp {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 12px 4px;
+    font-weight: 500;
+  }
+  .set-subnav a {
+    display: block;
+    padding: 7px 12px;
+    border-radius: var(--r-sm);
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background var(--t-fast);
+  }
+  .set-subnav a:hover { background: var(--surface-2); color: var(--ink); }
+  .set-subnav a.active {
+    background: var(--olive-100);
+    color: var(--olive-700);
+  }
+
+  /* Sections */
+  .set-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .set-section-head {
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .set-section-head h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .set-section-head p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+  .set-section-head.olive {
+    background: var(--olive-50);
+    border-bottom-color: var(--olive-200);
+  }
+
+  /* Verified card row */
+  .verified-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 18px;
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .verified-row:last-child { border-bottom: 0; }
+  .verified-row .v-ico {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--vs-active-bg);
+    color: var(--vs-active);
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .verified-row .v-ico.idle {
+    background: var(--surface-3);
+    color: var(--ink-muted);
+  }
+  .verified-row .v-ico.warn {
+    background: var(--vs-permission-bg);
+    color: var(--vs-permission);
+  }
+  .verified-row .v-text strong {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .verified-row .v-text small {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+  .verified-row .v-text small code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .verified-row .v-status {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: var(--r-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    background: var(--vs-active-bg);
+    color: var(--vs-active);
+  }
+  .verified-row .v-status.idle { background: var(--surface-3); color: var(--ink-muted); }
+  .verified-row .v-status.warn { background: var(--vs-permission-bg); color: var(--vs-permission); }
+  .verified-row .v-btn {
+    background: var(--surface);
+    color: var(--ink-soft);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: var(--r-md);
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: var(--font-sans);
+  }
+  .verified-row .v-btn:hover { background: var(--surface-2); color: var(--ink); }
+
+  /* Toggle row */
+  .toggle-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .toggle-row:last-child { border-bottom: 0; }
+  .toggle-row .t-text strong {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .toggle-row .t-text small {
+    font-size: 12.5px;
+    color: var(--ink-muted);
+    line-height: 1.55;
+    display: block;
+    max-width: 60ch;
+  }
+  .toggle-row .t-text small code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--ink-soft);
+  }
+  .toggle {
+    width: 38px;
+    height: 22px;
+    border-radius: 999px;
+    background: var(--ink-faint);
+    position: relative;
+    cursor: pointer;
+    transition: background var(--t-fast);
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: left var(--t-fast);
+  }
+  .toggle.on { background: var(--brand); }
+  .toggle.on::after { left: 18px; }
+  .toggle.off-good { background: var(--vs-active); }
+
+  /* Network monitor — the "no transmit" visualization */
+  .net-monitor {
+    padding: 20px 24px;
+    background: var(--olive-50);
+  }
+  .net-stage {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 32px;
+    align-items: center;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--olive-200);
+    border-radius: var(--r-md);
+    margin-bottom: 14px;
+  }
+  .net-node {
+    text-align: center;
+  }
+  .net-node .ic {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 8px;
+    border-radius: 14px;
+    background: var(--olive-100);
+    color: var(--olive-700);
+    display: grid;
+    place-items: center;
+  }
+  .net-node .lb {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .net-node .lb small {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .net-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .net-arrow .line {
+    width: 80px;
+    height: 1px;
+    background: var(--olive-300);
+    position: relative;
+  }
+  .net-arrow .line::after {
+    content: '';
+    position: absolute;
+    right: -1px; top: -4px;
+    border-left: 8px solid var(--olive-600);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+  .net-arrow .lbl {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--brand);
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .net-blocked {
+    width: 80px;
+    height: 28px;
+    background: var(--vs-active-bg);
+    border: 1px dashed var(--vs-active);
+    border-radius: var(--r-sm);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--vs-active);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin: 0 auto;
+  }
+
+  /* Connections log */
+  .conn-log {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .conn-log .head {
+    padding: 10px 16px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+  }
+  .conn-log .head strong { color: var(--ink-soft); font-weight: 500; }
+  .conn-row {
+    display: grid;
+    grid-template-columns: 80px auto 1fr 80px 60px;
+    gap: 14px;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border-soft);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .conn-row:last-child { border-bottom: 0; }
+  .conn-row .when {
+    color: var(--ink-faint);
+    letter-spacing: 0.03em;
+  }
+  .conn-row .verb {
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .conn-row .host {
+    color: var(--brand-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .conn-row .reason {
+    color: var(--ink-muted);
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+  .conn-row .code {
+    color: var(--vs-active);
+    text-align: right;
+    font-weight: 600;
+  }
+
+  /* Section subhead */
+  .set-section-foot {
+    padding: 14px 24px;
+    background: var(--surface-2);
+    border-top: 1px solid var(--border-soft);
+    font-size: 12px;
+    color: var(--ink-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .set-section-foot a {
+    color: var(--brand-text);
+    text-decoration: none;
+    margin-left: auto;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-stage">
+<div class="app-window">
+
+  <div class="titlebar">
+    <div class="traffic"><span class="close"></span><span class="min"></span><span class="max"></span></div>
+    <div class="title"><strong>KeyRadar</strong> <span class="sep">·</span> <span>Settings</span></div>
+    <div class="actions"><span class="promise-pin">Local · No transmit</span></div>
+  </div>
+
+  <div class="app-body">
+
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <a class="lockup" href="../index.html">
+          <svg viewBox="0 0 195 38" xmlns="http://www.w3.org/2000/svg" aria-label="HAIB · KeyRadar">
+            <path fill="currentColor" d="M55.24 0H57.59V11.52H71.04V0H73.41V25.27H71.04V13.72H57.59V25.27H55.24V0Z"/>
+            <path fill="currentColor" d="M93.86 25.27L102.58 0H105.13L113.87 25.27H111.38L103.93 3.20999H103.75L96.3 25.27H93.85H93.86ZM109.86 15.55V17.75H97.87V15.55H109.86Z"/>
+            <path fill="currentColor" d="M136.69 25.27H134.34V0H136.69V25.27Z"/>
+            <path fill="currentColor" d="M159.37 0H167.55C169.1 0 170.4 0.279991 171.47 0.849991C172.54 1.41999 173.34 2.18999 173.87 3.18999C174.4 4.17999 174.67 5.33 174.67 6.62C174.67 7.63 174.51 8.51999 174.18 9.26999C173.85 10.03 173.4 10.64 172.83 11.1C172.25 11.57 171.59 11.9 170.84 12.11V12.32C171.64 12.38 172.4 12.67 173.14 13.19C173.88 13.71 174.47 14.44 174.94 15.37C175.41 16.3 175.64 17.39 175.64 18.63C175.64 19.87 175.36 21.07 174.81 22.06C174.26 23.06 173.41 23.84 172.26 24.41C171.11 24.98 169.69 25.27 167.99 25.27H159.38V0H159.37ZM170.14 10.73C170.85 10.32 171.41 9.77 171.81 9.06C172.21 8.35 172.41 7.55 172.41 6.64C172.41 5.73 172.23 4.98 171.87 4.31C171.51 3.64 170.97 3.11999 170.24 2.75999C169.51 2.38999 168.62 2.20999 167.55 2.20999H161.73V11.34H167.7C168.62 11.34 169.43 11.14 170.15 10.73H170.14ZM170.97 22.46C171.77 22.08 172.37 21.56 172.75 20.9C173.14 20.24 173.33 19.48 173.33 18.62C173.33 17.67 173.11 16.8 172.68 16.02C172.25 15.24 171.63 14.63 170.82 14.19C170.01 13.75 169.1 13.53 168.07 13.53H161.72V23.04H167.96C169.16 23.04 170.17 22.85 170.97 22.46Z"/>
+            <path d="M24.82 0.01H12.49C5.59 0.01 0 5.60 0 12.5V24.83C0 31.73 5.59 37.32 12.49 37.32H24.82C31.72 37.32 37.31 31.73 37.31 24.83V12.5C37.31 5.60 31.72 0.01 24.82 0.01Z" fill="#A4AB64"/>
+            <path d="M25.55 8.16V19.66H24.26L19.54 4.56H17.8L13.07 19.66H11.75V8.16H10.09V32.76H11.75V29.02L14.09 21.45H23.23L25.55 28.97V32.76H27.23V8.16H25.55ZM18.59 6.84H18.71L22.67 19.66H14.64L18.59 6.84ZM11.75 21.24H12.57L11.75 23.86V21.24ZM24.75 21.24H25.55V23.8L24.75 21.24Z" fill="#fff"/>
+            <path opacity="0.35" d="M193.67 0V37.32" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span class="name">KeyRadar</span>
+        </a>
+      </div>
+
+      <ul class="nav">
+        <li class="nav-section">Overview</li>
+        <li><a href="dashboard.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="7"/><circle cx="9" cy="9" r="3"/></svg></span>
+          Dashboard
+        </a></li>
+        <li class="nav-section">Manage</li>
+        <li><a href="keys.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="9" r="3"/><path d="M9 9h6M14 9v3M12 9v2"/></svg></span>
+          Keys <span class="badge count">7</span>
+        </a></li>
+        <li><a href="scan.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6V4a1 1 0 011-1h2M15 6V4a1 1 0 00-1-1h-2M3 12v2a1 1 0 001 1h2M15 12v2a1 1 0 01-1 1h-2"/><circle cx="9" cy="9" r="2.5"/></svg></span>
+          Scan <span class="badge caution">1</span>
+        </a></li>
+        <li class="nav-section">Observe</li>
+        <li><a href="usage.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 14h14M4 14V8M8 14V5M12 14v-4"/></svg></span>
+          Usage &amp; Credit
+        </a></li>
+        <li><a href="risk.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2L2 14h14L9 2z"/><path d="M9 7v3M9 12v.5"/></svg></span>
+          Risk <span class="badge action">3</span>
+        </a></li>
+        <li class="nav-section">System</li>
+        <li><a href="settings.html" aria-current="page">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="2"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2"/></svg></span>
+          Settings
+        </a></li>
+      </ul>
+
+      <div class="sidebar-foot">
+        <div class="row"><span class="dot"></span><span><strong>macOS Keychain</strong> · 7 keys</span></div>
+        <div class="row" style="margin-top: 4px;">v0.1 · local-first</div>
+      </div>
+    </nav>
+
+    <div class="main">
+
+      <header class="topbar">
+        <div class="crumbs">
+          <h1 class="page-title">Settings</h1>
+          <span class="page-sub">Verify the promises · adjust behavior</span>
+        </div>
+        <div class="topbar-meta">
+          <button class="btn sm">Export config</button>
+          <button class="btn sm">View logs ↗</button>
+        </div>
+      </header>
+
+      <div class="main-scroll">
+
+        <div class="set-grid">
+
+          <!-- ── Sub-nav ── -->
+          <nav class="set-subnav">
+            <div class="grp">Trust</div>
+            <a href="#storage" class="active">Storage</a>
+            <a href="#network">Network</a>
+            <a href="#scan">Scan engine</a>
+            <a href="#telemetry">Telemetry</a>
+
+            <div class="grp">Behavior</div>
+            <a href="#verification">Verification</a>
+            <a href="#shortcuts">Shortcuts</a>
+            <a href="#appearance">Appearance</a>
+
+            <div class="grp">Data</div>
+            <a href="#export">Export &amp; backup</a>
+            <a href="#reset">Reset</a>
+          </nav>
+
+          <!-- ── Content ── -->
+          <div>
+
+            <!-- Storage verification -->
+            <section class="set-section" id="storage">
+              <div class="set-section-head olive">
+                <h2>Storage · verified</h2>
+                <p>키 값은 어디 저장되는지 — 직접 확인할 수 있습니다.</p>
+              </div>
+
+              <div class="verified-row">
+                <span class="v-ico">✓</span>
+                <div class="v-text">
+                  <strong>macOS Keychain</strong>
+                  <small>7개 키 위임 저장 · 액세스 그룹 <code>com.haib.keyradar</code> · Touch ID로 보호</small>
+                </div>
+                <span class="v-status">Verified</span>
+                <button class="v-btn">Open Keychain ↗</button>
+              </div>
+
+              <div class="verified-row">
+                <span class="v-ico idle">·</span>
+                <div class="v-text">
+                  <strong>Plaintext files</strong>
+                  <small>로컬 디스크의 평문 키 파일을 KeyRadar로 옮기면 자동으로 마스킹</small>
+                </div>
+                <span class="v-status idle">0 detected</span>
+                <button class="v-btn">Scan again</button>
+              </div>
+
+              <div class="verified-row">
+                <span class="v-ico idle">·</span>
+                <div class="v-text">
+                  <strong>iCloud Keychain sync</strong>
+                  <small>다른 기기와 동기화 옵션 — 자동 해제 상태</small>
+                </div>
+                <span class="v-status idle">Off</span>
+                <button class="v-btn">Enable…</button>
+              </div>
+
+              <div class="set-section-foot">
+                Keychain 외 어떤 곳에도 키값을 저장하지 않습니다.
+                <a href="#">How to verify yourself →</a>
+              </div>
+            </section>
+
+            <!-- Network — the centerpiece -->
+            <section class="set-section" id="network">
+              <div class="set-section-head olive">
+                <h2>Network · what leaves this machine</h2>
+                <p>KeyRadar는 키값과 메타데이터를 외부로 보내지 않습니다. 검증·잔액 조회 시에만 해당 provider 공식 API와 직접 통신.</p>
+              </div>
+
+              <div class="net-monitor">
+                <div class="net-stage">
+                  <div class="net-node">
+                    <div class="ic">
+                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="6" width="22" height="14" rx="2"/>
+                        <path d="M8 23h12M10 20v3M18 20v3"/>
+                      </svg>
+                    </div>
+                    <div class="lb">This machine<small>KeyRadar v0.1</small></div>
+                  </div>
+
+                  <div class="net-arrow">
+                    <span class="lbl">DIRECT · HTTPS</span>
+                    <div class="line"></div>
+                    <span style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted);">on validate / refresh balance</span>
+                  </div>
+
+                  <div class="net-node">
+                    <div class="ic" style="background: var(--src-anthropic-bg); color: var(--src-anthropic-text);">
+                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 4v20M4 14h20M7 7l14 14M21 7L7 21"/>
+                      </svg>
+                    </div>
+                    <div class="lb">Provider APIs<small>anthropic.com, openai.com, …</small></div>
+                  </div>
+                </div>
+
+                <div class="net-stage" style="grid-template-columns: 1fr auto 1fr; margin-bottom: 0;">
+                  <div class="net-node">
+                    <div class="ic" style="background: var(--vs-active-bg); color: var(--vs-active);">
+                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="6" width="22" height="14" rx="2"/>
+                        <path d="M8 23h12"/>
+                      </svg>
+                    </div>
+                    <div class="lb">This machine<small>KeyRadar v0.1</small></div>
+                  </div>
+
+                  <div class="net-arrow">
+                    <div class="net-blocked">BLOCKED</div>
+                  </div>
+
+                  <div class="net-node">
+                    <div class="ic" style="background: var(--surface-3); color: var(--ink-muted);">
+                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="14" cy="14" r="10"/>
+                        <path d="M2 14h24M14 4a14 14 0 010 20"/>
+                      </svg>
+                    </div>
+                    <div class="lb" style="color: var(--ink-muted);">Any other server<small>haib.com, telemetry, analytics</small></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="net-monitor" style="background: var(--surface); border-top: 1px solid var(--border);">
+                <div class="conn-log">
+                  <div class="head">
+                    <span>Outbound connections · last 24h</span>
+                    <strong>22 total · all to provider APIs</strong>
+                  </div>
+                  <div class="conn-row">
+                    <span class="when">8m ago</span>
+                    <span class="verb">GET</span>
+                    <span class="host">api.anthropic.com/v1/models</span>
+                    <span class="reason">verify</span>
+                    <span class="code">200</span>
+                  </div>
+                  <div class="conn-row">
+                    <span class="when">22m ago</span>
+                    <span class="verb">GET</span>
+                    <span class="host">api.elevenlabs.io/v1/user</span>
+                    <span class="reason">balance</span>
+                    <span class="code">200</span>
+                  </div>
+                  <div class="conn-row">
+                    <span class="when">38m ago</span>
+                    <span class="verb">GET</span>
+                    <span class="host">api.openai.com/v1/models</span>
+                    <span class="reason">verify</span>
+                    <span class="code">200</span>
+                  </div>
+                  <div class="conn-row">
+                    <span class="when">2h ago</span>
+                    <span class="verb">GET</span>
+                    <span class="host">api.openai.com/v1/dashboard/billing</span>
+                    <span class="reason">balance</span>
+                    <span class="code">200</span>
+                  </div>
+                  <div class="conn-row">
+                    <span class="when">3d ago</span>
+                    <span class="verb">GET</span>
+                    <span class="host">api.openai.com/v1/models</span>
+                    <span class="reason">verify</span>
+                    <span class="code" style="color: var(--vs-auth-failed);">401</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="set-section-foot">
+                정상 작동 중인 모든 outbound 통신이 위에 기록됩니다 — 숨김 없음.
+                <a href="#">View full log →</a>
+              </div>
+            </section>
+
+            <!-- Telemetry -->
+            <section class="set-section" id="telemetry">
+              <div class="set-section-head">
+                <h2>Telemetry · off</h2>
+                <p>분석·크래시·사용 통계 — 모두 꺼져 있습니다. 옵션으로도 켤 수 없습니다.</p>
+              </div>
+
+              <div class="toggle-row">
+                <div class="t-text">
+                  <strong>Anonymous usage analytics</strong>
+                  <small>"몇 명이 이 기능을 쓰는가" 같은 anonymized 데이터. KeyRadar는 이걸 수집하지 않습니다 — 옵션이 아니라 정책.</small>
+                </div>
+                <div class="toggle off-good" title="permanently disabled"></div>
+              </div>
+
+              <div class="toggle-row">
+                <div class="t-text">
+                  <strong>Crash reports</strong>
+                  <small>크래시 발생 시 자동 리포트. 로컬에 저장되며 사용자가 직접 공유할 때만 외부로 나갑니다.</small>
+                </div>
+                <div class="toggle off-good" title="permanently disabled"></div>
+              </div>
+
+              <div class="toggle-row">
+                <div class="t-text">
+                  <strong>Update check</strong>
+                  <small>새 버전 확인을 위해 <code>haib.com</code>에 매주 1회 ping. 켜기/끄기 가능.</small>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+            </section>
+
+            <!-- Verification behavior -->
+            <section class="set-section" id="verification">
+              <div class="set-section-head">
+                <h2>Verification</h2>
+                <p>키 검증 동작을 조정합니다. 더 가볍게 갈수도, 더 자주 갈수도.</p>
+              </div>
+
+              <div class="toggle-row">
+                <div class="t-text">
+                  <strong>Verify on app launch</strong>
+                  <small>앱 실행 시 등록된 모든 키를 한 번 검증. 폴링 없음 — 한 번만.</small>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+
+              <div class="toggle-row">
+                <div class="t-text">
+                  <strong>Verify after wake from sleep</strong>
+                  <small>맥북을 깨우면 한 번. 백그라운드에서 도는 게 아닙니다 — foreground에서만.</small>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+
+              <div class="toggle-row">
+                <div class="t-text">
+                  <strong>Auto-extract Layer C insights</strong>
+                  <small>검증 응답에서 expiry · scopes · created-at 등을 자동 추출. 비활성화하면 raw status만.</small>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+            </section>
+
+            <!-- Export -->
+            <section class="set-section" id="export">
+              <div class="set-section-head">
+                <h2>Export &amp; backup</h2>
+                <p>키 메타데이터를 내보내거나, KeyRadar 설정을 백업합니다. 키값은 마스킹됩니다.</p>
+              </div>
+
+              <div class="verified-row">
+                <span class="v-ico warn">⤓</span>
+                <div class="v-text">
+                  <strong>Export key inventory (masked)</strong>
+                  <small>JSON · 7 keys · 모든 키값이 <code>·····-tail</code>로 마스킹</small>
+                </div>
+                <button class="v-btn">Download .json</button>
+                <button class="v-btn">Copy to clipboard</button>
+              </div>
+
+              <div class="verified-row">
+                <span class="v-ico warn">⤓</span>
+                <div class="v-text">
+                  <strong>Export validation history</strong>
+                  <small>Last 30 days of validation attempts · CSV</small>
+                </div>
+                <button class="v-btn">Download .csv</button>
+                <span style="visibility: hidden;" class="v-btn">—</span>
+              </div>
+            </section>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="statusbar">
+        <div class="left">
+          <span class="item ok">All trust checks passing</span>
+          <span class="item">macOS Keychain · 7 keys</span>
+        </div>
+        <div class="right">
+          <span class="item">22 outbound · all to provider APIs</span>
+          <span class="item">telemetry off</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

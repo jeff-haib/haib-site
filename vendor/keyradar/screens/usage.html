@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>KeyRadar — Usage &amp; Credit</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../shell.css">
+<style>
+  /* ═══════════════════════════════════════════════════
+     Usage layout — provider-major view
+     Each provider gets a band; balance + cost + per-key share
+     ═══════════════════════════════════════════════════ */
+
+  /* Period selector */
+  .period-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .period-bar .seg {
+    display: inline-flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 3px;
+    gap: 2px;
+  }
+  .period-bar .seg button {
+    background: transparent;
+    border: 0;
+    padding: 6px 12px;
+    border-radius: var(--r-sm);
+    font-size: 12px;
+    font-family: var(--font-sans);
+    color: var(--ink-muted);
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .period-bar .seg button.active {
+    background: var(--ink);
+    color: var(--canvas);
+  }
+  .period-bar .range {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+  }
+  .period-bar .range strong { color: var(--ink-soft); font-weight: 500; }
+  .period-bar .spacer { flex: 1; }
+  .period-bar .last-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+  }
+  .period-bar .last-refresh .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--fresh);
+  }
+  .period-bar .last-refresh.stale .dot { background: var(--stale); }
+
+  /* Aggregate summary band */
+  .agg-band {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    padding: 22px 26px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 32px;
+  }
+  .agg-total .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .agg-total .num {
+    font-family: var(--font-mono);
+    font-size: 44px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-feature-settings: "tnum";
+  }
+  .agg-total .num small {
+    font-size: 22px;
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+  .agg-total .sub {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 6px;
+  }
+  .agg-total .sub .estimate-mark { margin-right: 4px; }
+
+  .agg-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .agg-stack .stack-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .agg-stack .stack-row {
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    background: var(--surface-2);
+  }
+  .agg-stack .stack-row span {
+    height: 100%;
+    transition: width var(--t-quick);
+  }
+  .agg-stack .stack-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .agg-stack .stack-legend .lg {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .agg-stack .stack-legend .lg .sw {
+    width: 8px; height: 8px; border-radius: 2px;
+  }
+  .agg-stack .stack-legend .lg .num {
+    font-family: var(--font-mono);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .agg-deltas {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: right;
+    min-width: 200px;
+  }
+  .agg-deltas .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 12px;
+  }
+  .agg-deltas .row .lbl {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+  .agg-deltas .row .val {
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .agg-deltas .row .val.up { color: var(--vs-auth-failed); }
+  .agg-deltas .row .val.down { color: var(--vs-active); }
+
+  /* Provider band */
+  .prov-band {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-panel);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .prov-band-head {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto auto auto;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 22px;
+    background: var(--olive-50);
+    border-bottom: 1px solid var(--olive-200);
+  }
+  .prov-band-head .src { font-size: 11px; padding: 3px 10px; }
+  .prov-band-head .name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .prov-band-head .name small {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+  .prov-band-head .stretch { display: flex; align-items: center; gap: 12px; flex: 1; }
+  .prov-band-head .balance {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    font-feature-settings: "tnum";
+  }
+  .prov-band-head .balance small {
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  .prov-band-head .balance.unavailable {
+    color: var(--ink-muted);
+    font-size: 13px;
+    font-weight: 400;
+  }
+  .prov-band-head .delta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: var(--r-xs);
+    letter-spacing: 0.03em;
+    font-weight: 500;
+  }
+  .prov-band-head .delta.down { background: var(--vs-active-bg); color: var(--vs-active); }
+  .prov-band-head .delta.up { background: var(--vs-auth-failed-bg); color: var(--vs-auth-failed); }
+  .prov-band-head .asof-cell {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fresh);
+    letter-spacing: 0.03em;
+  }
+  .prov-band-head .asof-cell.stale { color: var(--stale); }
+  .prov-band-head .console-link {
+    padding: 5px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .prov-band-head .console-link:hover { background: var(--surface-2); color: var(--ink); }
+
+  /* Key shares (within provider band) */
+  .key-shares {
+    padding: 16px 22px 18px;
+  }
+  .share-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 80px 80px;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .share-row:last-child { border-bottom: 0; }
+  .share-row .type-badge { font-size: 10px; padding: 1px 8px 1px 6px; }
+  .share-row .key-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .share-row .key-cell .nm {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .share-row .bar-and-pct {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+  .share-row .bar-track {
+    flex: 1;
+    height: 4px;
+    background: var(--surface-3);
+    border-radius: var(--r-pill);
+    overflow: hidden;
+  }
+  .share-row .bar-fill {
+    height: 100%;
+    background: var(--brand);
+    border-radius: var(--r-pill);
+  }
+  .share-row .pct {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.03em;
+    min-width: 36px;
+    text-align: right;
+  }
+  .share-row .cost {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+    text-align: right;
+  }
+  .share-row .cost-asof {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.03em;
+    text-align: right;
+  }
+  .share-row.estimate .cost::before {
+    content: '≈ ';
+    color: var(--ink-faint);
+  }
+  .share-row.estimate .cost { color: var(--ink-soft); }
+
+  /* Honest gap banner */
+  .gap-banner {
+    margin: 4px 22px 14px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+    font-size: 12px;
+    color: var(--ink-muted);
+    border-left: 3px solid var(--ink-faint);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .gap-banner strong { color: var(--ink-soft); font-weight: 500; }
+  .gap-banner a { color: var(--brand-text); text-decoration: none; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<div class="app-stage">
+<div class="app-window">
+
+  <div class="titlebar">
+    <div class="traffic"><span class="close"></span><span class="min"></span><span class="max"></span></div>
+    <div class="title"><strong>KeyRadar</strong> <span class="sep">·</span> <span>Usage &amp; Credit</span></div>
+    <div class="actions"><span class="promise-pin">Local · No transmit</span></div>
+  </div>
+
+  <div class="app-body">
+
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <a class="lockup" href="../index.html">
+          <svg viewBox="0 0 195 38" xmlns="http://www.w3.org/2000/svg" aria-label="HAIB · KeyRadar">
+            <path fill="currentColor" d="M55.24 0H57.59V11.52H71.04V0H73.41V25.27H71.04V13.72H57.59V25.27H55.24V0Z"/>
+            <path fill="currentColor" d="M93.86 25.27L102.58 0H105.13L113.87 25.27H111.38L103.93 3.20999H103.75L96.3 25.27H93.85H93.86ZM109.86 15.55V17.75H97.87V15.55H109.86Z"/>
+            <path fill="currentColor" d="M136.69 25.27H134.34V0H136.69V25.27Z"/>
+            <path fill="currentColor" d="M159.37 0H167.55C169.1 0 170.4 0.279991 171.47 0.849991C172.54 1.41999 173.34 2.18999 173.87 3.18999C174.4 4.17999 174.67 5.33 174.67 6.62C174.67 7.63 174.51 8.51999 174.18 9.26999C173.85 10.03 173.4 10.64 172.83 11.1C172.25 11.57 171.59 11.9 170.84 12.11V12.32C171.64 12.38 172.4 12.67 173.14 13.19C173.88 13.71 174.47 14.44 174.94 15.37C175.41 16.3 175.64 17.39 175.64 18.63C175.64 19.87 175.36 21.07 174.81 22.06C174.26 23.06 173.41 23.84 172.26 24.41C171.11 24.98 169.69 25.27 167.99 25.27H159.38V0H159.37ZM170.14 10.73C170.85 10.32 171.41 9.77 171.81 9.06C172.21 8.35 172.41 7.55 172.41 6.64C172.41 5.73 172.23 4.98 171.87 4.31C171.51 3.64 170.97 3.11999 170.24 2.75999C169.51 2.38999 168.62 2.20999 167.55 2.20999H161.73V11.34H167.7C168.62 11.34 169.43 11.14 170.15 10.73H170.14ZM170.97 22.46C171.77 22.08 172.37 21.56 172.75 20.9C173.14 20.24 173.33 19.48 173.33 18.62C173.33 17.67 173.11 16.8 172.68 16.02C172.25 15.24 171.63 14.63 170.82 14.19C170.01 13.75 169.1 13.53 168.07 13.53H161.72V23.04H167.96C169.16 23.04 170.17 22.85 170.97 22.46Z"/>
+            <path d="M24.82 0.01H12.49C5.59 0.01 0 5.60 0 12.5V24.83C0 31.73 5.59 37.32 12.49 37.32H24.82C31.72 37.32 37.31 31.73 37.31 24.83V12.5C37.31 5.60 31.72 0.01 24.82 0.01Z" fill="#A4AB64"/>
+            <path d="M25.55 8.16V19.66H24.26L19.54 4.56H17.8L13.07 19.66H11.75V8.16H10.09V32.76H11.75V29.02L14.09 21.45H23.23L25.55 28.97V32.76H27.23V8.16H25.55ZM18.59 6.84H18.71L22.67 19.66H14.64L18.59 6.84ZM11.75 21.24H12.57L11.75 23.86V21.24ZM24.75 21.24H25.55V23.8L24.75 21.24Z" fill="#fff"/>
+            <path opacity="0.35" d="M193.67 0V37.32" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span class="name">KeyRadar</span>
+        </a>
+      </div>
+
+      <ul class="nav">
+        <li class="nav-section">Overview</li>
+        <li><a href="dashboard.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><circle cx="9" cy="9" r="3"/></svg></span>
+          Dashboard
+        </a></li>
+        <li class="nav-section">Manage</li>
+        <li><a href="keys.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="9" r="3"/><path d="M9 9h6M14 9v3M12 9v2"/></svg></span>
+          Keys <span class="badge count">7</span>
+        </a></li>
+        <li><a href="scan.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6V4a1 1 0 011-1h2M15 6V4a1 1 0 00-1-1h-2M3 12v2a1 1 0 001 1h2M15 12v2a1 1 0 01-1 1h-2"/><circle cx="9" cy="9" r="2.5"/></svg></span>
+          Scan <span class="badge caution">1</span>
+        </a></li>
+        <li class="nav-section">Observe</li>
+        <li><a href="usage.html" aria-current="page">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 14h14M4 14V8M8 14V5M12 14v-4"/></svg></span>
+          Usage &amp; Credit
+        </a></li>
+        <li><a href="risk.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2L2 14h14L9 2z"/><path d="M9 7v3M9 12v.5"/></svg></span>
+          Risk <span class="badge action">3</span>
+        </a></li>
+        <li class="nav-section">System</li>
+        <li><a href="settings.html">
+          <span class="nav-icon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="2"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2"/></svg></span>
+          Settings
+        </a></li>
+      </ul>
+
+      <div class="sidebar-foot">
+        <div class="row"><span class="dot"></span><span><strong>macOS Keychain</strong> · 7 keys</span></div>
+        <div class="row" style="margin-top: 4px;">v0.1 · local-first</div>
+      </div>
+    </nav>
+
+    <div class="main">
+
+      <header class="topbar">
+        <div class="crumbs">
+          <h1 class="page-title">Usage &amp; Credit</h1>
+          <span class="page-sub">Observed balances and cost · not a budget tool</span>
+        </div>
+        <div class="topbar-meta">
+          <button class="btn sm">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 6a4 4 0 1 1-1-2.7M10 1.5V4H7.5"/></svg>
+            Refresh all
+          </button>
+        </div>
+      </header>
+
+      <div class="main-scroll">
+
+        <!-- Period bar -->
+        <div class="period-bar">
+          <div class="seg">
+            <button>Today</button>
+            <button>7d</button>
+            <button class="active">30d</button>
+            <button>This month</button>
+            <button>Custom</button>
+          </div>
+          <span class="range">May 1 – May 22 · <strong>22 days</strong></span>
+          <div class="spacer"></div>
+          <span class="last-refresh stale"><span class="dot"></span>last refresh 3h ago</span>
+        </div>
+
+        <!-- Aggregate band -->
+        <div class="agg-band">
+          <div class="agg-total">
+            <div class="label">All providers · 30d cost</div>
+            <div class="num">$74<small>.20</small></div>
+            <div class="sub"><span class="estimate-mark">ESTIMATE</span>5 consoles aggregated · v1.1 will refine</div>
+          </div>
+
+          <div class="agg-stack">
+            <div class="stack-label">Distribution by provider</div>
+            <div class="stack-row">
+              <span style="width: 56.8%; background: var(--src-anthropic-text);"></span>
+              <span style="width: 32.9%; background: var(--src-openai-text);"></span>
+              <span style="width: 10.3%; background: var(--src-eleven-text);"></span>
+              <span style="width: 0%; background: var(--src-mistral-text);"></span>
+            </div>
+            <div class="stack-legend">
+              <span class="lg"><span class="sw" style="background: var(--src-anthropic-text)"></span>Anthropic <span class="num">$42.18</span></span>
+              <span class="lg"><span class="sw" style="background: var(--src-openai-text)"></span>OpenAI <span class="num">$24.40</span></span>
+              <span class="lg"><span class="sw" style="background: var(--src-eleven-text)"></span>ElevenLabs <span class="num">$7.62</span></span>
+              <span class="lg"><span class="sw" style="background: var(--src-mistral-text)"></span>Mistral <span class="num">€0.00</span></span>
+            </div>
+          </div>
+
+          <div class="agg-deltas">
+            <div class="row"><span class="lbl">vs prior 30d</span><span class="val up">+ $12.40 ↗</span></div>
+            <div class="row"><span class="lbl">daily avg</span><span class="val">$3.37</span></div>
+            <div class="row"><span class="lbl">projected month-end</span><span class="val">≈ $104</span></div>
+          </div>
+        </div>
+
+        <!-- Provider bands -->
+
+        <!-- Anthropic -->
+        <div class="prov-band">
+          <div class="prov-band-head">
+            <span class="src anthropic">CLAUDE</span>
+            <span class="name">Anthropic <small>2 keys</small></span>
+            <div class="stretch"></div>
+            <span class="balance">$42<small>.18</small></span>
+            <span class="delta down">−$3.20 vs prior</span>
+            <span class="asof-cell">8m ago</span>
+            <a class="console-link" href="#">Console ↗</a>
+          </div>
+          <div class="key-shares">
+            <div class="share-row">
+              <span class="type-badge work">Work</span>
+              <span class="key-cell"><span class="nm">prod-api</span><span class="km"><span class="dots">·····</span><span class="tail">4f2a</span></span></span>
+              <div class="bar-and-pct">
+                <div class="bar-track"><div class="bar-fill" style="width: 74%; background: var(--src-anthropic-text);"></div></div>
+                <span class="pct">74%</span>
+              </div>
+              <span class="cost">$31.40</span>
+            </div>
+            <div class="share-row">
+              <span class="type-badge personal">Personal</span>
+              <span class="key-cell"><span class="nm">side-project</span><span class="km"><span class="dots">·····</span><span class="tail">9a1c</span></span></span>
+              <div class="bar-and-pct">
+                <div class="bar-track"><div class="bar-fill" style="width: 26%; background: var(--src-anthropic-text);"></div></div>
+                <span class="pct">26%</span>
+              </div>
+              <span class="cost">$10.78</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- OpenAI -->
+        <div class="prov-band">
+          <div class="prov-band-head">
+            <span class="src openai">OPENAI</span>
+            <span class="name">OpenAI <small>2 keys · 1 auth failed</small></span>
+            <div class="stretch"></div>
+            <span class="balance">$24<small>.40</small></span>
+            <span class="delta up">+$8.10 vs prior</span>
+            <span class="asof-cell stale">3h ago</span>
+            <a class="console-link" href="#">Console ↗</a>
+          </div>
+          <div class="key-shares">
+            <div class="share-row">
+              <span class="type-badge work">Work</span>
+              <span class="key-cell"><span class="nm">prod</span><span class="km"><span class="dots">·····</span><span class="tail">7e9b</span></span></span>
+              <div class="bar-and-pct">
+                <div class="bar-track"><div class="bar-fill" style="width: 100%; background: var(--src-openai-text);"></div></div>
+                <span class="pct">100%</span>
+              </div>
+              <span class="cost">$24.40</span>
+            </div>
+            <div class="share-row" style="opacity: 0.6;">
+              <span class="type-badge test">Test</span>
+              <span class="key-cell"><span class="nm">eval-runs</span><span class="km"><span class="dots">·····</span><span class="tail">3b21</span></span></span>
+              <div class="bar-and-pct">
+                <span style="font-family: var(--font-mono); font-size: 11px; color: var(--vs-auth-failed);">auth failed · no cost since 2d ago</span>
+              </div>
+              <span class="cost" style="color: var(--ink-muted);">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Google — balance API not supported -->
+        <div class="prov-band">
+          <div class="prov-band-head">
+            <span class="src google">GOOGLE</span>
+            <span class="name">Google <small>1 key · gemini-2.5</small></span>
+            <div class="stretch"></div>
+            <span class="balance unavailable">Not supported by API</span>
+            <span class="asof-cell" style="visibility: hidden;">—</span>
+            <span style="visibility: hidden;" class="delta down">—</span>
+            <a class="console-link" href="#">Open console ↗</a>
+          </div>
+          <div class="gap-banner" style="margin-bottom: 0; margin-top: 8px;">
+            <strong>잔액 API 미지원.</strong> Google Cloud는 프로그래매틱 잔액 조회를 제공하지 않습니다. 위의 <em>Console ↗</em> 링크에서 직접 확인하세요. KeyRadar는 추측하지 않습니다.
+            <a href="#">Why this gap →</a>
+          </div>
+        </div>
+
+        <!-- ElevenLabs -->
+        <div class="prov-band">
+          <div class="prov-band-head">
+            <span class="src eleven">ELEVEN</span>
+            <span class="name">ElevenLabs <small>1 key · narration</small></span>
+            <div class="stretch"></div>
+            <span class="balance">$7<small>.62</small></span>
+            <span class="delta down">−$1.20 vs prior</span>
+            <span class="asof-cell">22m ago</span>
+            <a class="console-link" href="#">Console ↗</a>
+          </div>
+          <div class="key-shares">
+            <div class="share-row">
+              <span class="type-badge test">Test</span>
+              <span class="key-cell"><span class="nm">narration</span><span class="km"><span class="dots">·····</span><span class="tail">8d5e</span></span></span>
+              <div class="bar-and-pct">
+                <div class="bar-track"><div class="bar-fill" style="width: 100%; background: var(--src-eleven-text);"></div></div>
+                <span class="pct">100%</span>
+              </div>
+              <span class="cost">$7.62</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mistral -->
+        <div class="prov-band">
+          <div class="prov-band-head">
+            <span class="src mistral">MISTRAL</span>
+            <span class="name">Mistral <small>1 key · experiments</small></span>
+            <div class="stretch"></div>
+            <span class="balance">€0<small>.00</small></span>
+            <span class="delta" style="background: var(--surface-3); color: var(--ink-muted);">no activity</span>
+            <span class="asof-cell">14m ago</span>
+            <a class="console-link" href="#">Console ↗</a>
+          </div>
+        </div>
+
+        <!-- Cohere — can't validate -->
+        <div class="prov-band">
+          <div class="prov-band-head">
+            <span class="src cohere">COHERE</span>
+            <span class="name">Cohere <small>1 key · can't validate</small></span>
+            <div class="stretch"></div>
+            <span class="balance unavailable">Not validated</span>
+            <span class="asof-cell" style="visibility: hidden;">—</span>
+            <span style="visibility: hidden;" class="delta">—</span>
+            <a class="console-link" href="#">Console ↗</a>
+          </div>
+          <div class="gap-banner" style="margin-bottom: 0; margin-top: 8px;">
+            <strong>Provider 태그를 확인하세요.</strong> 이 키 형식이 Cohere의 알려진 패턴과 매칭되지 않아 잔액 조회를 시도할 수 없습니다.
+            <a href="keys.html">Pick provider →</a>
+          </div>
+        </div>
+
+        <!-- Trust strip -->
+        <div class="trust-strip">
+          <div>
+            <span class="label">Honest gaps</span>
+            <span>잔액·사용량 API를 제공하지 않는 provider는 <strong style="color: var(--ink-soft);">추측하지 않고 비웁니다.</strong> 모든 숫자에 as-of 시간을 붙입니다.</span>
+          </div>
+          <a href="../DESIGN_NOTES.md#3-비협상-약속-r0">R0 promises →</a>
+        </div>
+
+      </div>
+
+      <div class="statusbar">
+        <div class="left">
+          <span class="item ok">Cost engine · 5 consoles</span>
+          <span class="item">2 active providers contribute</span>
+        </div>
+        <div class="right">
+          <span class="item">last refresh 3h ago · stale</span>
+          <span class="item">no transmit</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

@@ -58,7 +58,7 @@ window.HAIB_PRODUCTS = [
       en: "AI credential visibility and local key management for people using multiple AI providers."
     },
     platforms: [
-      { os: "macos",   channel: "direct", status: "available", arch: "Universal · .dmg", url: "https://apps.hai-b.ai/apps/keyradar/keyradar-macos.dmg" },
+      { os: "macos",   channel: "appstore", status: "available", arch: "Mac App Store", url: "https://apps.apple.com/kr/app/keyradar/id6775709663?mt=12" },
       { os: "windows", channel: "direct", status: "available", arch: "x64 · .msi", url: "https://apps.hai-b.ai/apps/keyradar/keyradar-windows.msi" }
     ],
     pricing: {
@@ -70,10 +70,42 @@ window.HAIB_PRODUCTS = [
         ko: ["제공자별 키 자동 탐지", "로컬 우선 · 키 외부 전송 없음", "사용량 · 크레딧 모니터링", "키 회전 알림"],
         en: ["Auto-detect keys per provider", "Local-first · keys never leave device", "Usage & credit monitoring", "Rotation reminders"]
       },
-      cta: { ko: "Buy Direct", en: "Buy Direct" }, ctaUrl: "#polar-checkout-keyradar",
+      cta: { ko: "Mac App Store", en: "Mac App Store" }, ctaUrl: "https://apps.apple.com/kr/app/keyradar/id6775709663?mt=12",
       highlight: true
     },
     links: { product: "#product-keyradar", changelog: "#changelog", support: "#support" }
+  },
+
+  /* ──────────────────── KeyRadar Enterprise ─────────────────── */
+  {
+    id: "keyradar-enterprise",
+    name: "KeyRadar Enterprise",
+    accentVar: "--p-keyradar-enterprise",
+    icon: "radar",
+    status: "soon",
+    category: { ko: "조직용 AI 키 관리", en: "Enterprise AI Key Management" },
+    tagline: { ko: "조직을 위한 키 가시성과 정책", en: "Key visibility and policy for organizations" },
+    desc: {
+      ko: "팀·조직 단위 API 키 가시성, 정책 배포, 감사 흐름을 위한 KeyRadar의 엔터프라이즈 방향.",
+      en: "The enterprise direction for KeyRadar: organization-wide API key visibility, policy rollout, and audit workflows."
+    },
+    platforms: [
+      { os: "web", channel: "web", status: "soon", arch: "Enterprise", url: null },
+      { os: "macos", channel: "direct", status: "soon", arch: "Managed build", url: null },
+      { os: "windows", channel: "direct", status: "soon", arch: "Managed build", url: null }
+    ],
+    pricing: {
+      tier: { ko: "Enterprise", en: "Enterprise" },
+      amount: "Coming Soon", per: { ko: "문의 기반", en: "contact-based" },
+      sub: { ko: "조직 배포 · 정책 관리 준비 중", en: "Org rollout and policy management in preparation" },
+      pay: "Contact",
+      features: {
+        ko: ["조직 키 인벤토리 방향", "정책 기반 키 관리", "감사와 위험 알림", "관리형 배포 준비 중"],
+        en: ["Organization key inventory direction", "Policy-based key management", "Audit and risk alerts", "Managed rollout in preparation"]
+      },
+      cta: { ko: "Coming Soon", en: "Coming Soon" }, ctaUrl: "#keyradar-enterprise-coming-soon"
+    },
+    links: { product: "#product-keyradar-enterprise", changelog: "#changelog", support: "#support" }
   },
 
   /* ──────────────────────── Scrap Relay ──────────────────────── */
@@ -82,7 +114,7 @@ window.HAIB_PRODUCTS = [
     name: "Scrap Relay",
     accentVar: "--p-scrap",
     icon: "scrap",
-    status: "review",
+    status: "available",
     category: { ko: "리서치 · 지식 캡처", en: "Research & Knowledge Capture" },
     tagline: { ko: "리서치를 지식으로", en: "Research into knowledge" },
     desc: {
@@ -90,8 +122,8 @@ window.HAIB_PRODUCTS = [
       en: "Capture, organize, and refine AI conversations and web research into reusable knowledge."
     },
     platforms: [
-      { os: "edge",   channel: "edgestore", status: "review",    url: null },
-      { os: "chrome", channel: "webstore",  status: "preparing", url: null }
+      { os: "edge",   channel: "edgestore", status: "available", arch: "Edge Add-ons", url: "https://microsoftedge.microsoft.com/addons/detail/scrap-relay/aplmkfcdgdibmnhbaimmhookgfhcnjhm" },
+      { os: "chrome", channel: "webstore", status: "available", arch: "Chrome Web Store", url: "https://chromewebstore.google.com/detail/scrap-relay/jpeblmdajkmapghdenmfingcinhkbobe" }
     ],
     pricing: {
       tier: { ko: "라이프타임", en: "Lifetime" },
@@ -102,7 +134,7 @@ window.HAIB_PRODUCTS = [
         ko: ["한 번 클릭 캡처", "AI 대화 정리 · 태깅", "재사용 가능한 스니펫", "로컬 우선 저장"],
         en: ["One-click capture", "Organize & tag AI chats", "Reusable snippets", "Local-first storage"]
       },
-      cta: { ko: "Buy Direct", en: "Buy Direct" }, ctaUrl: "#polar-checkout-scrap-relay"
+      cta: { ko: "Buy Direct", en: "Buy Direct" }, ctaUrl: "https://buy.polar.sh/polar_cl_UDeCTbabHoykkNs3vbANsdzkYZryxA5W9sRAc4KrixF"
     },
     links: { product: "#product-scrap", changelog: "#changelog", support: "#support" }
   },
@@ -121,6 +153,7 @@ window.HAIB_PRODUCTS = [
       en: "Visual and multi-direction vocabulary flow beyond translation."
     },
     platforms: [
+      { os: "ios",     channel: "appstore", status: "available", arch: "iPhone · iPad", url: "https://apps.apple.com/kr/app/voca-flow/id6776681960" },
       { os: "macos",   channel: "direct", status: "available", arch: ".dmg", url: "https://apps.hai-b.ai/apps/voca-flow/voca-flow-macos.dmg" },
       { os: "windows", channel: "direct", status: "available", arch: ".exe", url: "https://apps.hai-b.ai/apps/voca-flow/voca-flow-windows.exe" }
     ],
@@ -136,6 +169,37 @@ window.HAIB_PRODUCTS = [
       cta: { ko: "Buy Direct", en: "Buy Direct" }, ctaUrl: "#polar-checkout-voca-flow"
     },
     links: { product: "#product-voca", changelog: "#changelog", support: "#support" }
+  },
+
+  /* ─────────────────────── AI Contentory ─────────────────────── */
+  {
+    id: "ai-contentory",
+    name: "AI Contentory",
+    accentVar: "--p-contentory",
+    icon: "scrap",
+    status: "soon",
+    category: { ko: "AI 콘텐츠 작업실", en: "AI Content Workspace" },
+    tagline: { ko: "아이디어와 자료를 콘텐츠 흐름으로", en: "Ideas and sources into content flow" },
+    desc: {
+      ko: "아이디어, 레퍼런스, 생성 결과를 콘텐츠 제작 흐름으로 정리하기 위한 준비 중인 작업실.",
+      en: "A coming workspace for organizing ideas, references, and generated outputs into content production flows."
+    },
+    platforms: [
+      { os: "web", channel: "web", status: "soon", arch: "Web", url: null },
+      { os: "macos", channel: "direct", status: "soon", arch: "Desktop", url: null }
+    ],
+    pricing: {
+      tier: { ko: "Coming Soon", en: "Coming Soon" },
+      amount: "TBD", per: { ko: "준비 중", en: "in preparation" },
+      sub: { ko: "출시 채널과 가격은 추후 공개", en: "Release channel and pricing to be announced" },
+      pay: "TBD",
+      features: {
+        ko: ["콘텐츠 작업 흐름", "자료와 레퍼런스 정리", "생성 결과 재사용", "로컬 우선 방향"],
+        en: ["Content workflow", "Source and reference organization", "Generated output reuse", "Local-first direction"]
+      },
+      cta: { ko: "Coming Soon", en: "Coming Soon" }, ctaUrl: "#ai-contentory-coming-soon"
+    },
+    links: { product: "#product-ai-contentory", changelog: "#changelog", support: "#support" }
   },
 
   /* ─────────────────────── Movie Maker Pro ───────────────────── */
@@ -169,13 +233,43 @@ window.HAIB_PRODUCTS = [
     links: { product: "#product-movie", changelog: "#changelog", support: "#support" }
   },
 
+  /* ─────────────────────── Ripple Capture ────────────────────── */
+  {
+    id: "ripple-capture",
+    name: "Ripple Capture",
+    accentVar: "--p-ripple",
+    icon: "movie",
+    status: "available",
+    category: { ko: "화면 녹화", en: "Screen Recording" },
+    tagline: { ko: "클릭이 보이는 화면 녹화", en: "Screen recording with visible clicks" },
+    desc: {
+      ko: "커서 글로우와 클릭 리플을 담아 튜토리얼·제품 데모·지원 영상을 더 명확하게 만드는 macOS 화면 녹화 도구.",
+      en: "A macOS screen recorder that makes tutorials, product demos, and support videos clearer with cursor glow and click ripples."
+    },
+    platforms: [
+      { os: "macos", channel: "appstore", status: "available", arch: "Mac App Store", url: "https://apps.apple.com/kr/app/ripple-capture/id6790279465?mt=12" }
+    ],
+    pricing: {
+      tier: { ko: "Mac App Store", en: "Mac App Store" },
+      amount: "₩11,000", per: { ko: "1회 구매", en: "one-time" },
+      sub: { ko: "Mac 전용", en: "Mac only" },
+      pay: "App Store",
+      features: {
+        ko: ["영역·창·전체 화면 녹화", "커서 글로우 · 클릭 리플", "MP4 · GIF 내보내기", "로컬 처리 · 계정 불필요"],
+        en: ["Area, window, or full-screen recording", "Cursor glow and click ripples", "MP4 and GIF export", "Local processing · no account required"]
+      },
+      cta: { ko: "Mac App Store", en: "Mac App Store" }, ctaUrl: "https://apps.apple.com/kr/app/ripple-capture/id6790279465?mt=12"
+    },
+    links: { product: "#product-ripple", changelog: "#changelog", support: "#support" }
+  },
+
   /* ───────────────────────────  BATON  ──────────────────────── */
   {
     id: "baton",
     name: "BATON",
     accentVar: "--p-baton",
     icon: "baton",
-    status: "preparing",
+    status: "soon",
     category: { ko: "AI 워크플로 오케스트레이션 플랫폼", en: "AI Workflow Orchestration Platform" },
     tagline: { ko: "워크플로 오케스트레이션", en: "Workflow orchestration" },
     desc: {
@@ -183,15 +277,46 @@ window.HAIB_PRODUCTS = [
       en: "Workflow and template orchestration platform for AI-powered production systems."
     },
     platforms: [
-      { os: "web", channel: "web", status: "soon", url: null }
+      { os: "web", channel: "web", status: "soon", arch: "Web", url: null }
     ],
-    pricing: null,
+    pricing: {
+      tier: { ko: "Coming Soon", en: "Coming Soon" },
+      amount: "TBD", per: { ko: "준비 중", en: "in preparation" },
+      sub: { ko: "워크플로 오케스트레이션 제품 방향 준비 중", en: "Workflow orchestration direction in preparation" },
+      pay: "TBD",
+      features: {
+        ko: ["워크플로 오케스트레이션", "템플릿 시스템", "AI 프로덕션 흐름", "출시 채널 추후 공개"],
+        en: ["Workflow orchestration", "Template system", "AI production flow", "Release channel to be announced"]
+      },
+      cta: { ko: "Coming Soon", en: "Coming Soon" }, ctaUrl: "#baton-coming-soon"
+    },
     links: { product: "#product-baton", changelog: "#changelog", support: "#support" }
   }
 ];
 
 /* ─────────────────────── Changelog entries ────────────────────── */
 window.HAIB_CHANGELOG = [
+  {
+    product: "keyradar-enterprise", version: "preview", date: "2026-08-08", status: "soon",
+    changes: [
+      { tag: "new", ko: "KeyRadar Enterprise Coming Soon 페이지 추가", en: "Added KeyRadar Enterprise Coming Soon page" },
+      { tag: "new", ko: "조직용 키 가시성·정책 관리 방향 공개", en: "Published organization key visibility and policy direction" }
+    ]
+  },
+  {
+    product: "ai-contentory", version: "preview", date: "2026-08-08", status: "soon",
+    changes: [
+      { tag: "new", ko: "AI Contentory Coming Soon 페이지 추가", en: "Added AI Contentory Coming Soon page" },
+      { tag: "new", ko: "콘텐츠 작업실 제품 방향 공개", en: "Published content workspace product direction" }
+    ]
+  },
+  {
+    product: "baton", version: "preview", date: "2026-08-08", status: "soon",
+    changes: [
+      { tag: "new", ko: "BATON을 Coming Soon 제품으로 정리", en: "Updated BATON as a Coming Soon product" },
+      { tag: "new", ko: "워크플로 오케스트레이션 방향 공개", en: "Published workflow orchestration direction" }
+    ]
+  },
   {
     product: "keyradar", version: "1.2.0", date: "2026-05-28", status: "available",
     changes: [
@@ -201,10 +326,10 @@ window.HAIB_CHANGELOG = [
     ]
   },
   {
-    product: "scrap-relay", version: "0.9.1", date: "2026-05-22", status: "review",
+    product: "scrap-relay", version: "1.0.1", date: "2026-08-07", status: "available",
     changes: [
-      { tag: "new", ko: "Edge Add-ons 심사 제출", en: "Submitted to Edge Add-ons review" },
-      { tag: "imp", ko: "캡처 정확도 개선", en: "Improved capture accuracy" }
+      { tag: "new", ko: "직접 다운로드 패키지 공개", en: "Direct download package released" },
+      { tag: "imp", ko: "Polar 라이선스 활성화 경로 정리", en: "Polar license activation flow hardened" }
     ]
   },
   {
@@ -212,6 +337,13 @@ window.HAIB_CHANGELOG = [
     changes: [
       { tag: "new", ko: "다방향 학습 흐름 베타", en: "Multi-direction flow (beta)" },
       { tag: "fix", ko: "카드 전환 애니메이션 끊김 수정", en: "Fixed card transition stutter" }
+    ]
+  },
+  {
+    product: "ripple-capture", version: "1.0", date: "2026-08-08", status: "available",
+    changes: [
+      { tag: "new", ko: "Mac App Store 출시", en: "Released on the Mac App Store" },
+      { tag: "new", ko: "커서 글로우와 클릭 리플 화면 녹화", en: "Screen recording with cursor glow and click ripples" }
     ]
   },
   {
@@ -225,8 +357,10 @@ window.HAIB_CHANGELOG = [
 
 /* ─────────────────────── Board / Notice ────────────────────── */
 window.HAIB_NOTICES = [
-  { cat: "announce", date: "2026-05-29", ko: "KeyRadar 1.2.0 정식 출시 — apps.hai-b.ai 직접 다운로드 제공", en: "KeyRadar 1.2.0 released — direct downloads via apps.hai-b.ai" },
-  { cat: "release",  date: "2026-05-22", ko: "Scrap Relay, Microsoft Edge Add-ons 심사 제출됨", en: "Scrap Relay submitted to Microsoft Edge Add-ons review" },
+  { cat: "announce", date: "2026-05-29", ko: "KeyRadar Mac App Store 링크를 공식 다운로드 채널로 정리했습니다", en: "KeyRadar Mac App Store link is now the official download channel" },
+  { cat: "release",  date: "2026-08-07", ko: "Scrap Relay는 Chrome Web Store와 Microsoft Edge Add-ons 링크를 공식 설치 채널로 사용합니다", en: "Scrap Relay uses Chrome Web Store and Microsoft Edge Add-ons as official install channels" },
+  { cat: "release",  date: "2026-08-08", ko: "Ripple Capture를 Mac App Store 다운로드에 추가했습니다", en: "Ripple Capture added with Mac App Store download" },
+  { cat: "announce", date: "2026-08-08", ko: "KeyRadar Enterprise, AI Contentory, BATON을 Coming Soon으로 정리했습니다", en: "KeyRadar Enterprise, AI Contentory, and BATON are listed as Coming Soon" },
   { cat: "known",    date: "2026-05-18", ko: "VOCA FLOW iOS 빌드 — 일부 기기에서 카드 전환 지연 (조사 중)", en: "VOCA FLOW iOS — card transition lag on some devices (investigating)" },
   { cat: "support",  date: "2026-05-12", ko: "라이선스 복원 가이드 업데이트 — Polar 구매 내역 연동", en: "License restore guide updated — Polar purchase linking" },
   { cat: "announce", date: "2026-05-05", ko: "Windows 버전 로드맵 공개 — KeyRadar · Movie Maker Pro 준비 중", en: "Windows roadmap published — KeyRadar & Movie Maker Pro in prep" }

@@ -27,7 +27,7 @@ window.HAIB_I18N = {
     "hero.scroll": "스크롤",
 
     "products.eyebrow": "제품",
-    "products.title": "하나의 기준, 다섯 개의 도구",
+    "products.title": "하나의 기준으로 정리한 HAIB 도구들",
     "products.sub": "모든 제품은 상태를 숨기지 않습니다. 사용 가능 · 심사 중 · 준비 중을 있는 그대로 표시합니다.",
     "products.view": "제품 보기",
 
@@ -44,12 +44,12 @@ window.HAIB_I18N = {
 
     "dl.eyebrow": "다운로드",
     "dl.title": "플랫폼별로 정리된 다운로드",
-    "dl.sub": "설치 파일은 apps.hai-b.ai, 언어팩은 audio.hai-b.ai/audio, 구매와 라이선스는 Polar로 분리합니다.",
+    "dl.sub": "다운로드는 App Store, Web Store, 직접 다운로드 경로로 나뉩니다. 직접 결제 제품의 구매와 라이선스는 Polar로 연결합니다.",
     "dl.notes": "릴리스 노트",
 
     "pricing.eyebrow": "가격",
-    "pricing.title": "단순한 가격, 직접 결제",
-    "pricing.sub": "구매와 라이선스는 Polar로 연결합니다. 설치 파일은 apps.hai-b.ai에서 제공합니다.",
+    "pricing.title": "제품별 구매 채널",
+    "pricing.sub": "App Store 제품은 Apple에서, 브라우저 확장과 직접 결제 제품은 각 스토어 또는 Polar에서 처리합니다.",
 
     "cl.eyebrow": "체인지로그",
     "cl.title": "공개 릴리스 기록",
@@ -119,9 +119,9 @@ window.HAIB_I18N = {
 
     "pg.nav.home": "홈",
     "pg.downloads.title": "다운로드",
-    "pg.downloads.sub": "설치 파일은 apps.hai-b.ai에서 제공합니다. VOCA FLOW 언어팩은 audio.hai-b.ai/audio로 분리합니다.",
+    "pg.downloads.sub": "설치와 다운로드는 제품별 공식 채널로 연결합니다. VOCA FLOW 언어팩은 audio.hai-b.ai/audio로 분리합니다.",
     "pg.pricing.title": "가격",
-    "pg.pricing.sub": "단순한 가격, 직접 결제. 구매와 라이선스는 Polar로 연결합니다.",
+    "pg.pricing.sub": "제품별 공식 구매 채널을 표시합니다. App Store, Web Store, Polar 흐름을 구분합니다.",
     "pg.changelog.title": "체인지로그",
     "pg.changelog.sub": "공개 릴리스 기록 — 버전, 날짜, 상태, 변경 사항.",
     "pg.support.title": "지원 센터",
@@ -135,7 +135,7 @@ window.HAIB_I18N = {
     "pg.support.policies": "정책",
     "sd.s1": "설치 후 첫 실행과 기본 설정을 안내합니다.",
     "sd.s2": "macOS·Windows·브라우저 확장별 설치 방법.",
-    "sd.s3": "Polar 구매 후 라이선스 키 입력 · 활성화.",
+    "sd.s3": "구매 채널별 라이선스 입력 · 복원 · 활성화.",
     "sd.s4": "기기 변경 시 구매 내역 복원 방법.",
     "sd.s5": "환불 조건과 절차 — 구매 채널별 안내.",
     "sd.s6": "수집·처리 항목과 로컬 우선 원칙.",
@@ -167,7 +167,7 @@ window.HAIB_I18N = {
     "hero.scroll": "Scroll",
 
     "products.eyebrow": "Products",
-    "products.title": "One standard, five tools",
+    "products.title": "HAIB tools, organized by one standard",
     "products.sub": "We never hide a product's state. Available, In Review, and Preparing are all shown as-is.",
     "products.view": "View product",
 
@@ -184,12 +184,12 @@ window.HAIB_I18N = {
 
     "dl.eyebrow": "Downloads",
     "dl.title": "Downloads, grouped by platform",
-    "dl.sub": "Installers live on apps.hai-b.ai, language packs on audio.hai-b.ai/audio, and purchases/licenses on Polar.",
+    "dl.sub": "Downloads are split across App Store, Web Store, and direct download paths. Direct checkout products connect purchases and licenses through Polar.",
     "dl.notes": "Release notes",
 
     "pricing.eyebrow": "Pricing",
-    "pricing.title": "Simple pricing, direct checkout",
-    "pricing.sub": "Purchases and licenses connect through Polar. Installers are provided from apps.hai-b.ai.",
+    "pricing.title": "Purchase channels by product",
+    "pricing.sub": "App Store products are handled by Apple. Browser extensions and direct products use their store or Polar checkout.",
 
     "cl.eyebrow": "Changelog",
     "cl.title": "Public release history",
@@ -259,9 +259,9 @@ window.HAIB_I18N = {
 
     "pg.nav.home": "Home",
     "pg.downloads.title": "Downloads",
-    "pg.downloads.sub": "Installers are served from apps.hai-b.ai. VOCA FLOW language packs are separated under audio.hai-b.ai/audio.",
+    "pg.downloads.sub": "Install and download links point to each product's official channel. VOCA FLOW language packs are separated under audio.hai-b.ai/audio.",
     "pg.pricing.title": "Pricing",
-    "pg.pricing.sub": "Simple pricing, direct checkout. Purchases and licenses connect through Polar.",
+    "pg.pricing.sub": "Official purchase channels by product, with App Store, Web Store, and Polar flows separated.",
     "pg.changelog.title": "Changelog",
     "pg.changelog.sub": "Public release history — version, date, status, and changes.",
     "pg.support.title": "Support Center",
@@ -275,7 +275,7 @@ window.HAIB_I18N = {
     "pg.support.policies": "Policies",
     "sd.s1": "First launch and default setup after install.",
     "sd.s2": "Install steps for macOS, Windows, and browser extensions.",
-    "sd.s3": "Enter and activate your license key after a Polar purchase.",
+    "sd.s3": "License entry, restore, and activation by purchase channel.",
     "sd.s4": "Restore purchases when you move to a new device.",
     "sd.s5": "Refund terms and process — by purchase channel.",
     "sd.s6": "What we collect and process, and local-first principles.",

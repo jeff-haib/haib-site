@@ -5,8 +5,8 @@
    ───────────────────────────────────────────────────────────── */
 :root {
   --site-max: 1120px; --nav-h: 64px;
-  --p-keyradar: var(--olive-600); --p-scrap: var(--mint-500); --p-voca: var(--dust-mauve);
-  --p-movie: var(--dust-brick); --p-baton: var(--dust-slate);
+  --p-keyradar: var(--olive-600); --p-keyradar-enterprise: var(--dust-slate); --p-scrap: var(--mint-500); --p-voca: var(--dust-mauve);
+  --p-contentory: var(--dust-mauve); --p-movie: var(--dust-brick); --p-baton: var(--dust-slate); --p-ripple: var(--dust-brick);
 }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
@@ -260,3 +260,200 @@ body { overflow-x: hidden; background: var(--canvas); }
 .m-menu { position: fixed; inset: var(--nav-h) 0 0 0; z-index: 99; background: var(--surface); padding: 24px; display: none; flex-direction: column; gap: 4px; border-top: 1px solid var(--border); }
 .m-menu.open { display: flex; }
 .m-menu a { font-size: var(--fs-17); font-weight: var(--fw-medium); color: var(--ink); text-decoration: none; padding: 14px 8px; border-bottom: 1px solid var(--border-soft); }
+
+/* HAIB Glass Refresh · secondary pages */
+:root {
+  --glass-line: rgba(255, 255, 255, 0.13);
+  --glass-line-strong: rgba(255, 255, 255, 0.23);
+  --glass-ink: #f5f7f8;
+  --glass-ink-soft: rgba(245, 247, 248, 0.74);
+  --glass-ink-muted: rgba(245, 247, 248, 0.52);
+  --glass-blur: blur(24px) saturate(150%);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background:
+    radial-gradient(circle at 8% -6%, rgba(79, 156, 126, 0.18), transparent 32%),
+    radial-gradient(circle at 88% 0%, rgba(91, 122, 153, 0.16), transparent 30%),
+    #0a0d11;
+  color: var(--glass-ink);
+}
+.nav {
+  background: rgba(7, 9, 12, 0.72);
+  border-bottom-color: rgba(255, 255, 255, 0.11);
+  backdrop-filter: var(--glass-blur);
+}
+.brand-text { color: var(--glass-ink); }
+.brand-sub { color: var(--glass-ink-muted); }
+.nav-link,
+.icon-btn { color: var(--glass-ink-soft); }
+.nav-link:hover,
+.icon-btn:hover { color: #fff; background: rgba(255,255,255,0.09); }
+.nav-link.active { color: #07090c; background: #f5f7f8; }
+.lang-toggle {
+  color: var(--glass-ink-soft);
+  border-color: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.05);
+}
+.lang-toggle button[aria-pressed="true"] { background: #f5f7f8; color: #07090c; }
+
+.page-hero {
+  background: linear-gradient(145deg, rgba(255,255,255,0.10), rgba(255,255,255,0.035));
+  border-bottom-color: rgba(255,255,255,0.12);
+  padding-top: calc(var(--nav-h) + 64px);
+  padding-bottom: 44px;
+}
+.page-hero h1 { color: var(--glass-ink); letter-spacing: 0; }
+.page-hero p.sub,
+.crumb { color: var(--glass-ink-soft); }
+.crumb:hover { color: #fff; }
+.legend .li { color: var(--glass-ink-soft); }
+.section-pad { background: #0a0d11; }
+
+.dl-card,
+.price-card,
+.pay-info .pi,
+.sd-card,
+.sd-aside,
+.doc-card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.105), rgba(255,255,255,0.045));
+  border-color: var(--glass-line);
+  border-radius: 12px;
+  color: var(--glass-ink);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.22);
+  backdrop-filter: var(--glass-blur);
+}
+.dl-card:hover,
+.price-card:hover,
+.sd-card:hover {
+  border-color: var(--glass-line-strong);
+  box-shadow: 0 26px 74px rgba(0,0,0,0.34);
+}
+.dl-card-head h3,
+.price-head h4,
+.sd-card h4,
+.sd-aside h3,
+.doc-card h2 { color: var(--glass-ink); }
+.dl-card-head .cat,
+.dl-row .pl-meta,
+.price-kind,
+.pay-note,
+.sd-card p,
+.sd-aside p,
+.doc-card p,
+.count,
+.cl-date,
+.cl-prodver .pver,
+.notice .ndate { color: var(--glass-ink-muted); }
+.dl-row,
+.cl-row,
+.notice { border-color: rgba(255,255,255,0.12); }
+.dl-row,
+.notice .ntitle,
+.cl-prodver .pname,
+.sd-contact a { color: var(--glass-ink); }
+.dl-row .plat > span:first-child,
+.dl-row .go,
+.sd-card .ic,
+.sd-contact svg { color: #d9fff0; }
+
+.filter-chip {
+  border-color: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.05);
+  color: var(--glass-ink-soft);
+}
+.filter-chip[aria-pressed="true"] {
+  background: #f5f7f8;
+  color: #07090c;
+  border-color: #f5f7f8;
+}
+.filter-chip:hover:not([aria-pressed="true"]) { background: rgba(255,255,255,0.10); }
+
+.btn { border-radius: 8px; }
+.btn-primary { background: #f5f7f8; color: #07090c; border-color: #f5f7f8; }
+.btn-primary:hover { background: #fff; }
+.btn-ghost {
+  color: var(--glass-ink);
+  border-color: rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.06);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.12); }
+.page-shell .page-hero { background: transparent; }
+.page-back {
+  color: var(--glass-ink);
+  border-color: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+}
+.footer { background: #07090c; }
+.m-menu {
+  background: rgba(7, 9, 12, 0.92);
+  border-top-color: rgba(255,255,255,0.12);
+  backdrop-filter: var(--glass-blur);
+}
+.m-menu a {
+  color: var(--glass-ink);
+  border-bottom-color: rgba(255,255,255,0.10);
+}
+
+h1, h2, h3 { letter-spacing: 0 !important; }
+.page-hero h1 { font-size: 42px; }
+@media (max-width: 720px) {
+  .wrap { padding-inline: 16px; }
+  .page-hero h1 { font-size: 32px; }
+}
+
+/* White-first public site skin */
+body {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(79,156,126,0.13), transparent 30%),
+    radial-gradient(circle at 86% 8%, rgba(91,122,153,0.12), transparent 28%),
+    #f7f8f5;
+  color: #111418;
+}
+.nav {
+  background: rgba(255,255,255,0.78);
+  border-bottom-color: rgba(17,20,24,0.10);
+  box-shadow: 0 12px 34px rgba(17,20,24,0.06);
+}
+.brand-text, .nav-link, .icon-btn, .page-hero h1, .dl-card-head h3,
+.price-head h4, .sd-card h4, .sd-aside h3, .doc-card h2, .notice .ntitle,
+.cl-prodver .pname, .sd-contact a { color: #111418; }
+.brand-sub, .page-hero p.sub, .crumb, .dl-card-head .cat, .dl-row .pl-meta,
+.price-kind, .pay-note, .sd-card p, .sd-aside p, .doc-card p, .count,
+.cl-date, .cl-prodver .pver, .notice .ndate { color: rgba(17,20,24,0.58); }
+.nav-link:hover, .icon-btn:hover { color: #111418; background: rgba(17,20,24,0.06); }
+.nav-link.active, .lang-toggle button[aria-pressed="true"], .filter-chip[aria-pressed="true"] {
+  background: #111418;
+  color: #fff;
+  border-color: #111418;
+}
+.lang-toggle, .filter-chip {
+  color: rgba(17,20,24,0.68);
+  border-color: rgba(17,20,24,0.12);
+  background: rgba(255,255,255,0.66);
+}
+.page-hero, .section-pad { background: transparent; }
+.dl-card, .price-card, .pay-info .pi, .sd-card, .sd-aside, .doc-card, .cl-row, .notice {
+  background: rgba(255,255,255,0.72);
+  border-color: rgba(17,20,24,0.10);
+  color: #111418;
+  box-shadow: 0 18px 48px rgba(17,20,24,0.08);
+}
+.dl-row, .cl-row, .notice { border-color: rgba(17,20,24,0.10); }
+.dl-row, .dl-row .plat > span:first-child, .dl-row .go, .sd-card .ic, .sd-contact svg {
+  color: rgba(17,20,24,0.70);
+}
+.btn-primary { background: #111418; color: #fff; border-color: #111418; }
+.btn-primary:hover { background: #2a2f35; }
+.btn-ghost {
+  color: #111418;
+  border-color: rgba(17,20,24,0.14);
+  background: rgba(255,255,255,0.58);
+}
+.m-menu {
+  background: rgba(255,255,255,0.94);
+  border-top-color: rgba(17,20,24,0.10);
+}
+.m-menu a { color: #111418; border-bottom-color: rgba(17,20,24,0.08); }

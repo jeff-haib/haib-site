@@ -12,11 +12,12 @@
     return (
       href.indexOf("https://apps.hai-b.ai/") === 0 ||
       href.indexOf("https://chrome.google.com/") === 0 ||
-      href.indexOf("https://chromewebstore.google.com/") === 0 ||
-      href.indexOf("https://microsoftedge.microsoft.com/") === 0 ||
       href.indexOf("https://polar.sh/") === 0 ||
       href.indexOf("#polar-checkout") === 0 ||
       href.indexOf("#checkout-") === 0 ||
+      href.indexOf("#keyradar-enterprise-coming-soon") === 0 ||
+      href.indexOf("#ai-contentory-coming-soon") === 0 ||
+      href.indexOf("#baton-coming-soon") === 0 ||
       anchor.classList.contains("js-preparing")
     );
   }

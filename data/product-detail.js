@@ -27,8 +27,28 @@ window.HAIB_PRODUCT_DETAIL = {
     ],
     faq: [
       { q: { ko: "키 값이 외부로 전송되나요?", en: "Are my key values sent anywhere?" }, a: { ko: "아니요. 모든 처리는 로컬에서 이뤄지며 키는 마스킹되어 표시됩니다.", en: "No. Everything runs locally and keys are shown masked." } },
-      { q: { ko: "Windows도 지원하나요?", en: "Is Windows supported?" }, a: { ko: "네. 설치 파일은 apps.hai-b.ai의 KeyRadar 경로에서 macOS DMG와 Windows MSI로 제공합니다.", en: "Yes. Installers are provided from the KeyRadar path on apps.hai-b.ai as macOS DMG and Windows MSI files." } },
-      { q: { ko: "라이선스는 어떻게 활성화하나요?", en: "How do I activate a license?" }, a: { ko: "Polar 구매 후 받은 라이선스 키를 앱 설정에서 입력하면 활성화됩니다.", en: "Enter the license key from your Polar purchase in the app's settings." } }
+      { q: { ko: "Windows도 지원하나요?", en: "Is Windows supported?" }, a: { ko: "Windows 빌드는 별도 직접 배포 경로로 준비합니다. 현재 macOS 버전은 Mac App Store에서 받을 수 있습니다.", en: "The Windows build is prepared as a separate direct distribution path. The current macOS version is available on the Mac App Store." } },
+      { q: { ko: "라이선스는 어떻게 활성화하나요?", en: "How do I activate a license?" }, a: { ko: "macOS 버전의 구매와 복원은 Apple ID와 Mac App Store 흐름을 따릅니다. Windows 직접 배포용 라이선스는 별도 안내 예정입니다.", en: "The macOS version follows Apple ID and Mac App Store purchase/restore flows. Licensing for the Windows direct build will be documented separately." } }
+    ]
+  },
+
+  "keyradar-enterprise": {
+    what: {
+      ko: "조직에서는 API 키 가시성과 정책이 개인 도구 수준을 넘어섭니다. KeyRadar Enterprise는 팀 단위 키 인벤토리, 정책 배포, 감사 흐름을 위한 조직용 방향입니다.",
+      en: "Organizations need API key visibility and policy beyond a personal utility. KeyRadar Enterprise is the organizational direction for team key inventory, policy rollout, and audit workflows."
+    },
+    features: [
+      { icon: "radar", title: { ko: "조직 키 가시성", en: "Organization key visibility" }, desc: { ko: "팀과 프로젝트별 키 상태를 한 곳에서 파악하는 방향으로 준비 중입니다.", en: "Planned visibility across teams and projects in one place." } },
+      { icon: "shield", title: { ko: "정책 기반 관리", en: "Policy-based management" }, desc: { ko: "회전 주기, 허용 제공자, 위험 알림 같은 정책 흐름을 검토합니다.", en: "Exploring policy flows for rotation cadence, approved providers, and risk alerts." } },
+      { icon: "flow", title: { ko: "엔터프라이즈 배포", en: "Enterprise deployment" }, desc: { ko: "조직 환경에 맞춘 배포와 운영 모델을 준비합니다.", en: "Preparing deployment and operations models for organizational environments." } }
+    ],
+    shots: [
+      { ko: "조직 대시보드 방향", en: "Organization dashboard direction" },
+      { ko: "정책 관리 방향", en: "Policy management direction" }
+    ],
+    faq: [
+      { q: { ko: "지금 구매할 수 있나요?", en: "Can I buy it now?" }, a: { ko: "아직 준비 중입니다. 현재 페이지에는 방향과 상태만 공개합니다.", en: "Not yet. This page publishes direction and status only." } },
+      { q: { ko: "개인용 KeyRadar와 다른가요?", en: "Is it different from personal KeyRadar?" }, a: { ko: "네. 개인용은 로컬 키 관리에 집중하고, Enterprise는 조직 정책과 배포 흐름을 별도 제품 방향으로 둡니다.", en: "Yes. Personal KeyRadar focuses on local key management, while Enterprise is a separate direction for organizational policy and rollout." } }
     ]
   },
 
@@ -47,7 +67,7 @@ window.HAIB_PRODUCT_DETAIL = {
       { ko: "스니펫 라이브러리", en: "Snippet library" }
     ],
     faq: [
-      { q: { ko: "어떤 브라우저를 지원하나요?", en: "Which browsers are supported?" }, a: { ko: "Microsoft Edge는 심사 중, Chrome 웹 스토어는 준비 중입니다.", en: "Edge is in review; Chrome Web Store is in preparation." } },
+      { q: { ko: "어떤 브라우저를 지원하나요?", en: "Which browsers are supported?" }, a: { ko: "Chrome Web Store와 Microsoft Edge Add-ons에서 받을 수 있습니다.", en: "It is available on the Chrome Web Store and Microsoft Edge Add-ons." } },
       { q: { ko: "결제는 어떻게 하나요?", en: "How is payment handled?" }, a: { ko: "Polar를 통한 라이프타임 1회 결제입니다.", en: "A one-time lifetime purchase via Polar." } }
     ]
   },
@@ -67,9 +87,51 @@ window.HAIB_PRODUCT_DETAIL = {
       { ko: "흐름 진행", en: "Flow progress" }
     ],
     faq: [
-      { q: { ko: "지금 받을 수 있나요?", en: "Can I get it now?" }, a: { ko: "설치 파일은 apps.hai-b.ai에서 macOS DMG와 Windows EXE로 연결합니다.", en: "Installers connect through apps.hai-b.ai as macOS DMG and Windows EXE files." } },
+      { q: { ko: "지금 받을 수 있나요?", en: "Can I get it now?" }, a: { ko: "iPhone과 iPad 버전은 App Store에서 받을 수 있습니다. macOS와 Windows 직접 배포 경로는 별도로 준비합니다.", en: "The iPhone and iPad version is available on the App Store. macOS and Windows direct distribution paths are prepared separately." } },
       { q: { ko: "언어팩은 어디서 받나요?", en: "Where do language packs come from?" }, a: { ko: "언어팩 ZIP은 audio.hai-b.ai/audio 경로에서 분리해 제공합니다.", en: "Language pack ZIP files are separated under audio.hai-b.ai/audio." } },
       { q: { ko: "결제는?", en: "Payment?" }, a: { ko: "구매와 라이선스는 Polar 기준으로 연결합니다. 체험 흐름 이후 설치 파일과 언어팩 경로를 분리합니다.", en: "Purchases and licenses connect through Polar. After the trial flow, installer and language pack paths remain separate." } }
+    ]
+  },
+
+  "ai-contentory": {
+    what: {
+      ko: "AI Contentory는 아이디어, 자료, 생성 결과를 콘텐츠 제작 흐름으로 정리하기 위한 준비 중인 제품입니다. 콘텐츠 작업의 수집, 구조화, 재사용을 한 곳으로 모으는 방향입니다.",
+      en: "AI Contentory is a coming product for organizing ideas, source material, and generated outputs into a content production flow. It is aimed at collecting, structuring, and reusing content work in one place."
+    },
+    features: [
+      { icon: "flow", title: { ko: "콘텐츠 작업 흐름", en: "Content workflow" }, desc: { ko: "자료 수집부터 초안, 재사용까지 이어지는 작업 흐름을 준비합니다.", en: "A workflow from source collection to drafts and reuse." } },
+      { icon: "scrap", title: { ko: "자료 정리", en: "Source organization" }, desc: { ko: "아이디어와 레퍼런스를 콘텐츠 단위로 묶는 방향입니다.", en: "Organizing ideas and references into content units." } },
+      { icon: "shield", title: { ko: "로컬 우선 방향", en: "Local-first direction" }, desc: { ko: "사용자 자료의 통제권을 유지하는 구조를 우선합니다.", en: "Prioritizing structures that keep users in control of their materials." } }
+    ],
+    shots: [
+      { ko: "콘텐츠 보드 방향", en: "Content board direction" },
+      { ko: "자료 정리 방향", en: "Source organization direction" }
+    ],
+    faq: [
+      { q: { ko: "지금 사용할 수 있나요?", en: "Can I use it now?" }, a: { ko: "아직 Coming Soon 상태입니다. 사이트에는 제품 방향과 상태만 먼저 올려둡니다.", en: "It is still Coming Soon. The site publishes direction and status first." } },
+      { q: { ko: "가격이 정해졌나요?", en: "Is pricing decided?" }, a: { ko: "아직 정해지지 않았습니다. 출시 채널과 가격은 준비가 끝난 뒤 공개합니다.", en: "Not yet. Release channel and pricing will be published after preparation." } }
+    ]
+  },
+
+  "ripple-capture": {
+    what: {
+      ko: "튜토리얼과 제품 데모에서는 클릭이 보여야 합니다. Ripple Capture는 커서 글로우와 클릭 리플을 최종 영상에 담아, 보는 사람이 사용자의 동작을 더 쉽게 따라오도록 돕습니다.",
+      en: "Tutorials and product demos need visible clicks. Ripple Capture records cursor glow and click ripples into the final video so viewers can follow each action clearly."
+    },
+    features: [
+      { icon: "movie", title: { ko: "필요한 화면만 녹화", en: "Record the screen area you need" }, desc: { ko: "영역, 창, 전체 디스플레이를 선택해 녹화합니다.", en: "Record a selected area, window, or full display." } },
+      { icon: "check", title: { ko: "클릭 리플", en: "Click ripples" }, desc: { ko: "커서 글로우와 클릭 효과를 미리 조절하고 결과물에 포함합니다.", en: "Tune cursor glow and click effects and include them in the export." } },
+      { icon: "download", title: { ko: "MP4 · GIF 내보내기", en: "MP4 and GIF export" }, desc: { ko: "원본 녹화를 보존하고 필요한 구간을 내보냅니다.", en: "Keep the original recording and export the segment you need." } },
+      { icon: "shield", title: { ko: "로컬 처리", en: "Local processing" }, desc: { ko: "캡처 결과는 Mac에 저장되며 계정이나 클라우드 업로드가 필요하지 않습니다.", en: "Captures stay on your Mac with no account or cloud upload required." } }
+    ],
+    shots: [
+      { ko: "클릭 리플 녹화", en: "Click ripple recording" },
+      { ko: "커서 글로우 조정", en: "Cursor glow tuning" },
+      { ko: "MP4 · GIF 내보내기", en: "MP4 / GIF export" }
+    ],
+    faq: [
+      { q: { ko: "어디에서 받을 수 있나요?", en: "Where can I download it?" }, a: { ko: "Mac App Store에서 받을 수 있습니다.", en: "It is available on the Mac App Store." } },
+      { q: { ko: "클라우드 계정이 필요한가요?", en: "Does it require a cloud account?" }, a: { ko: "아니요. 녹화와 내보내기는 Mac에서 처리됩니다.", en: "No. Recording and export are handled on your Mac." } }
     ]
   },
 

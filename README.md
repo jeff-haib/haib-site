@@ -6,9 +6,12 @@ Static marketing website for HAIB, Human AI Interaction Bridge.
 
 - `index.html`
 - `/keyradar`
+- `/keyradar-enterprise`
 - `/scrap-relay`
 - `/voca-flow`
+- `/ai-contentory`
 - `/movie-maker-pro`
+- `/ripple-capture`
 - `/baton`
 - `/downloads`
 - `/pricing`

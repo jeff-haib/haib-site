@@ -4,8 +4,8 @@
    ───────────────────────────────────────────────────────────── */
 :root {
   --site-max: 1120px; --nav-h: 64px;
-  --p-keyradar: var(--olive-600); --p-scrap: var(--mint-500); --p-voca: var(--dust-mauve);
-  --p-movie: var(--dust-brick); --p-baton: var(--dust-slate);
+  --p-keyradar: var(--olive-600); --p-keyradar-enterprise: var(--dust-slate); --p-scrap: var(--mint-500); --p-voca: var(--dust-mauve);
+  --p-contentory: var(--dust-mauve); --p-movie: var(--dust-brick); --p-baton: var(--dust-slate); --p-ripple: var(--dust-brick);
   --pc: var(--brand);        /* set per product on <html> */
   --pc-soft: var(--brand-bg);
 }
@@ -222,3 +222,255 @@ body { overflow-x: hidden; background: var(--canvas); }
 .m-menu { position: fixed; inset: var(--nav-h) 0 0 0; z-index: 99; background: var(--surface); padding: 24px; display: none; flex-direction: column; gap: 4px; border-top: 1px solid var(--border); }
 .m-menu.open { display: flex; }
 .m-menu a { font-size: var(--fs-17); font-weight: var(--fw-medium); color: var(--ink); text-decoration: none; padding: 14px 8px; border-bottom: 1px solid var(--border-soft); }
+
+/* HAIB Glass Refresh · product detail */
+:root {
+  --glass-line: rgba(255, 255, 255, 0.13);
+  --glass-line-strong: rgba(255, 255, 255, 0.23);
+  --glass-ink: #f5f7f8;
+  --glass-ink-soft: rgba(245, 247, 248, 0.74);
+  --glass-ink-muted: rgba(245, 247, 248, 0.52);
+  --glass-blur: blur(24px) saturate(150%);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background:
+    radial-gradient(circle at 12% -6%, color-mix(in srgb, var(--pc) 30%, transparent), transparent 34%),
+    radial-gradient(circle at 90% 2%, rgba(255,255,255,0.10), transparent 30%),
+    #0a0d11;
+  color: var(--glass-ink);
+}
+.nav {
+  background: rgba(7, 9, 12, 0.72);
+  border-bottom-color: rgba(255, 255, 255, 0.11);
+  backdrop-filter: var(--glass-blur);
+}
+.brand-text { color: var(--glass-ink); }
+.brand-sub { color: var(--glass-ink-muted); }
+.nav-link,
+.icon-btn { color: var(--glass-ink-soft); }
+.nav-link:hover,
+.icon-btn:hover { color: #fff; background: rgba(255,255,255,0.09); }
+.lang-toggle {
+  color: var(--glass-ink-soft);
+  border-color: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.05);
+}
+.lang-toggle button[aria-pressed="true"] { background: #f5f7f8; color: #07090c; }
+
+.pd-hero {
+  background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025)), #0a0d11;
+  padding-top: calc(var(--nav-h) + 68px);
+  padding-bottom: 72px;
+}
+.pd-hero .glow { opacity: 0.22; filter: blur(24px); }
+.pd-hero .grid-bg { opacity: 0.36; mask-image: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent); }
+.pd-hero .wrap { grid-template-columns: minmax(0, 0.92fr) minmax(360px, 1fr); }
+.pd-hero h1 { color: var(--glass-ink); letter-spacing: 0; }
+.pd-tagline { color: var(--glass-ink-soft); }
+.pd-cat,
+.pd-hero .crumb { color: var(--glass-ink-muted); }
+.pd-shot-frame {
+  border-radius: 16px;
+  border-color: var(--glass-line);
+  background: linear-gradient(145deg, rgba(255,255,255,0.11), rgba(255,255,255,0.04));
+  box-shadow: 0 28px 90px rgba(0,0,0,0.40);
+  backdrop-filter: var(--glass-blur);
+}
+.pd-shot-frame .bar {
+  background: rgba(255,255,255,0.06);
+  border-bottom-color: rgba(255,255,255,0.12);
+}
+
+.pd-what,
+.pd-preview,
+.pd-pricing,
+.pd-foot-links {
+  background: #0a0d11;
+  color: var(--glass-ink);
+}
+.pd-features,
+.pd-download,
+.pd-faq {
+  background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(247,248,246,0.9));
+}
+.pd-what p.lead,
+.pd-preview .section-head h2,
+.pd-pricing .section-head h2,
+.pd-foot-links .section-head h2,
+.fl-card h3 { color: var(--glass-ink); letter-spacing: 0; }
+.pd-preview .section-head p,
+.pd-pricing .section-head p,
+.fl-card p,
+.pd-aside .row { color: var(--glass-ink-soft); }
+.pd-aside { border-left-color: rgba(255,255,255,0.22); }
+
+.shot,
+.fl-card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.105), rgba(255,255,255,0.045));
+  border-color: var(--glass-line);
+  border-radius: 12px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.22);
+  backdrop-filter: var(--glass-blur);
+}
+.shot .cap,
+.fl-contact a,
+.cl-mini .txt,
+.cl-mini .dt { color: var(--glass-ink-soft); }
+.cl-mini .row { border-color: rgba(255,255,255,0.12); }
+.cl-mini .ver { color: var(--glass-ink); }
+
+.pd-features .section-head h2,
+.pd-download .section-head h2,
+.pd-faq .section-head h2,
+.feat h4,
+.dl-row,
+.price-amount .amt,
+.faq-q { color: #111418; letter-spacing: 0; }
+.pd-features .section-head p,
+.pd-download .section-head p,
+.pd-faq .section-head p,
+.feat p,
+.price-kind,
+.price-meta li,
+.faq-a p { color: rgba(17,20,24,0.72); }
+.feat,
+.pd-download .dl-card,
+.pd-pricing .price-card {
+  background: rgba(255,255,255,0.78);
+  border-color: rgba(17,20,24,0.12);
+  border-radius: 12px;
+  box-shadow: 0 16px 44px rgba(17,20,24,0.08);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+.dl-row,
+.faq-item { border-color: rgba(17,20,24,0.12); }
+
+.btn { border-radius: 8px; }
+.btn-primary { background: #f5f7f8; color: #07090c; border-color: #f5f7f8; }
+.btn-primary:hover { background: #fff; }
+.pd-features .btn-primary,
+.pd-download .btn-primary,
+.pd-faq .btn-primary,
+.pd-pricing .btn-primary {
+  background: #111418;
+  color: #fff;
+  border-color: #111418;
+}
+.btn-ghost {
+  color: var(--glass-ink);
+  border-color: rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.06);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.12); }
+.footer { background: #07090c; }
+.m-menu {
+  background: rgba(7, 9, 12, 0.92);
+  border-top-color: rgba(255,255,255,0.12);
+  backdrop-filter: var(--glass-blur);
+}
+.m-menu a {
+  color: var(--glass-ink);
+  border-bottom-color: rgba(255,255,255,0.10);
+}
+
+h1, h2, h3 { letter-spacing: 0 !important; }
+.pd-hero h1 { font-size: 46px; }
+.section-head h2 { font-size: 34px; }
+@media (max-width: 860px) {
+  .pd-hero .wrap { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .wrap { padding-inline: 16px; }
+  .pd-hero h1 { font-size: 34px; }
+  .section-head h2 { font-size: 28px; }
+}
+
+/* White-first product pages */
+body {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(79,156,126,0.13), transparent 30%),
+    radial-gradient(circle at 86% 8%, rgba(91,122,153,0.12), transparent 28%),
+    #f7f8f5;
+  color: #111418;
+}
+.nav {
+  background: rgba(255,255,255,0.78);
+  border-bottom-color: rgba(17,20,24,0.10);
+  box-shadow: 0 12px 34px rgba(17,20,24,0.06);
+}
+.brand-text, .nav-link, .icon-btn, .pd-hero h1, .pd-name, .pd-what p.lead,
+.section-head h2, .feat h4, .dl-row, .price-amount .amt, .faq-q, .fl-card h3 {
+  color: #111418;
+}
+.brand-sub, .pd-sub, .section-head p, .feat p, .price-kind, .price-meta li,
+.faq-a p, .fl-card p, .pd-aside .row, .shot .cap, .fl-contact a,
+.cl-mini .txt, .cl-mini .dt { color: rgba(17,20,24,0.66); }
+.nav-link:hover, .icon-btn:hover { color: #111418; background: rgba(17,20,24,0.06); }
+.nav-link.active, .lang-toggle button[aria-pressed="true"] {
+  background: #111418;
+  color: #fff;
+}
+.lang-toggle {
+  color: rgba(17,20,24,0.68);
+  border-color: rgba(17,20,24,0.12);
+  background: rgba(255,255,255,0.66);
+}
+.pd-hero, .pd-what, .pd-preview, .pd-pricing, .pd-foot-links,
+.pd-features, .pd-download, .pd-faq {
+  background: transparent;
+  color: #111418;
+}
+.feat, .pd-download .dl-card, .pd-pricing .price-card, .shot, .fl-card, .faq-item {
+  background: rgba(255,255,255,0.72);
+  border-color: rgba(17,20,24,0.10);
+  box-shadow: 0 18px 48px rgba(17,20,24,0.08);
+}
+.dl-row, .faq-item, .cl-mini .row { border-color: rgba(17,20,24,0.10); }
+.pd-aside { border-left-color: rgba(17,20,24,0.14); }
+.btn-primary, .pd-features .btn-primary, .pd-download .btn-primary,
+.pd-faq .btn-primary, .pd-pricing .btn-primary {
+  background: #111418;
+  color: #fff;
+  border-color: #111418;
+}
+.btn-primary:hover { background: #2a2f35; }
+.btn-ghost {
+  color: #111418;
+  border-color: rgba(17,20,24,0.14);
+  background: rgba(255,255,255,0.58);
+}
+.pd-hero .crumb,
+.pd-hero .pd-cat,
+.pd-hero .pd-tagline,
+.pd-hero .pd-meta,
+.pd-hero .pd-meta span,
+.pd-hero .pd-meta svg,
+.pd-hero .badge {
+  color: rgba(17,20,24,0.64);
+}
+.pd-hero .badge {
+  background: rgba(17,20,24,0.06);
+  border-color: rgba(17,20,24,0.10);
+}
+.pd-hero .pd-cta .btn-ghost {
+  color: #111418;
+  border-color: rgba(17,20,24,0.14);
+  background: rgba(255,255,255,0.76);
+}
+.pd-shot-frame {
+  background: rgba(255,255,255,0.68);
+  border-color: rgba(17,20,24,0.10);
+}
+.pd-shot-frame .bar {
+  background: rgba(17,20,24,0.06);
+  border-bottom-color: rgba(17,20,24,0.10);
+}
+.pd-shot-frame .ph { color: rgba(17,20,24,0.42); }
+.m-menu {
+  background: rgba(255,255,255,0.94);
+  border-top-color: rgba(17,20,24,0.10);
+}
+.m-menu a { color: #111418; border-bottom-color: rgba(17,20,24,0.08); }

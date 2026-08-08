@@ -3,7 +3,7 @@
 
   function currentMessage() {
     var lang = localStorage.getItem("haib-lang") || document.documentElement.lang || "ko";
-    return String(lang).toLowerCase().startsWith("en") ? "Coming soon." : "준비중입니다.";
+    return String(lang).toLowerCase().startsWith("en") ? "Coming soon." : "준비 중입니다.";
   }
 
   function isBlockedAction(anchor) {

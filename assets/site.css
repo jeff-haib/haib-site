@@ -520,13 +520,45 @@ section { position: relative; }
 }
 .price-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-card); }
 .price-card.highlight { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
-.price-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.price-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
 .price-head .dot { width: 10px; height: 10px; border-radius: 3px; background: var(--pc, var(--brand)); flex: none; }
 .price-head h4 { font-size: var(--fs-15); font-weight: var(--fw-semibold); margin: 0; color: var(--ink); }
 .price-amount { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.price-amount .was {
+  font-family: var(--font-mono);
+  font-size: var(--fs-13);
+  color: var(--ink-faint);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
 .price-amount .amt { font-family: var(--font-mono); font-size: 34px; font-weight: var(--fw-semibold); color: var(--ink); letter-spacing: -0.02em; }
 .price-amount .per { font-size: var(--fs-13); color: var(--ink-muted); }
 .price-kind { font-size: var(--fs-13); color: var(--ink-soft); margin: 0 0 16px; }
+.sale-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  background: rgba(189,98,83,0.12);
+  color: var(--signal-wrong);
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+}
+.sale-note {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: -6px 0 16px;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  background: rgba(189,98,83,0.08);
+  color: rgba(17,20,24,0.72);
+  font-size: var(--fs-12);
+  line-height: var(--lh-12);
+}
 .price-meta { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
 .price-meta li { display: flex; align-items: center; gap: 8px; font-size: var(--fs-13); color: var(--ink-soft); list-style: none; }
 .price-meta li svg { width: 14px; height: 14px; color: var(--brand); flex: none; }
@@ -874,6 +906,7 @@ body {
 .pricing .section-head p,
 .pillar p,
 .price-kind,
+.sale-note,
 .price-meta li { color: rgba(17,20,24,0.72); }
 .price-card {
   background: rgba(255,255,255,0.78);

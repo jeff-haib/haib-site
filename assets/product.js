@@ -151,9 +151,14 @@
     if (!P.pricing) { sec.style.display = "none"; return; }
     const pr = P.pricing;
     const feats = pr.features[LANG].map(f => `<li>${ICON.check}<span>${f}</span></li>`).join("");
+    const sale = pr.sale ? `<span class="sale-badge">${pr.sale.label[LANG]}</span>` : "";
+    const detail = pr.sale && pr.sale.detail ? `<span>${pr.sale.detail[LANG]}</span>` : "";
+    const note = pr.sale ? `<p class="sale-note"><span>${pr.sale.note[LANG]}</span>${detail}</p>` : "";
     $("#pd-price-card").innerHTML = `
-      <div class="price-amount"><span class="amt">${pr.amount}</span><span class="per">${pr.per[LANG]}</span></div>
+      <div class="price-card-top">${sale}</div>
+      <div class="price-amount">${pr.compareAt ? `<span class="was">${pr.compareAt}</span>` : ""}<span class="amt">${pr.amount}</span><span class="per">${pr.per[LANG]}</span></div>
       <p class="price-kind">${pr.tier[LANG]} · ${pr.sub[LANG]}</p>
+      ${note}
       <ul class="price-meta">${feats}</ul>
       <a class="btn btn-primary" href="${pr.ctaUrl}">${pr.cta[LANG]}</a>
       <div class="pay-note">${pr.pay}</div>`;

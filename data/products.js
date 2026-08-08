@@ -63,9 +63,14 @@ window.HAIB_PRODUCTS = [
     ],
     pricing: {
       tier: { ko: "라이프타임", en: "Lifetime" },
-      amount: "$34.99", per: { ko: "1회 결제", en: "one-time" },
-      sub: { ko: "월/년 구독 준비 중", en: "Monthly / Yearly preparing" },
-      pay: "Polar",
+      amount: "₩55,000", per: { ko: "라이프타임", en: "lifetime" },
+      sub: { ko: "App Store 현재 가격 · 월/년 구독 제공", en: "Current App Store price · monthly/yearly available" },
+      pay: "App Store",
+      sale: {
+        label: { ko: "SALE", en: "SALE" },
+        note: { ko: "Mac App Store 기준 현재 라이프타임 가격", en: "Current lifetime price on the Mac App Store" },
+        detail: { ko: "월 ₩6,600 · 연 ₩49,000", en: "Monthly ₩6,600 · Annual ₩49,000" }
+      },
       features: {
         ko: ["제공자별 키 자동 탐지", "로컬 우선 · 키 외부 전송 없음", "사용량 · 크레딧 모니터링", "키 회전 알림"],
         en: ["Auto-detect keys per provider", "Local-first · keys never leave device", "Usage & credit monitoring", "Rotation reminders"]
@@ -127,14 +132,19 @@ window.HAIB_PRODUCTS = [
     ],
     pricing: {
       tier: { ko: "라이프타임", en: "Lifetime" },
-      amount: "$34.99", per: { ko: "1회 결제", en: "one-time" },
-      sub: { ko: "Polar 직접 결제", en: "Direct via Polar" },
+      amount: "$24.49", per: { ko: "1회 결제", en: "one-time" },
+      compareAt: "$34.99",
+      sub: { ko: "사이트 직판매 상시 30% 세일", en: "Always 30% off via direct site sale" },
       pay: "Polar",
+      sale: {
+        label: { ko: "30% SALE", en: "30% SALE" },
+        note: { ko: "사이트 직판매 기본 세일 적용", en: "Direct site sale applied" }
+      },
       features: {
         ko: ["한 번 클릭 캡처", "AI 대화 정리 · 태깅", "재사용 가능한 스니펫", "로컬 우선 저장"],
         en: ["One-click capture", "Organize & tag AI chats", "Reusable snippets", "Local-first storage"]
       },
-      cta: { ko: "Buy Direct", en: "Buy Direct" }, ctaUrl: "https://buy.polar.sh/polar_cl_UDeCTbabHoykkNs3vbANsdzkYZryxA5W9sRAc4KrixF"
+      cta: { ko: "사이트 직구매", en: "Buy Direct" }, ctaUrl: "https://buy.polar.sh/polar_cl_UDeCTbabHoykkNs3vbANsdzkYZryxA5W9sRAc4KrixF"
     },
     links: { product: "#product-scrap", changelog: "#changelog", support: "#support" }
   },
@@ -159,14 +169,20 @@ window.HAIB_PRODUCTS = [
     ],
     pricing: {
       tier: { ko: "라이프타임 잠금 해제", en: "Lifetime unlock" },
-      amount: "$49.99", per: { ko: "1회 결제", en: "one-time" },
-      sub: { ko: "3일 무료 체험 · 언어팩 별도", en: "3-day free trial · language packs separate" },
+      amount: "₩69,300", per: { ko: "1회 결제", en: "one-time" },
+      compareAt: "₩77,000",
+      sub: { ko: "App Store 세일가보다 10% 더 낮은 사이트 직판매", en: "Direct site sale, 10% below the App Store sale price" },
       pay: "Polar",
-      features: {
-        ko: ["3일 무료 체험", "시각적 단어 카드", "다방향 학습 흐름", "언어팩: audio.hai-b.ai/audio"],
-        en: ["3-day free trial", "Visual word cards", "Multi-direction flow", "Language packs: audio.hai-b.ai/audio"]
+      sale: {
+        label: { ko: "추가 10% SALE", en: "Extra 10% SALE" },
+        note: { ko: "App Store 현재 라이프타임 ₩77,000 기준", en: "Compared with current App Store lifetime ₩77,000" },
+        detail: { ko: "7일 무료 체험", en: "7-day free trial" }
       },
-      cta: { ko: "Buy Direct", en: "Buy Direct" }, ctaUrl: "#polar-checkout-voca-flow"
+      features: {
+        ko: ["7일 무료 체험", "시각적 단어 카드", "다방향 학습 흐름", "언어팩: audio.hai-b.ai/audio"],
+        en: ["7-day free trial", "Visual word cards", "Multi-direction flow", "Language packs: audio.hai-b.ai/audio"]
+      },
+      cta: { ko: "사이트 직구매", en: "Buy Direct" }, ctaUrl: "#polar-checkout-voca-flow"
     },
     links: { product: "#product-voca", changelog: "#changelog", support: "#support" }
   },
@@ -221,14 +237,19 @@ window.HAIB_PRODUCTS = [
     ],
     pricing: {
       tier: { ko: "라이프타임", en: "Lifetime" },
-      amount: "$79", per: { ko: "1회 결제", en: "one-time" },
-      sub: { ko: "엔터프라이즈 / 커스텀 별도 문의", en: "Enterprise / Custom — contact" },
+      amount: "$55.30", per: { ko: "1회 결제", en: "one-time" },
+      compareAt: "$79",
+      sub: { ko: "사이트 직판매 상시 30% 세일 · 엔터프라이즈 별도 문의", en: "Always 30% off via direct site sale · Enterprise on request" },
       pay: "Polar",
+      sale: {
+        label: { ko: "30% SALE", en: "30% SALE" },
+        note: { ko: "사이트 직판매 기본 세일 적용", en: "Direct site sale applied" }
+      },
       features: {
         ko: ["프로젝트 기반 워크플로", "재사용 가능한 템플릿", "AI 보조 콘텐츠 파이프라인", "엔터프라이즈 문의 가능"],
         en: ["Project-based workflow", "Reusable templates", "AI-assisted pipeline", "Enterprise on request"]
       },
-      cta: { ko: "Buy Direct", en: "Buy Direct" }, ctaUrl: "#polar-checkout-movie-maker-pro"
+      cta: { ko: "사이트 직구매", en: "Buy Direct" }, ctaUrl: "#polar-checkout-movie-maker-pro"
     },
     links: { product: "#product-movie", changelog: "#changelog", support: "#support" }
   },

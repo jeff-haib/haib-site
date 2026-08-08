@@ -149,10 +149,14 @@ body { overflow-x: hidden; background: var(--canvas); }
 /* ───────── PRICING ───────── */
 .pd-pricing { background: var(--canvas); }
 .price-card { max-width: 380px; border: 1px solid var(--pc); box-shadow: 0 0 0 1px var(--pc); border-radius: var(--r-panel); padding: 26px; background: var(--surface); display: flex; flex-direction: column; }
+.price-card-top { min-height: 24px; margin-bottom: 12px; }
 .price-amount { display: flex; align-items: baseline; gap: 8px; }
+.price-amount .was { font-family: var(--font-mono); font-size: var(--fs-13); color: var(--ink-faint); text-decoration: line-through; text-decoration-thickness: 1px; }
 .price-amount .amt { font-family: var(--font-mono); font-size: 38px; font-weight: var(--fw-semibold); color: var(--ink); letter-spacing: -0.02em; }
 .price-amount .per { font-size: var(--fs-13); color: var(--ink-muted); }
 .price-kind { font-size: var(--fs-14); color: var(--ink-soft); margin: 8px 0 18px; }
+.sale-badge { display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: var(--r-pill); background: rgba(189,98,83,0.12); color: var(--signal-wrong); font-family: var(--font-mono); font-size: var(--fs-11); font-weight: var(--fw-semibold); letter-spacing: 0.02em; }
+.sale-note { display: flex; flex-direction: column; gap: 4px; margin: -8px 0 18px; padding: 10px 12px; border-radius: var(--r-sm); background: rgba(189,98,83,0.08); color: var(--ink-soft); font-size: var(--fs-12); line-height: var(--lh-12); }
 .price-meta { display: flex; flex-direction: column; gap: 9px; margin: 0 0 22px; padding: 0; }
 .price-meta li { display: flex; align-items: center; gap: 9px; font-size: var(--fs-14); color: var(--ink-soft); list-style: none; }
 .price-meta li svg { width: 15px; height: 15px; color: var(--pc); flex: none; }
@@ -335,6 +339,7 @@ body {
 .pd-faq .section-head p,
 .feat p,
 .price-kind,
+.sale-note,
 .price-meta li,
 .faq-a p { color: rgba(17,20,24,0.72); }
 .feat,

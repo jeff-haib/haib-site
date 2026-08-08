@@ -68,6 +68,14 @@
     if (!s) return "";
     return `<span class="badge ${s.cls}">${s[LANG]}</span>`;
   }
+  function saleBadge(pr) {
+    return pr && pr.sale ? `<span class="sale-badge">${pr.sale.label[LANG]}</span>` : "";
+  }
+  function saleNote(pr) {
+    if (!pr || !pr.sale) return "";
+    const detail = pr.sale.detail ? `<span>${pr.sale.detail[LANG]}</span>` : "";
+    return `<p class="sale-note"><span>${pr.sale.note[LANG]}</span>${detail}</p>`;
+  }
   function appIcon(p, sizeCls) {
     const c = `var(${p.accentVar})`;
     return `<div class="app-icon ${sizeCls||""}" style="background:${c}">${ICON[p.icon]||""}</div>`;
@@ -128,7 +136,7 @@
         </div>
         <div class="tile-body">
           <p class="tile-cat">${p.category ? p.category[LANG] : ""}</p>
-          <div class="tile-head"><h3>${p.name}</h3>${statusBadge(p.status)}</div>
+          <div class="tile-head"><h3>${p.name}</h3>${statusBadge(p.status)}${saleBadge(p.pricing)}</div>
           <p class="tile-desc">${p.desc[LANG]}</p>
           <div class="tile-plats">${plats}</div>
           <div class="tile-foot">
@@ -193,9 +201,10 @@
       card.style.setProperty("--pc", `var(${p.accentVar})`);
       const feats = pr.features[LANG].map(f => `<li>${ICON.check}<span>${f}</span></li>`).join("");
       card.innerHTML = `
-        <div class="price-head"><span class="dot"></span><h4>${p.name}</h4></div>
-        <div class="price-amount"><span class="amt">${pr.amount}</span><span class="per">${pr.per[LANG]}</span></div>
+        <div class="price-head"><span class="dot"></span><h4>${p.name}</h4>${saleBadge(pr)}</div>
+        <div class="price-amount">${pr.compareAt ? `<span class="was">${pr.compareAt}</span>` : ""}<span class="amt">${pr.amount}</span><span class="per">${pr.per[LANG]}</span></div>
         <p class="price-kind">${pr.tier[LANG]} · ${pr.sub[LANG]}</p>
+        ${saleNote(pr)}
         <ul class="price-meta">${feats}</ul>
         <a class="btn btn-primary" href="${pr.ctaUrl}">${pr.cta[LANG]}</a>
         <div class="pay-note">${pr.pay}</div>`;

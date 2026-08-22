@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Scrap Relay license cleanup</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      align-items: center;
+      background: #0e1112;
+      color: #f7f8f9;
+      display: flex;
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    main {
+      margin: 0 auto;
+      max-width: 520px;
+    }
+    h1 {
+      font-size: 22px;
+      line-height: 1.2;
+      margin: 0 0 12px;
+    }
+    p {
+      color: #aeb7b7;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 12px;
+    }
+    .status {
+      border: 1px solid rgba(140, 247, 225, .24);
+      border-radius: 8px;
+      color: #8cf7e1;
+      margin-top: 20px;
+      padding: 12px 14px;
+    }
+    .error {
+      border-color: rgba(232, 149, 149, .34);
+      color: #e89595;
+    }
+    a {
+      color: #8cf7e1;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Scrap Relay is cleaning up this device activation.</h1>
+    <p>This page releases the Pro activation seat for the browser where Scrap Relay was just uninstalled.</p>
+    <p id="status" class="status">Releasing activation...</p>
+  </main>
+  <script>
+    const statusEl = document.getElementById("status");
+
+    function setStatus(message, isError = false) {
+      statusEl.textContent = message;
+      statusEl.classList.toggle("error", isError);
+    }
+
+    function readPayload() {
+      const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : "";
+      const params = new URLSearchParams(hash);
+      return {
+        key: params.get("k") || "",
+        activationId: params.get("a") || "",
+        organizationId: params.get("o") || "",
+        apiBase: params.get("api") || "https://api.polar.sh"
+      };
+    }
+
+    async function releaseActivation() {
+      const payload = readPayload();
+      history.replaceState(null, document.title, window.location.pathname);
+
+      if (!payload.key || !payload.activationId || !payload.organizationId) {
+        setStatus("No Pro activation was attached to this uninstall request.", true);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${payload.apiBase}/v1/customer-portal/license-keys/deactivate`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            key: payload.key,
+            organization_id: payload.organizationId,
+            activation_id: payload.activationId
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Polar returned ${response.status}.`);
+        }
+
+        setStatus("Activation released. You can reinstall Scrap Relay and activate again without the old install occupying a seat.");
+      } catch (error) {
+        console.error(error);
+        setStatus("Could not release the activation automatically. Open Polar purchases and deactivate the old Scrap Relay activation.", true);
+      }
+    }
+
+    releaseActivation();
+  </script>
+</body>
+</html>
